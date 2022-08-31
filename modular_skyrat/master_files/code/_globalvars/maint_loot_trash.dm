@@ -1,5 +1,5 @@
 
-GLOBAL_LIST_INIT(trash_loot, list(//junk: useless, very easy to get, or ghetto chemistry items
+GLOBAL_LIST_INIT(trash_loot, list(// junk: useless, very easy to get, or ghetto chemistry items
 	list(// literal trash
 		/obj/item/broken_bottle = 50,
 		/obj/item/cigbutt = 50,
@@ -16,7 +16,7 @@ GLOBAL_LIST_INIT(trash_loot, list(//junk: useless, very easy to get, or ghetto c
 		/obj/item/grown/bananapeel/bluespace = 5,
 		/obj/item/grown/corncob = 25,
 		/obj/item/inflatable/torn = 25,
-		/obj/item/inflatable/torn/door = 25,
+		/obj/item/inflatable/door/torn = 25,
 		/obj/item/light/bulb/broken = 50,
 		/obj/item/light/tube/broken = 50,
 		/obj/item/paper/crumpled = 25,
@@ -42,7 +42,7 @@ GLOBAL_LIST_INIT(trash_loot, list(//junk: useless, very easy to get, or ghetto c
 		/obj/item/trash/tray = 25,
 		/obj/item/trash/waffles = 25
 	) = 100,
-	list(//not so literal trash
+	list(// not so literal trash
 		/obj/item/c_tube = 25,
 		/obj/item/candle = 50,
 		/obj/item/stack/pipe_cleaner_coil/random = 5,
@@ -69,16 +69,16 @@ GLOBAL_LIST_INIT(trash_loot, list(//junk: useless, very easy to get, or ghetto c
 		/obj/item/flashlight/glowstick = 100,
 		/obj/item/food/spiderleg = 25,
 		/obj/item/kitchen/fork/plastic = 25,
-		/obj/item/kitchen/knife/plastic = 25,
+		/obj/item/knife/plastic = 25,
 		/obj/item/kitchen/spoon/plastic = 25,
 		/obj/item/light/bulb = 75,
 		/obj/item/light/tube = 75,
 		/obj/item/paper/pamphlet/violent_video_games = 25,
 		/obj/item/photo/old = 50,
-		/obj/item/reagent_containers/food/drinks/bottle/pruno = 100,
-		/obj/item/reagent_containers/food/drinks/colocup = 50,
-		/obj/item/reagent_containers/glass/bucket = 50,
-		/obj/item/reagent_containers/glass/rag = 100 ,
+		/obj/item/reagent_containers/cup/glass/bottle/pruno = 100,
+		/obj/item/reagent_containers/cup/glass/colocup = 50,
+		/obj/item/reagent_containers/cup/bucket = 50,
+		/obj/item/reagent_containers/cup/rag = 100 ,
 		/obj/item/sign = 50,
 		/obj/item/staff/broom = 50,
 		/obj/item/storage/bag/tray = 25,
@@ -87,7 +87,7 @@ GLOBAL_LIST_INIT(trash_loot, list(//junk: useless, very easy to get, or ghetto c
 		/obj/item/toner = 25,
 		/obj/item/wirerod = 100
 	) = 75,
-	list( //Common maint stuff. Stuff for the greytide.
+	list( // Common maint stuff. Stuff for the greytide.
 		/obj/item/airlock_painter = 25,
 		/obj/item/airlock_painter/decal = 25,
 		/obj/item/book/manual/random = 200,
@@ -134,8 +134,8 @@ GLOBAL_LIST_INIT(trash_loot, list(//junk: useless, very easy to get, or ghetto c
 		/obj/item/grenade/smokebomb = 25,
 		/obj/item/gun/syringe/blowgun = 25,
 		/obj/item/hatchet/wooden = 50,
-		/obj/item/kitchen/knife/shiv = 25,
-		/obj/item/kitchen/knife/shiv/carrot = 10,
+		/obj/item/knife/shiv = 25,
+		/obj/item/knife/shiv/carrot = 10,
 		/obj/item/lighter = 100,
 		/obj/item/melee/skateboard/improvised = 75,
 		/obj/item/pickaxe/rusted = 75,
@@ -148,13 +148,13 @@ GLOBAL_LIST_INIT(trash_loot, list(//junk: useless, very easy to get, or ghetto c
 		/obj/item/pneumatic_cannon/ghetto = 50,
 		/obj/item/radio = 200,
 		/obj/item/razor = 75,
-		/obj/item/reagent_containers/food/condiment/mayonnaise = 75,
-		/obj/item/reagent_containers/food/drinks/beer = 50,
-		/obj/item/reagent_containers/food/drinks/bottle/lizardwine = 25,
-		/obj/item/reagent_containers/food/drinks/bottle/moonshine = 75,
-		/obj/item/reagent_containers/food/drinks/bottle/kong = 200,
-		/obj/item/reagent_containers/food/drinks/bottle/vodka = 100,
-		/obj/item/reagent_containers/food/drinks/dry_ramen = 75,
+		/obj/item/reagent_containers/condiment/mayonnaise = 75,
+		/obj/item/reagent_containers/cup/glass/bottle/beer = 50,
+		/obj/item/reagent_containers/cup/glass/bottle/lizardwine = 25,
+		/obj/item/reagent_containers/cup/glass/bottle/moonshine = 75,
+		/obj/item/reagent_containers/cup/glass/bottle/kong = 200,
+		/obj/item/reagent_containers/cup/glass/bottle/vodka = 100,
+		/obj/item/reagent_containers/cup/glass/dry_ramen = 75,
 		/obj/item/reagent_containers/hypospray/medipen/atropine = 100,
 		/obj/item/reagent_containers/hypospray/medipen/blood_loss = 75,
 		/obj/item/reagent_containers/hypospray/medipen/ekit = 200,
@@ -164,7 +164,6 @@ GLOBAL_LIST_INIT(trash_loot, list(//junk: useless, very easy to get, or ghetto c
 		/obj/item/reagent_containers/spray/cleaner = 100,
 		/obj/item/reagent_containers/spray/spraytan = 50,
 		/obj/item/reagent_containers/syringe/contraband/bath_salts = 25,
-		/obj/item/reagent_containers/syringe/contraband/crank = 25,
 		/obj/item/reagent_containers/syringe/contraband/fentanyl = 25,
 		/obj/item/reagent_containers/syringe/contraband/krokodil = 25,
 		/obj/item/reagent_containers/syringe/contraband/methamphetamine = 25,
@@ -219,7 +218,7 @@ GLOBAL_LIST_INIT(trash_loot, list(//junk: useless, very easy to get, or ghetto c
 		/obj/item/weaponcrafting/receiver = 50,
 		/obj/item/weaponcrafting/stock = 50
 	) = 300,
-	list( //Random meh items
+	list( // Random meh items
 		/obj/item/bouquet/poppy = 10,
 		/obj/item/bouquet/sunflower = 10,
 		/obj/item/bouquet = 10,
@@ -229,7 +228,7 @@ GLOBAL_LIST_INIT(trash_loot, list(//junk: useless, very easy to get, or ghetto c
 		/obj/item/barcodescanner = 10,
 		/obj/item/cane = 20,
 		/obj/item/clothing/accessory/pocketprotector = 10,
-		/obj/item/reagent_containers/food/drinks/soda_cans/random = 100,
+		/obj/item/reagent_containers/cup/soda_cans/random = 100,
 		/obj/item/storage/box/ingredients/random = 100,
 		/obj/item/bedsheet/random = 20,
 		/obj/item/clothing/mask/cigarette/pipe = 10,
@@ -252,10 +251,9 @@ GLOBAL_LIST_INIT(trash_loot, list(//junk: useless, very easy to get, or ghetto c
 		/obj/item/pushbroom = 100,
 		/obj/item/rack_parts = 100,
 		/obj/item/radio/headset = 100,
-		/obj/item/reagent_containers/food/drinks/coffee = 50,
-		/obj/item/reagent_containers/food/drinks/colocup/lean = 50,
-		/obj/item/reagent_containers/food/drinks/flask = 50,
-		/obj/item/reagent_containers/food/drinks/ice/prison = 200,
+		/obj/item/reagent_containers/cup/glass/coffee = 50,
+		/obj/item/reagent_containers/cup/glass/flask = 50,
+		/obj/item/reagent_containers/cup/glass/ice/prison = 200,
 		/obj/item/reagent_containers/spray/pestspray = 50,
 		/obj/item/reagent_containers/spray/weedspray = 50,
 		/obj/item/stack/arcadeticket/thirty = 20,
@@ -269,16 +267,16 @@ GLOBAL_LIST_INIT(trash_loot, list(//junk: useless, very easy to get, or ghetto c
 		/obj/item/storage/secure/briefcase = 50,
 		/obj/item/food/grown/random = 300
 	) = 100,
-	list( //Trash but I don't want to make so much of it.
+	list( // Trash but I don't want to make so much of it.
 		/obj/item/kirbyplants/random = 200,
 		/obj/item/flashlight/lamp = 200,
-		/obj/item/food/american_sausage = 50,
+		/obj/item/food/sausage/american = 50,
 		/obj/item/food/branrequests = 50,
 		/obj/item/paper_bin = 50,
 		/obj/item/paper_bin/construction = 25,
 		/obj/item/pizzabox/pineapple = 100,
-		/obj/item/reagent_containers/food/drinks/bottle/vodka/badminka = 50,
-		/obj/item/reagent_containers/food/drinks/bottle/whiskey = 50,
+		/obj/item/reagent_containers/cup/glass/bottle/vodka/badminka = 50,
+		/obj/item/reagent_containers/cup/glass/bottle/whiskey = 50,
 		/obj/item/stack/circuit_stack/full = 100,
 		/obj/item/stack/conveyor/thirty = 100,
 		/obj/item/stack/ducts/fifty = 100,
@@ -310,7 +308,7 @@ GLOBAL_LIST_INIT(trash_loot, list(//junk: useless, very easy to get, or ghetto c
 		/obj/item/storage/fancy/rollingpapers = 50,
 		/obj/item/wheelchair = 25
 	) = 50,
-	list( //Circuits
+	list( // Circuits
 		/obj/item/electronics/airalarm = 100,
 		/obj/item/electronics/airlock = 100,
 		/obj/item/electronics/apc = 100,
@@ -318,7 +316,7 @@ GLOBAL_LIST_INIT(trash_loot, list(//junk: useless, very easy to get, or ghetto c
 		/obj/item/electronics/firelock = 25,
 		/obj/item/electronics/tracker = 25
 	) = 50,
-	list( //Smoking
+	list( // Smoking
 		/obj/item/storage/fancy/cigarettes = 100,
 		/obj/item/storage/fancy/cigarettes/cigars = 50,
 		/obj/item/storage/fancy/cigarettes/cigars/cohiba = 25,
@@ -335,15 +333,13 @@ GLOBAL_LIST_INIT(trash_loot, list(//junk: useless, very easy to get, or ghetto c
 		/obj/item/storage/fancy/cigarettes/cigpack_xeno = 5,
 		/obj/item/storage/fancy/cigarettes/dromedaryco = 25
 	) = 10,
-	list( //Stock parts
+	list( // Stock parts
 		/obj/item/stock_parts/capacitor = 100,
 		/obj/item/stock_parts/capacitor/adv = 50,
 		/obj/item/stock_parts/cell = 100,
 		/obj/item/stock_parts/cell/crap = 25,
 		/obj/item/stock_parts/cell/potato = 25,
 		/obj/item/stock_parts/cell/upgraded = 25,
-		/obj/item/stock_parts/electrolite = 50,
-		/obj/item/stock_parts/electrolite/adv = 25,
 		/obj/item/stock_parts/manipulator = 100,
 		/obj/item/stock_parts/manipulator/nano = 50,
 		/obj/item/stock_parts/matter_bin = 100,

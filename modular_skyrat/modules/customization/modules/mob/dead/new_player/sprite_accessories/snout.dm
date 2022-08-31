@@ -1,47 +1,100 @@
 /datum/sprite_accessory/snouts
 	key = "snout"
 	generic = "Snout"
-	icon = 'modular_skyrat/modules/customization/icons/mob/sprite_accessory/lizard_snouts.dmi'
-	var/use_muzzled_sprites = TRUE
-	recommended_species = list("synthmammal", "mammal", "lizard", "unathi", "ashlizard", "silverlizard")
+	icon = 'modular_skyrat/master_files/icons/mob/sprite_accessory/lizard_snouts.dmi'
+	flags_for_organ = SPRITE_ACCESSORY_USE_MUZZLED_SPRITE
+	organ_type = /obj/item/organ/external/snout
+	recommended_species = list(SPECIES_SYNTHMAMMAL, SPECIES_MAMMAL, SPECIES_LIZARD, SPECIES_UNATHI, SPECIES_LIZARD_ASH, SPECIES_LIZARD_SILVER)
 	relevent_layers = list(BODY_ADJ_LAYER, BODY_FRONT_LAYER)
+	genetic = TRUE
 
 /datum/sprite_accessory/snouts/is_hidden(mob/living/carbon/human/H, obj/item/bodypart/HD)
-	if((H.wear_mask && (H.wear_mask.flags_inv & HIDEFACE)) || (H.head && (H.head.flags_inv & HIDEFACE)) || !HD)
+	if((H.wear_mask && (H.wear_mask.flags_inv & HIDESNOUT)) || (H.head && (H.head.flags_inv & HIDESNOUT)) || !HD)
 		return TRUE
 	return FALSE
+
+/obj/item/organ/external/snout
+	mutantpart_key = "snout"
+	mutantpart_info = list(MUTANT_INDEX_NAME = "None", MUTANT_INDEX_COLOR_LIST = list("#FFFFFF", "#FFFFFF", "#FFFFFF"))
+	external_bodytypes = NONE // We don't actually want this to have BODYTYPE_SNOUTED by default, since some of them don't apply that.
+	color_source = ORGAN_COLOR_OVERRIDE
+
+/obj/item/organ/external/snout/Insert(mob/living/carbon/reciever, special, drop_if_replaced)
+	if(sprite_accessory_flags & SPRITE_ACCESSORY_USE_MUZZLED_SPRITE)
+		external_bodytypes |= BODYTYPE_SNOUTED
+
+	return ..()
+
+/obj/item/organ/external/snout/override_color(rgb_value)
+	if(mutantpart_key)
+		return mutantpart_info[MUTANT_INDEX_COLOR_LIST][1]
+
+	return rgb_value
 
 /datum/sprite_accessory/snouts/none
 	name = "None"
 	icon_state = "none"
-	use_muzzled_sprites = FALSE
+	flags_for_organ = NONE
 	factual = FALSE
 
 /datum/sprite_accessory/snouts/mammal
-	icon = 'modular_skyrat/modules/customization/icons/mob/sprite_accessory/snouts.dmi'
+	icon = 'modular_skyrat/master_files/icons/mob/sprite_accessory/snouts.dmi'
 	color_src = USE_MATRIXED_COLORS
-	recommended_species = list("synthmammal", "mammal", "humanoid")
+	recommended_species = list(SPECIES_SYNTHMAMMAL, SPECIES_MAMMAL, SPECIES_HUMANOID)
 
 /datum/sprite_accessory/snouts/mammal/vulpkanin
-	recommended_species = list("synthmammal", "mammal", "vulpkanin", "humanoid")
+	recommended_species = list(SPECIES_SYNTHMAMMAL, SPECIES_MAMMAL, SPECIES_VULP, SPECIES_HUMANOID)
 
 /datum/sprite_accessory/snouts/mammal/tajaran
-	recommended_species = list("synthmammal", "mammal", "tajaran", "humanoid")
+	recommended_species = list(SPECIES_SYNTHMAMMAL, SPECIES_MAMMAL, SPECIES_TAJARAN, SPECIES_HUMANOID)
 
 /datum/sprite_accessory/snouts/mammal/akula
-	recommended_species = list("synthmammal", "mammal", "akula", "aquatic", "humanoid")
+	recommended_species = list(SPECIES_SYNTHMAMMAL, SPECIES_MAMMAL, SPECIES_AKULA, SPECIES_AQUATIC, SPECIES_HUMANOID)
 
 /datum/sprite_accessory/snouts/mammal/bird
 	name = "Beak"
 	icon_state = "bird"
 
+/datum/sprite_accessory/snouts/mammal/birdsmall
+	name = "Beak (small)"
+	icon_state = "birdsmall"
+
 /datum/sprite_accessory/snouts/mammal/bigbeak
 	name = "Big Beak"
 	icon_state = "bigbeak"
 
+/datum/sprite_accessory/snouts/mammal/bigbeakshort
+	name = "Big Beak Short"
+	icon_state = "bigbeakshort"
+
+/datum/sprite_accessory/snouts/mammal/slimbeak
+	name = "Slim Beak"
+	icon_state = "slimbeak"
+
+/datum/sprite_accessory/snouts/mammal/slimbeakshort
+	name = "Slim Beak Short"
+	icon_state = "slimbeakshort"
+
+/datum/sprite_accessory/snouts/mammal/slimbeakalt
+	name = "Slim Beak Alt"
+	icon_state = "slimbeakalt"
+
+/datum/sprite_accessory/snouts/mammal/hookbeak
+	name = "Hook Beak"
+	icon_state = "hookbeak"
+
+/datum/sprite_accessory/snouts/mammal/hookbeakbig
+	name = "Hook Beak Big"
+	icon_state = "hookbeakbig"
+
+/datum/sprite_accessory/snouts/mammal/corvidbeak
+	name = "Corvid Beak"
+	icon_state = "corvidbeak"
+
 /datum/sprite_accessory/snouts/mammal/bug
 	name = "Bug"
 	icon_state = "bug"
+	flags_for_organ = NONE
 	color_src = USE_ONE_COLOR
 	extra2 = TRUE
 	extra2_color_src = MUTCOLORS3
@@ -60,7 +113,7 @@
 	name = "Horn"
 	icon_state = "rhino"
 	extra = TRUE
-	extra = MUTCOLORS3
+	extra_color_src = MUTCOLORS3
 
 /datum/sprite_accessory/snouts/mammal/rodent
 	name = "Rodent"
@@ -186,6 +239,7 @@
 /datum/sprite_accessory/snouts/mammal/fbug
 	name = "Bug (Top)"
 	icon_state = "fbug"
+	flags_for_organ = NONE
 	color_src = USE_ONE_COLOR
 	extra2 = TRUE
 	extra2_color_src = MUTCOLORS3
@@ -200,7 +254,7 @@
 	name = "Horn (Top)"
 	icon_state = "frhino"
 	extra = TRUE
-	extra = MUTCOLORS3
+	extra_color_src = MUTCOLORS3
 
 /datum/sprite_accessory/snouts/mammal/fhusky
 	name = "Husky (Top)"
@@ -328,11 +382,9 @@
 	name = "Zebra"
 	icon_state = "hzebra"
 
-/datum/sprite_accessory/snouts/mammal/sbeak
-	name = "Corvid Beak"
-	icon_state = "sbeak"
-	extra = TRUE
-	//extra_color_src = MATRIXED
+/datum/sprite_accessory/snouts/mammal/fcorvidbeak
+	name = "Corvid Beak (Top)"
+	icon_state = "fcorvidbeak"
 
 /datum/sprite_accessory/snouts/mammal/akula/shark_light
 	name = "Shark Light"
@@ -348,4 +400,10 @@
 	name = "Stubby"
 	icon_state = "stubby"
 	color_src = USE_MATRIXED_COLORS
-	use_muzzled_sprites = FALSE
+	flags_for_organ = NONE
+
+/datum/sprite_accessory/snouts/mammal/leporid
+	name = "Leporid"
+	icon_state = "leporid"
+	color_src = USE_MATRIXED_COLORS
+	flags_for_organ = NONE

@@ -1,1 +1,1 @@
-#define ismutant(A) (is_species(A, /datum/species/mutant))
+#define is_curator_job(job_type) (istype(job_type, /datum/job/curator))

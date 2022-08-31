@@ -9,9 +9,11 @@
 	icon_dead = "base_dead"
 	icon_gib = "carp_gib"
 	mob_biotypes = MOB_ORGANIC|MOB_BEAST
+	movement_type = FLYING
+	ai_controller = /datum/ai_controller/hostile_friend
 	speak_chance = 0
 	turns_per_move = 5
-	butcher_results = list(/obj/item/food/fishmeat/carp = 2)
+	butcher_results = list(/obj/item/food/fishmeat/carp = 2, /obj/item/stack/sheet/animalhide/carp = 1)
 	response_help_continuous = "pets"
 	response_help_simple = "pet"
 	response_disarm_continuous = "gently pushes aside"
@@ -21,9 +23,6 @@
 	speed = 0
 	maxHealth = 25
 	health = 25
-	food_type = list(/obj/item/food/meat)
-	tame_chance = 10
-	bonus_tame_chance = 5
 	search_objects = 1
 	wanted_objects = list(/obj/item/storage/cans)
 	harm_intent_damage = 8
@@ -36,11 +35,10 @@
 	attack_vis_effect = ATTACK_EFFECT_BITE
 	speak_emote = list("gnashes")
 	//Space carp aren't affected by cold.
-	atmos_requirements = list("min_oxy" = 0, "max_oxy" = 0, "min_tox" = 0, "max_tox" = 0, "min_co2" = 0, "max_co2" = 0, "min_n2" = 0, "max_n2" = 0)
+	atmos_requirements = list("min_oxy" = 0, "max_oxy" = 0, "min_plas" = 0, "max_plas" = 0, "min_co2" = 0, "max_co2" = 0, "min_n2" = 0, "max_n2" = 0)
 	minbodytemp = 0
 	maxbodytemp = 1500
 	faction = list("carp")
-	is_flying_animal = TRUE
 	pressure_resistance = 200
 	gold_core_spawnable = HOSTILE_SPAWN
 	/// If the carp uses random coloring
@@ -68,14 +66,51 @@
 	var/static/list/carp_colors_rare = list(
 		"silver" = "#fdfbf3"
 	)
+	/// Is the carp tamed?
+	var/tamed = FALSE
 
-/mob/living/simple_animal/hostile/carp/Initialize(mapload)
+/mob/living/simple_animal/hostile/carp/Initialize(mapload, mob/tamer)
+	AddElement(/datum/element/simple_flying)
 	if(random_color)
-		set_greyscale_config(/datum/greyscale_config/carp)
+		set_greyscale(new_config=/datum/greyscale_config/carp)
 		carp_randomify(rarechance)
 	. = ..()
+	ADD_TRAIT(src, TRAIT_HEALS_FROM_CARP_RIFTS, INNATE_TRAIT)
 	ADD_TRAIT(src, TRAIT_SPACEWALK, INNATE_TRAIT)
 	add_cell_sample()
+	if(ai_controller)
+		ai_controller.blackboard[BB_HOSTILE_ATTACK_WORD] = pick(speak_emote)
+		if(tamer)
+			tamed(tamer)
+		else
+			make_tameable()
+
+/mob/living/simple_animal/hostile/carp/revive(full_heal, admin_revive)
+	if (tamed)
+		var/datum/weakref/friendref = ai_controller.blackboard[BB_HOSTILE_FRIEND]
+		var/mob/living/friend = friendref?.resolve()
+		if(friend)
+			tamed(friend)
+	return ..()
+
+/mob/living/simple_animal/hostile/carp/death(gibbed)
+	if (tamed)
+		can_buckle = FALSE
+	return ..()
+
+/mob/living/simple_animal/hostile/carp/proc/make_tameable()
+	AddComponent(/datum/component/tameable, food_types = list(/obj/item/food/meat), tame_chance = 10, bonus_tame_chance = 5, after_tame = CALLBACK(src, .proc/tamed))
+
+/mob/living/simple_animal/hostile/carp/proc/tamed(mob/living/tamer)
+	tamed = TRUE
+	buckle_lying = 0
+	AddElement(/datum/element/ridable, /datum/component/riding/creature/carp)
+	if(ai_controller)
+		var/datum/ai_controller/hostile_friend/ai_current_controller = ai_controller
+		ai_current_controller.befriend(tamer)
+		can_have_ai = FALSE
+		toggle_ai(AI_OFF)
+
 
 /mob/living/simple_animal/hostile/carp/add_cell_sample()
 	AddElement(/datum/element/swabable, CELL_LINE_TABLE_CARP, CELL_VIRUS_TABLE_GENERIC_MOB, 1, 5)
@@ -90,10 +125,10 @@
 	var/our_color
 	if(prob(rarechance))
 		our_color = pick(carp_colors_rare)
-		set_greyscale_colors(list(carp_colors_rare[our_color]))
+		set_greyscale(colors=list(carp_colors_rare[our_color]))
 	else
 		our_color = pick(carp_colors)
-		set_greyscale_colors(list(carp_colors[our_color]))
+		set_greyscale(colors=list(carp_colors[our_color]))
 
 /mob/living/simple_animal/hostile/carp/revive(full_heal = FALSE, admin_revive = FALSE)
 	. = ..()
@@ -103,7 +138,7 @@
 /mob/living/simple_animal/hostile/carp/proc/chomp_plastic()
 	var/obj/item/storage/cans/tasty_plastic = locate(/obj/item/storage/cans) in view(1, src)
 	if(tasty_plastic && Adjacent(tasty_plastic))
-		visible_message("<span class='notice'>[src] gets its head stuck in [tasty_plastic], and gets cut breaking free from it!</span>", "<span class='notice'>You try to avoid [tasty_plastic], but it looks so... delicious... Ow! It cuts the inside of your mouth!</span>")
+		visible_message(span_notice("[src] gets its head stuck in [tasty_plastic], and gets cut breaking free from it!"), span_notice("You try to avoid [tasty_plastic], but it looks so... delicious... Ow! It cuts the inside of your mouth!"))
 
 		new /obj/effect/decal/cleanable/plastic(loc)
 
@@ -115,22 +150,15 @@
 	if(stat == CONSCIOUS)
 		chomp_plastic()
 
-/mob/living/simple_animal/hostile/carp/tamed()
-	. = ..()
-	can_buckle = TRUE
-	buckle_lying = 0
-	AddElement(/datum/element/ridable, /datum/component/riding/creature/carp)
-
 /mob/living/simple_animal/hostile/carp/holocarp
 	icon_state = "holocarp"
 	icon_living = "holocarp"
 	maxbodytemp = INFINITY
+	ai_controller = null
 	gold_core_spawnable = NO_SPAWN
 	del_on_death = 1
 	random_color = FALSE
-	food_type = list()
-	tame_chance = 0
-	bonus_tame_chance = 0
+
 
 /mob/living/simple_animal/hostile/carp/holocarp/add_cell_sample()
 	return
@@ -144,30 +172,28 @@
 	icon_dead = "megacarp_dead"
 	icon_gib = "megacarp_gib"
 	health_doll_icon = "megacarp"
+	ai_controller = null
 	maxHealth = 20
 	health = 20
 	pixel_x = -16
 	base_pixel_x = -16
 	mob_size = MOB_SIZE_LARGE
 	random_color = FALSE
-	food_type = list()
-	tame_chance = 0
-	bonus_tame_chance = 0
 
 	obj_damage = 80
 	melee_damage_lower = 20
 	melee_damage_upper = 20
-
+	butcher_results = list(/obj/item/food/fishmeat/carp = 2, /obj/item/stack/sheet/animalhide/carp = 3)
 	var/regen_cooldown = 0
 
-/mob/living/simple_animal/hostile/carp/megacarp/Initialize()
+/mob/living/simple_animal/hostile/carp/megacarp/Initialize(mapload)
 	. = ..()
 	name = "[pick(GLOB.megacarp_first_names)] [pick(GLOB.megacarp_last_names)]"
 	melee_damage_lower += rand(2, 10)
 	melee_damage_upper += rand(10,20)
 	maxHealth += rand(30,60)
 	move_to_delay = rand(3,7)
-	AddElement(/datum/element/swabable, CELL_LINE_TABLE_MEGACARP, CELL_VIRUS_TABLE_GENERIC_MOB)
+
 
 /mob/living/simple_animal/hostile/carp/megacarp/add_cell_sample()
 	AddElement(/datum/element/swabable, CELL_LINE_TABLE_MEGACARP, CELL_VIRUS_TABLE_GENERIC_MOB, 1, 5)
@@ -197,6 +223,7 @@
 	desc = "A failed experiment of Nanotrasen to create weaponised carp technology. This less than intimidating carp now serves as the Head of Security's pet."
 	gender = FEMALE
 	speak_emote = list("squeaks")
+	ai_controller = null
 	gold_core_spawnable = NO_SPAWN
 	faction = list("neutral")
 	health = 200
@@ -206,11 +233,11 @@
 	icon_state = "magicarp"
 	maxHealth = 200
 	random_color = FALSE
-	food_type = list()
-	tame_chance = 0
-	bonus_tame_chance = 0
-	pet_bonus = TRUE
-	pet_bonus_emote = "bloops happily!"
+
+/mob/living/simple_animal/hostile/carp/lia/Initialize(mapload)
+	. = ..()
+	AddElement(/datum/element/pet_bonus, "bloops happily!")
+
 
 /mob/living/simple_animal/hostile/carp/cayenne
 	name = "Cayenne"
@@ -218,14 +245,10 @@
 	desc = "A failed Syndicate experiment in weaponized space carp technology, it now serves as a lovable mascot."
 	gender = FEMALE
 	speak_emote = list("squeaks")
+	ai_controller = null
 	gold_core_spawnable = NO_SPAWN
 	faction = list(ROLE_SYNDICATE)
 	rarechance = 10
-	food_type = list()
-	tame_chance = 0
-	bonus_tame_chance = 0
-	pet_bonus = TRUE
-	pet_bonus_emote = "bloops happily!"
 	/// Keeping track of the nuke disk for the functionality of storing it.
 	var/obj/item/disk/nuclear/disky
 	/// Location of the file storing disk overlays
@@ -233,11 +256,13 @@
 	/// Colored disk mouth appearance for adding it as a mouth overlay
 	var/mutable_appearance/colored_disk_mouth
 
-/mob/living/simple_animal/hostile/carp/cayenne/Initialize()
+/mob/living/simple_animal/hostile/carp/cayenne/Initialize(mapload)
 	. = ..()
-	colored_disk_mouth = mutable_appearance(SSgreyscale.GetColoredIconByType(/datum/greyscale_config/carp/disk_mouth, greyscale_colors))
+	AddElement(/datum/element/pet_bonus, "bloops happily!")
+	colored_disk_mouth = mutable_appearance(SSgreyscale.GetColoredIconByType(/datum/greyscale_config/carp/disk_mouth, greyscale_colors), "disk_mouth")
 	ADD_TRAIT(src, TRAIT_DISK_VERIFIER, INNATE_TRAIT) //carp can verify disky
-	ADD_TRAIT(src, TRAIT_ADVANCEDTOOLUSER, INNATE_TRAIT) //carp SMART
+	ADD_TRAIT(src, TRAIT_CAN_STRIP, INNATE_TRAIT) //carp can take the disk off the captain
+	ADD_TRAIT(src, TRAIT_CAN_USE_NUKE, INNATE_TRAIT) //carp SMART
 
 /mob/living/simple_animal/hostile/carp/cayenne/death(gibbed)
 	if(disky)
@@ -252,7 +277,7 @@
 /mob/living/simple_animal/hostile/carp/cayenne/examine(mob/user)
 	. = ..()
 	if(disky)
-		. += "<span class='notice'>Wait... is that [disky] in [p_their()] mouth?</span>"
+		. += span_notice("Wait... is that [disky] in [p_their()] mouth?")
 
 /mob/living/simple_animal/hostile/carp/cayenne/AttackingTarget(atom/attacked_target)
 	if(istype(attacked_target, /obj/item/disk/nuclear))
@@ -261,25 +286,30 @@
 			return
 		potential_disky.forceMove(src)
 		disky = potential_disky
-		to_chat(src, "<span class='nicegreen'>YES!! You manage to pick up [disky]. (Click anywhere to place it back down.)</span>")
+		to_chat(src, span_nicegreen("YES!! You manage to pick up [disky]. (Click anywhere to place it back down.)"))
 		update_icon()
 		if(!disky.fake)
 			client.give_award(/datum/award/achievement/misc/cayenne_disk, src)
 		return
 	if(disky)
 		if(isopenturf(attacked_target))
-			to_chat(src, "<span class='notice'>You place [disky] on [attacked_target]</span>")
-			disky.forceMove(attacked_target.drop_location())
+			to_chat(src, span_notice("You place [disky] on [attacked_target]"))
+			disky.forceMove(attacked_target)
 			disky = null
 			update_icon()
 		else
 			disky.melee_attack_chain(src, attacked_target)
 		return
+
+	if(istype(attacked_target, /obj/machinery/nuclearbomb))
+		var/obj/machinery/nuclearbomb/nuke = attacked_target
+		nuke.ui_interact(src)
+		return
 	return ..()
 
-/mob/living/simple_animal/hostile/carp/cayenne/Exited(atom/movable/AM, atom/newLoc)
+/mob/living/simple_animal/hostile/carp/cayenne/Exited(atom/movable/gone, direction)
 	. = ..()
-	if(AM == disky)
+	if(disky == gone)
 		disky = null
 		update_icon()
 

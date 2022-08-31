@@ -8,7 +8,6 @@
 	semi_auto = TRUE
 	fire_sound = 'sound/weapons/gun/smg/shot.ogg'
 	fire_sound_volume = 90
-	vary_fire_sound = FALSE
 	rack_sound = 'sound/weapons/gun/smg/smgrack.ogg'
 	suppressed_sound = 'sound/weapons/gun/smg/shot_suppressed.ogg'
 	var/select = 1 ///fire selector position. 1 = semi, 2 = burst. anything past that can vary between guns.
@@ -37,17 +36,15 @@
 	if(!select)
 		burst_size = 1
 		fire_delay = 0
-		to_chat(user, "<span class='notice'>You switch to semi-automatic.</span>")
+		to_chat(user, span_notice("You switch to semi-automatic."))
 	else
 		burst_size = initial(burst_size)
 		fire_delay = initial(fire_delay)
-		to_chat(user, "<span class='notice'>You switch to [burst_size]-round burst.</span>")
+		to_chat(user, span_notice("You switch to [burst_size]-round burst."))
 
 	playsound(user, 'sound/weapons/empty.ogg', 100, TRUE)
 	update_appearance()
-	for(var/X in actions)
-		var/datum/action/A = X
-		A.UpdateButtonIcon()
+	update_action_buttons()
 
 /obj/item/gun/ballistic/automatic/proto
 	name = "\improper Nanotrasen Saber SMG"
@@ -62,7 +59,7 @@
 	bolt_type = BOLT_TYPE_LOCKING
 	show_bolt_icon = FALSE
 
-/obj/item/gun/ballistic/automatic/proto/Initialize()
+/obj/item/gun/ballistic/automatic/proto/Initialize(mapload)
 	. = ..()
 	AddComponent(/datum/component/automatic_fire, 0.2 SECONDS)
 
@@ -94,7 +91,7 @@
 /obj/item/gun/ballistic/automatic/c20r/unrestricted
 	pin = /obj/item/firing_pin
 
-/obj/item/gun/ballistic/automatic/c20r/Initialize()
+/obj/item/gun/ballistic/automatic/c20r/Initialize(mapload)
 	. = ..()
 	update_appearance()
 
@@ -116,7 +113,7 @@
 	mag_display_ammo = TRUE
 	empty_indicator = TRUE
 
-/obj/item/gun/ballistic/automatic/wt550/Initialize()
+/obj/item/gun/ballistic/automatic/wt550/Initialize(mapload)
 	. = ..()
 	AddComponent(/datum/component/automatic_fire, 0.3 SECONDS)
 
@@ -164,7 +161,7 @@
 	empty_indicator = TRUE
 	fire_sound = 'sound/weapons/gun/smg/shot_alt.ogg'
 
-/obj/item/gun/ballistic/automatic/m90/Initialize()
+/obj/item/gun/ballistic/automatic/m90/Initialize(mapload)
 	. = ..()
 	underbarrel = new /obj/item/gun/ballistic/revolver/grenadelauncher(src)
 	update_appearance()
@@ -172,7 +169,7 @@
 /obj/item/gun/ballistic/automatic/m90/unrestricted
 	pin = /obj/item/firing_pin
 
-/obj/item/gun/ballistic/automatic/m90/unrestricted/Initialize()
+/obj/item/gun/ballistic/automatic/m90/unrestricted/Initialize(mapload)
 	. = ..()
 	underbarrel = new /obj/item/gun/ballistic/revolver/grenadelauncher/unrestricted(src)
 	update_appearance()
@@ -182,7 +179,7 @@
 	return SECONDARY_ATTACK_CONTINUE_CHAIN
 
 /obj/item/gun/ballistic/automatic/m90/attackby(obj/item/A, mob/user, params)
-	if(istype(A, /obj/item/ammo_casing))
+	if(isammocasing(A))
 		if(istype(A, underbarrel.magazine.ammo_type))
 			underbarrel.attack_self(user)
 			underbarrel.attackby(A, user, params)
@@ -204,12 +201,12 @@
 			select = 1
 			burst_size = initial(burst_size)
 			fire_delay = initial(fire_delay)
-			to_chat(user, "<span class='notice'>You switch to [burst_size]-rnd burst.</span>")
+			to_chat(user, span_notice("You switch to [burst_size]-rnd burst."))
 		if(1)
 			select = 0
 			burst_size = 1
 			fire_delay = 0
-			to_chat(user, "<span class='notice'>You switch to semi-auto.</span>")
+			to_chat(user, span_notice("You switch to semi-auto."))
 	playsound(user, 'sound/weapons/empty.ogg', 100, TRUE)
 	update_appearance()
 	return
@@ -231,7 +228,7 @@
 	empty_indicator = TRUE
 	show_bolt_icon = FALSE
 
-/obj/item/gun/ballistic/automatic/tommygun/Initialize()
+/obj/item/gun/ballistic/automatic/tommygun/Initialize(mapload)
 	. = ..()
 	AddComponent(/datum/component/automatic_fire, 0.1 SECONDS)
 
@@ -277,7 +274,7 @@
 /obj/item/gun/ballistic/automatic/l6_saw/unrestricted
 	pin = /obj/item/firing_pin
 
-/obj/item/gun/ballistic/automatic/l6_saw/Initialize()
+/obj/item/gun/ballistic/automatic/l6_saw/Initialize(mapload)
 	. = ..()
 	AddElement(/datum/element/update_icon_updates_onmob)
 	AddComponent(/datum/component/automatic_fire, 0.2 SECONDS)
@@ -286,14 +283,14 @@
 	. = ..()
 	. += "<b>alt + click</b> to [cover_open ? "close" : "open"] the dust cover."
 	if(cover_open && magazine)
-		. += "<span class='notice'>It seems like you could use an <b>empty hand</b> to remove the magazine.</span>"
+		. += span_notice("It seems like you could use an <b>empty hand</b> to remove the magazine.")
 
 
 /obj/item/gun/ballistic/automatic/l6_saw/AltClick(mob/user)
 	if(!user.canUseTopic(src))
 		return
 	cover_open = !cover_open
-	to_chat(user, "<span class='notice'>You [cover_open ? "open" : "close"] [src]'s cover.</span>")
+	to_chat(user, span_notice("You [cover_open ? "open" : "close"] [src]'s cover."))
 	playsound(src, 'sound/weapons/gun/l6/l6_door.ogg', 60, TRUE)
 	update_appearance()
 
@@ -308,7 +305,7 @@
 
 /obj/item/gun/ballistic/automatic/l6_saw/afterattack(atom/target as mob|obj|turf, mob/living/user as mob|obj, flag, params)
 	if(cover_open)
-		to_chat(user, "<span class='warning'>[src]'s cover is open! Close it before firing!</span>")
+		to_chat(user, span_warning("[src]'s cover is open! Close it before firing!"))
 		return
 	else
 		. = ..()
@@ -320,13 +317,13 @@
 		..()
 		return
 	if (!cover_open)
-		to_chat(user, "<span class='warning'>[src]'s cover is closed! Open it before trying to remove the magazine!</span>")
+		to_chat(user, span_warning("[src]'s cover is closed! Open it before trying to remove the magazine!"))
 		return
 	..()
 
 /obj/item/gun/ballistic/automatic/l6_saw/attackby(obj/item/A, mob/user, params)
 	if(!cover_open && istype(A, mag_type))
-		to_chat(user, "<span class='warning'>[src]'s dust cover prevents a magazine from being fit.</span>")
+		to_chat(user, span_warning("[src]'s dust cover prevents a magazine from being fit."))
 		return
 	..()
 
@@ -343,7 +340,6 @@
 	worn_icon_state = null
 	fire_sound = 'sound/weapons/gun/sniper/shot.ogg'
 	fire_sound_volume = 90
-	vary_fire_sound = FALSE
 	load_sound = 'sound/weapons/gun/sniper/mag_insert.ogg'
 	rack_sound = 'sound/weapons/gun/sniper/rack.ogg'
 	suppressed_sound = 'sound/weapons/gun/general/heavy_shot_suppressed.ogg'
@@ -353,14 +349,15 @@
 	fire_delay = 40
 	burst_size = 1
 	w_class = WEIGHT_CLASS_NORMAL
-	zoomable = TRUE
-	zoom_amt = 10 //Long range, enough to see in front of you, but no tiles behind you.
-	zoom_out_amt = 5
 	slot_flags = ITEM_SLOT_BACK
 	actions_types = list()
 	mag_display = TRUE
 	suppressor_x_offset = 3
 	suppressor_y_offset = 3
+
+/obj/item/gun/ballistic/automatic/sniper_rifle/Initialize(mapload)
+	. = ..()
+	AddComponent(/datum/component/scope, range_modifier = 2)
 
 /obj/item/gun/ballistic/automatic/sniper_rifle/syndicate
 	name = "syndicate sniper rifle"
@@ -397,7 +394,7 @@
 	w_class = WEIGHT_CLASS_BULKY
 	inhand_icon_state = "arg"
 	mag_type = /obj/item/ammo_box/magazine/recharge
-	mag_display_ammo = TRUE
+	empty_indicator = TRUE
 	fire_delay = 2
 	can_suppress = FALSE
 	burst_size = 0

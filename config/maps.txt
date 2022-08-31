@@ -36,7 +36,6 @@ endmap
 
 map tramstation
 	minplayers 35
-	votable
 endmap
 
 map runtimestation
@@ -47,7 +46,12 @@ endmap
 
 ##SKYRAT MAPS##
 
-map nssjourney
-	minplayers 25
+map blueshift
+	minplayers 50
+	votable
+endmap
+
+map voidraptor
+	maxplayers 100
 	votable
 endmap

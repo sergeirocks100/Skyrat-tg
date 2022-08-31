@@ -24,11 +24,21 @@
 			},
 			"protected_roles": [
 				"Prisoner",
+				"Blueshield",
+				"Corrections Officer",
 				"Security Officer",
 				"Warden",
 				"Detective",
+				"Security Medic",
 				"Head of Security",
-				"Captain"
+				"Captain",
+				"Nanotrasen Consultant",
+				"Head of Personnel",
+				"Chief Engineer",
+				"Chief Medical Officer",
+				"Research Director",
+				"Quartermaster",
+				"Vanguard Operative"
 			],
 			"restricted_roles": [
 				"Cyborg"
@@ -61,19 +71,11 @@
 
 		"Revolution": {
 			"weight": 0
-		},
-
-		"Families": {
-			"weight": 0
 		}
 	},
 
 	"Midround": {
 		"Syndicate Sleeper Agent": {
-			"weight": 0
-		},
-
-		"Family Head Aspirants": {
 			"weight": 0
 		},
 
@@ -93,6 +95,10 @@
 			"weight": 0
 		},
 
+		"Blob Infection": {
+			"weight": 0
+		},
+
 		"Alien Infestation": {
 			"weight": 0
 		},
@@ -106,10 +112,6 @@
 		},
 
 		"Abductors": {
-			"weight": 0
-		},
-
-		"Swarmers": {
 			"weight": 0
 		},
 

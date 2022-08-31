@@ -33,8 +33,14 @@ component_cell_out_of_charge/component_cell_removed proc using loc where necessa
 	var/cell_can_be_removed = TRUE
 	///Our reference to the cell overlay
 	var/mutable_appearance/cell_overlay = null
+	///Do we have cell overlays to be applied?
+	var/has_cell_overlays
 
-/datum/component/cell/Initialize(cell_override, _on_cell_removed, _power_use_amount, start_with_cell = TRUE, _cell_can_be_removed)
+/datum/component/cell/Initialize(cell_override, _on_cell_removed, _power_use_amount, start_with_cell = TRUE, _cell_can_be_removed, _has_cell_overlays = TRUE)
+	if(QDELETED(parent))
+		qdel(src)
+		return
+
 	if(!isitem(parent)) //Currently only compatable with items.
 		return COMPONENT_INCOMPATIBLE
 
@@ -42,6 +48,8 @@ component_cell_out_of_charge/component_cell_removed proc using loc where necessa
 
 	if(_on_cell_removed)
 		src.on_cell_removed = _on_cell_removed
+
+	has_cell_overlays = _has_cell_overlays
 
 	if(_power_use_amount)
 		power_use_amount = _power_use_amount
@@ -56,10 +64,10 @@ component_cell_out_of_charge/component_cell_removed proc using loc where necessa
 		inside_robot = TRUE
 	else if(start_with_cell)
 		var/obj/item/stock_parts/cell/new_cell
-		if(cell_override)
-			new_cell = new cell_override()
-		else
+		if(!cell_override)
 			new_cell = new /obj/item/stock_parts/cell/upgraded()
+		else
+			new_cell = new cell_override()
 		inserted_cell = new_cell
 		new_cell.forceMove(parent) //We use the parents location so things like EMP's can interact with the cell.
 	handle_cell_overlays()
@@ -87,8 +95,15 @@ component_cell_out_of_charge/component_cell_removed proc using loc where necessa
 		inserted_cell = null
 	return ..()
 
-/// This proc is the basic way of processing the cell, with included feedback. It will return a bitflag if it failed to use the power, or COMPONENT_POWER_SUCCESS if it succeeds.
-/// The user is sent the feedback, use_amount is an override, check_only will only return if it can use the cell and feedback relating to that.
+/**
+ * The basic way of processing the cell, with included feedback.
+ *
+ * This proc is the basic way of processing the cell, with included feedback.
+ * It will return a bitflag if it failed to use the power, or COMPONENT_POWER_SUCCESS if it succeeds.
+ * Arguments:
+ * * use_amount - an override
+ * * check_only - will only return if it can use the cell and feedback relating to that including any relevant detail
+ */
 /datum/component/cell/proc/simple_power_use(datum/source, use_amount, mob/user, check_only)
 	SIGNAL_HANDLER
 
@@ -100,18 +115,18 @@ component_cell_out_of_charge/component_cell_removed proc using loc where necessa
 
 	if(!inserted_cell)
 		if(user)
-			to_chat(user, "<span class='danger'>There is no cell inside [equipment]</span>")
+			to_chat(user, span_danger("There is no cell inside [equipment]"))
 		return COMPONENT_NO_CELL
 
 	if(check_only && inserted_cell.charge < use_amount)
 		if(user)
-			to_chat(user, "<span class='danger'>The cell inside [equipment] does not have enough charge to perform this action!</span>")
+			to_chat(user, span_danger("The cell inside [equipment] does not have enough charge to perform this action!"))
 		return COMPONENT_NO_CHARGE
 
 	if(!inserted_cell.use(use_amount))
 		inserted_cell.update_appearance()  //Updates the attached cell sprite - Why does this not happen in cell.use?
 		if(user)
-			to_chat(user, "<span class='danger'>The cell inside [equipment] does not have enough charge to perform this action!</span>")
+			to_chat(user, span_danger("The cell inside [equipment] does not have enough charge to perform this action!"))
 		return COMPONENT_NO_CHARGE
 
 	inserted_cell.update_appearance()
@@ -122,15 +137,16 @@ component_cell_out_of_charge/component_cell_removed proc using loc where necessa
 	SIGNAL_HANDLER
 
 	if(!inserted_cell)
-		examine_list += "<span class='danger'>It does not have a cell inserted!</span>"
+		examine_list += span_danger("It does not have a cell inserted!")
 	else if(!inside_robot)
-		examine_list += "<span class='notice'>It has [inserted_cell] inserted. It has <b>[inserted_cell.percent()]%</b> charge left.\
-						Ctrl+Shift+Click to remove the [inserted_cell]."
+		examine_list += span_notice("It has [inserted_cell] inserted. It has <b>[inserted_cell.percent()]%</b> charge left. \
+						Ctrl+Shift+Click to remove the [inserted_cell].")
 	else
-		examine_list += "<span class='notice'>It is drawing power from an external powersource, reading <b>[inserted_cell.percent()]%</b> charge.</span>"
+		examine_list += span_notice("It is drawing power from an external powersource, reading <b>[inserted_cell.percent()]%</b> charge.")
 
 /// Handling of cell removal.
 /datum/component/cell/proc/remove_cell(datum/source, mob/user)
+	SIGNAL_HANDLER
 	if(!equipment.can_interact(user))
 		return
 
@@ -140,8 +156,11 @@ component_cell_out_of_charge/component_cell_removed proc using loc where necessa
 	if(!cell_can_be_removed)
 		return
 
+	if(!isliving(user))
+		return
+
 	if(inserted_cell)
-		to_chat(user, "<span class='notice'>You remove [inserted_cell] from [equipment]!</span>")
+		to_chat(user, span_notice("You remove [inserted_cell] from [equipment]!"))
 		playsound(equipment, 'sound/weapons/magout.ogg', 40, TRUE)
 		inserted_cell.forceMove(get_turf(equipment))
 		INVOKE_ASYNC(user, /mob/living.proc/put_in_hands, inserted_cell)
@@ -150,10 +169,11 @@ component_cell_out_of_charge/component_cell_removed proc using loc where necessa
 			on_cell_removed.Invoke()
 		handle_cell_overlays(TRUE)
 	else
-		to_chat(user, "<span class='danger'>There is no cell inserted in [equipment]!</span>")
+		to_chat(user, span_danger("There is no cell inserted in [equipment]!"))
 
 /// Handling of cell insertion.
 /datum/component/cell/proc/insert_cell(datum/source, obj/item/inserting_item, mob/living/user, params)
+	SIGNAL_HANDLER
 	if(!equipment.can_interact(user))
 		return
 
@@ -164,16 +184,18 @@ component_cell_out_of_charge/component_cell_removed proc using loc where necessa
 		return
 
 	if(inserted_cell) //No quickswap compatibility
-		to_chat(user, "<span class='danger'>There is already a cell inserted in [equipment]!</span>")
+		to_chat(user, span_danger("There is already a cell inserted in [equipment]!"))
 		return
 
-	to_chat(user, "<span class='notice'>You insert [inserting_item] into [equipment]!</span>")
+	to_chat(user, span_notice("You insert [inserting_item] into [equipment]!"))
 	playsound(equipment, 'sound/weapons/magin.ogg', 40, TRUE)
 	inserted_cell = inserting_item
 	inserting_item.forceMove(parent)
 	handle_cell_overlays(FALSE)
 
 /datum/component/cell/proc/handle_cell_overlays(update_overlays)
+	if(!has_cell_overlays)
+		return
 	if(inserted_cell)
 		cell_overlay = mutable_appearance(equipment.icon, "[initial(equipment.icon_state)]_cell")
 		equipment.add_overlay(cell_overlay)

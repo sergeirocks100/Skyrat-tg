@@ -1,14 +1,13 @@
 /datum/round_event_control/alien_infestation
 	name = "Alien Infestation"
 	typepath = /datum/round_event/ghost_role/alien_infestation
-	//SKYRAT EDIT CHANGE BEGIN
-	//weight = 5 - SKYRAT EDIT - ORIGINAL
-	weight = 0
-	//SKYRAT EDIT CHANGE END
+	weight = 5
 
 	min_players = 10
 
 	dynamic_should_hijack = TRUE
+	category = EVENT_CATEGORY_ENTITIES
+	description = "A xenomorph larva spawns on a random vent."
 
 /datum/round_event_control/alien_infestation/canSpawnEvent()
 	. = ..()
@@ -21,10 +20,8 @@
 
 /datum/round_event/ghost_role/alien_infestation
 	announceWhen = 400
-	//SKYRAT EDIT CHANGE BEGIN
-	//minimum_required = 1 - SKYRAT EDIT - ORIGINAL
-	minimum_required = 2
-	//SKYRAT EDIT CHANGE END
+
+	minimum_required = 1
 	role_name = "alien larva"
 
 	// 50% chance of being incremented by one
@@ -58,7 +55,7 @@
 				continue//no parent vent
 			//Stops Aliens getting stuck in small networks.
 			//See: Security, Virology
-			if(temp_vent_parent.other_atmosmch.len > 20)
+			if(temp_vent_parent.other_atmos_machines.len > 20)
 				vents += temp_vent
 
 	if(!vents.len)
@@ -72,14 +69,14 @@
 
 	while(spawncount > 0 && vents.len && candidates.len)
 		var/obj/vent = pick_n_take(vents)
-		var/client/C = pick_n_take(candidates)
-
+		var/mob/dead/observer/selected = pick_n_take(candidates)
 		var/mob/living/carbon/alien/larva/new_xeno = new(vent.loc)
-		new_xeno.key = C.key
+		new_xeno.key = selected.key
+		new_xeno.move_into_vent(vent)
 
 		spawncount--
 		message_admins("[ADMIN_LOOKUPFLW(new_xeno)] has been made into an alien by an event.")
-		log_game("[key_name(new_xeno)] was spawned as an alien by an event.")
+		new_xeno.log_message("was spawned as an alien by an event.", LOG_GAME)
 		spawned_mobs += new_xeno
 
 	return SUCCESSFUL_SPAWN

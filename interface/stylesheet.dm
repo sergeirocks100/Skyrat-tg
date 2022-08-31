@@ -2,7 +2,7 @@
 /// !!!!!!!!!!HEY LISTEN!!!!!!!!!!!!!!!!!!!!!!!!
 /// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-// If you modify this file you ALSO need to modify code/modules/goonchat/browserAssets/browserOutput.css and browserOutput_white.css
+// If you modify this file you ALSO need to modify tgui/packages/tgui-panel/styles/goon/chat-light.scss and chat-dark.scss
 // BUT you have to use PX font sizes with are on a x8 scale of these font sizes
 // Sample font-size: DM: 8 CSS: 64px
 
@@ -24,7 +24,8 @@ em						{font-style: normal;	font-weight: bold;}
 .bold					{					font-weight: bold;}
 
 .prefix					{					font-weight: bold;}
-
+.oocplain				{}
+.warningplain			{}
 .ooc					{					font-weight: bold;}
 .adminobserverooc		{color: #0099cc;	font-weight: bold;}
 .adminooc				{color: #700038;	font-weight: bold;}
@@ -54,6 +55,7 @@ em						{font-style: normal;	font-weight: bold;}
 .blueteamradio			{color: #0000ff;}
 .greenteamradio			{color: #00ff00;}
 .yellowteamradio		{color: #d1ba22;}
+.gangradio				{color: #ac2ea1;}
 
 .yell					{					font-weight: bold;}
 
@@ -62,6 +64,7 @@ h1.alert, h2.alert		{color: #000000;}
 
 .emote					{}
 .infoplain				{}
+.mentor					{}
 
 .userdanger				{color: #ff0000;	font-weight: bold;	font-size: 3;}
 .danger					{color: #ff0000;	font-weight: bold;}
@@ -88,7 +91,9 @@ h1.alert, h2.alert		{color: #000000;}
 .unconscious			{color: #0000ff;	font-weight: bold;}
 .suicide				{color: #ff5050;	font-style: italic;}
 .green					{color: #03ff39;}
+.grey					{color: #838383;}
 .nicegreen				{color: #14a833;}
+.boldnicegreen			{color: #14a833;	font-weight: bold;}
 .cult					{color: #973e3b;}
 .cultlarge				{color: #973e3b;	font-weight: bold;	font-size: 3;}
 .narsie					{color: #973e3b;	font-weight: bold;	font-size: 15;}
@@ -145,6 +150,51 @@ h1.alert, h2.alert		{color: #000000;}
 		100%	{color: #3bb5d3;}
 }
 
+// SKYRAT ADDITION BEGIN
+.velvet					{color: #660015; 	font-weight: bold; animation: velvet 5000ms infinite;}
+	@keyframes velvet {
+		0% 		{color: #400020; }
+		40% 	{color: #FF0000; }
+		50% 	{color: #FF8888; }
+		60% 	{color: #FF0000; }
+		100% 	{color: #400020; }
+}
+
+.hexnut 				{color: #0099ff;	font-weight: bold;	animation: hexnut 5000ms infinite;	animation-direction: alternate;}
+	@keyframes hexnut {
+		0% 	{color: #0099ff;}
+		35% 	{color: #a64dff;}
+		50% 	{color: #00997a;}
+		60% 	{color: #ffb31a;}
+		100% 	{color: #ff33cc;}
+}
+
+.doyourjobidiot {
+  color: #c51e1e;
+  text-shadow: 0 0 4px #e22525;
+  font-size: 125%;
+  font-weight: bold;
+  animation: flashingfuckingwarning 250ms infinite;
+}
+
+@keyframes flashingfuckingwarning {
+  0% {
+    color: #c51e1e;
+    text-shadow: 0 0 4px #c51e1e;
+  }
+
+  50% {
+    color: #e22525;
+    text-shadow: 0 0 8px #e22525;
+  }
+
+  100% {
+    color: #c51e1e;
+    text-shadow: 0 0 4px #c51e1e;
+  }
+}
+// SKYRAT ADDITION END
+
 .phobia			{color: #dd0000;	font-weight: bold;	animation: phobia 750ms infinite;}
 	@keyframes phobia {
 		0%		{color: #0d0d0d;}
@@ -166,4 +216,8 @@ h1.alert, h2.alert		{color: #000000;}
 
 .monkeyhive				{color: #774704;}
 .monkeylead				{color: #774704;	font-size: 2;}
+.brown					{color: #3d2009;}
+.orange 				{color: #b8761a;}
+.yellow					{color: #c7b72c;}
+.cyan					{color: #0ea1e6;}
 </style>"}

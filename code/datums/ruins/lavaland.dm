@@ -1,7 +1,9 @@
 // Hey! Listen! Update \config\lavaruinblacklist.txt with your new ruins!
 
 /datum/map_template/ruin/lavaland
+	ruin_type = ZTRAIT_LAVA_RUINS
 	prefix = "_maps/RandomRuins/LavaRuins/"
+	default_area = /area/lavaland/surface/outdoors/unexplored
 
 /datum/map_template/ruin/lavaland/biodome
 	cost = 5
@@ -49,7 +51,8 @@
 	id = "ash-walker"
 	description = "A race of unbreathing lizards live here, that run faster than a human can, worship a broken dead city, and are capable of reproducing by something involving tentacles? \
 	Probably best to stay clear."
-	suffix = "lavaland_surface_ash_walker1.dmm"
+	prefix = "_maps/RandomRuins/LavaRuins/skyrat/" // SKYRAT ADDITION
+	suffix = "lavaland_surface_ash_walker1_skyrat.dmm" // SKYRAT EDIT - ORIGINAL: lavaland_surface_ash_walker1.dmm
 	always_place = TRUE //SKYRAT EDIT CHANGE
 	allow_duplicates = FALSE
 //SKYRAT EDIT REMOVAL BEGIN - MAPPING
@@ -204,14 +207,6 @@
 	allow_duplicates = FALSE
 	cost = 10
 
-/datum/map_template/ruin/lavaland/swarmer_boss
-	name = "Crashed Shuttle"
-	id = "swarmerboss"
-	description = "A Syndicate shuttle had an unfortunate stowaway..."
-	suffix = "lavaland_surface_swarmer_crash.dmm"
-	allow_duplicates = FALSE
-	cost = 20
-
 /datum/map_template/ruin/lavaland/miningripley
 	name = "Ripley"
 	id = "ripley"
@@ -258,3 +253,11 @@
 	suffix = "lavaland_surface_elephant_graveyard.dmm"
 	allow_duplicates = FALSE
 	cost = 10
+
+/datum/map_template/ruin/lavaland/bileworm_nest
+	name = "Bileworm Nest"
+	id = "bileworm_nest"
+	description = "A small sanctuary from the harsh wilderness... if you're a bileworm, that is."
+	cost = 5
+	suffix = "lavaland_surface_bileworm_nest.dmm"
+	allow_duplicates = FALSE

@@ -1,19 +1,20 @@
 /obj/item/rna_extractor
-	name = "Advanced virus RNA extractor"
+	name = "advanced virus RNA extractor"
 	desc = "A tool used to extract the RNA from viruses. Apply to skin."
 	icon = 'modular_skyrat/modules/mutants/icons/extractor.dmi'
 	icon_state = "extractor"
 	custom_materials = list(/datum/material/iron = 3000, /datum/material/gold = 3000, /datum/material/uranium = 1000, /datum/material/diamond = 1000)
+	/// Our loaded vial.
 	var/obj/item/rna_vial/loaded_vial
 
 /obj/item/rna_extractor/attackby(obj/item/O, mob/living/user)
 	if((istype(O, /obj/item/rna_vial) && loaded_vial != null))
-		to_chat(user, "<span class='warning'>[src] can not hold more than one vial!</span>")
+		to_chat(user, span_warning("[src] can not hold more than one vial!"))
 		return FALSE
 	if(istype(O, /obj/item/rna_vial))
 		if(!user.transferItemToLoc(O, src))
 			return FALSE
-		to_chat(user, "<span class='notce'>You insert [O] into [src]!")
+		to_chat(user, span_notice("You insert [O] into [src]!"))
 		loaded_vial = O
 		playsound(loc, 'sound/weapons/autoguninsert.ogg', 35, 1)
 		update_appearance()
@@ -30,39 +31,36 @@
 		return
 	var/mob/living/carbon/human/H = target
 	if(!loaded_vial)
-		to_chat(user, "<span class='danger'>[src] is empty!</span>")
+		to_chat(user, span_danger("[src] is empty!"))
 		return
 	if(loaded_vial.contains_rna)
-		to_chat(user, "<span class='danger'>[src] already has RNA data in it, upload it to the combinator!</span>")
+		to_chat(user, span_danger("[src] already has RNA data in it, upload it to the combinator!"))
 		return
 	if(!ismutant(H))
-		to_chat(user, "<span class='danger'>[H] does not register as infected!</span>")
-		return
-	if(H.stat == DEAD)
-		to_chat(user, "<span class='danger'>[src] only works on living targets!</span>")
+		to_chat(user, span_danger("[H] does not register as infected!"))
 		return
 	var/datum/component/mutant_infection/ZI = H.GetComponent(/datum/component/mutant_infection)
 	if(!ZI)
-		to_chat(user, "<span class='danger'>[H] does not register as infected!</span>")
+		to_chat(user, span_danger("[H] does not register as infected!"))
 		return
 	if(ZI.extract_rna())
 		loaded_vial.load_rna(H)
-		to_chat(user, "<span class='notice'>[src] successfully scanned [H], and now holds a sample virus RNA data.</span>")
+		to_chat(user, span_notice("[src] successfully scanned [H], and now holds a sample virus RNA data."))
 		playsound(src.loc, 'sound/effects/spray2.ogg', 50, TRUE, -6)
 		update_appearance()
 	else
-		to_chat(user, "<span class='warning'>[H] has no useable RNA!</span>")
+		to_chat(user, span_warning("[H] has no useable RNA!"))
 
 /obj/item/rna_extractor/proc/unload_vial(mob/living/user)
 	if(loaded_vial)
 		loaded_vial.forceMove(user.loc)
 		user.put_in_hands(loaded_vial)
-		to_chat(user, "<span class='notice'>You remove [loaded_vial] from [src].</span>")
+		to_chat(user, span_notice("You remove [loaded_vial] from [src]."))
 		loaded_vial = null
 		update_appearance()
 		playsound(loc, 'sound/weapons/empty.ogg', 50, 1)
 	else
-		to_chat(user, "<span class='notice'>[src] isn't loaded!</span>")
+		to_chat(user, span_notice("[src] isn't loaded!"))
 		return
 
 /obj/item/rna_extractor/update_overlays()
@@ -77,11 +75,12 @@
 
 /obj/item/rna_extractor/Destroy()
 	. = ..()
-	loaded_vial.forceMove(loc)
-	loaded_vial = null
+	if(loaded_vial)
+		loaded_vial.forceMove(loc)
+		loaded_vial = null
 
 /obj/item/rna_vial
-	name = "Raw RNA vial"
+	name = "raw RNA vial"
 	desc = "A glass vial containing raw virus RNA. Slot this into the combinator to upload the sample."
 	icon = 'modular_skyrat/modules/mutants/icons/extractor.dmi'
 	icon_state = "rnavial"
@@ -103,7 +102,7 @@
 		. += "It has an RNA sample in it."
 
 /obj/item/hnz_cure
-	name = "HNZ-1 Cure Vial"
+	name = "HNZ-1 cure vial"
 	desc = "A counter to the HNZ-1 virus, used to rapidly reverse the effects of the virus."
 	icon = 'modular_skyrat/modules/mutants/icons/extractor.dmi'
 	icon_state = "tvirus_cure"
@@ -112,17 +111,17 @@
 /obj/item/hnz_cure/attack(mob/living/M, mob/living/user, params)
 	. = ..()
 	if(used)
-		to_chat(user, "<span class='danger'>[src] has been used and is useless!</span>")
+		to_chat(user, span_danger("[src] has been used and is useless!"))
 		return
 	if(ishuman(M))
 		var/mob/living/carbon/human/H = M
 		if(!H.GetComponent(/datum/component/mutant_infection))
-			to_chat(user, "<span class='danger'>[H] does not register as infected!</span>")
+			to_chat(user, span_danger("[H] does not register as infected!"))
 			return
 		if(do_after(user, 4 SECONDS))
 			cure_target(H)
 			playsound(src.loc, 'sound/effects/spray2.ogg', 50, TRUE, -6)
-			to_chat(user, "<span class='notice'>You inject [H] wth [src]!")
+			to_chat(user, span_notice("You inject [H] wth [src]!"))
 			used = TRUE
 			update_appearance()
 
@@ -140,11 +139,11 @@
 #define STATUS_IDLE "System Idle"
 #define STATUS_RECOMBINATING_VIRUS "System Synthesising Virus"
 #define STATUS_RECOMBINATING_CURE "System Synthesising Cure"
-#define RECOMBINATION_STEP_TIME 20 SECONDS
-#define RECOMBINATION_STEP_AMOUNT 20
+#define RECOMBINATION_STEP_TIME 15 SECONDS
+#define RECOMBINATION_STEP_AMOUNT 25
 
 /obj/machinery/rnd/rna_recombinator
-	name = "RNA Recombinator"
+	name = "RNA recombinator"
 	desc = "This machine is used to recombine RNA sequences from extracted vials of raw virus."
 	icon = 'modular_skyrat/modules/mutants/icons/cure_machine.dmi'
 	icon_state = "h_lathe"
@@ -174,7 +173,7 @@
 	if(!user.transferItemToLoc(O, src))
 		return FALSE
 	loaded_item = O
-	to_chat(user, "<span class='notice'>You insert [O] to into [src] reciprocal.</span>")
+	to_chat(user, span_notice("You insert [O] to into [src] reciprocal."))
 	flick("h_lathe_load", src)
 	update_appearance()
 	playsound(loc, 'sound/weapons/autoguninsert.ogg', 35, 1)
@@ -225,11 +224,11 @@
 		updateUsrDialog()
 	else
 		if(status != STATUS_IDLE)
-			to_chat(usr, "<span class='warning'>[src] is currently recombinating!</span>")
+			to_chat(usr, span_warning("[src] is currently recombinating!"))
 		else if(!loaded_item)
-			to_chat(usr, "<span class='warning'>[src] is not currently loaded!</span>")
+			to_chat(usr, span_warning("[src] is not currently loaded!"))
 		else if(!process || process != loaded_item) //Interface exploit protection (such as hrefs or swapping items with interface set to old item)
-			to_chat(usr, "<span class='danger'>Interface failure detected in [src]. Please try again.</span>")
+			to_chat(usr, span_danger("Interface failure detected in [src]. Please try again."))
 		else
 			if(operation == "virus")
 				status = STATUS_RECOMBINATING_VIRUS
@@ -296,13 +295,14 @@
 		new /obj/item/hnz_cure(get_turf(src))
 		new /obj/item/hnz_cure(get_turf(src))
 	else
-		new /obj/item/reagent_containers/glass/bottle/hnz/one(get_turf(src))
+		new /obj/item/reagent_containers/cup/bottle/hnz/one(get_turf(src))
 	flick("h_lathe_leave", src)
 	use_power(3000)
 	playsound(loc, 'sound/machines/ding.ogg', 60, 1)
 	status = STATUS_IDLE
 
 /obj/machinery/rnd/rna_recombinator/RefreshParts()
+	. = ..()
 	for(var/obj/item/stock_parts/manipulator/M in component_parts)
 		if(recombination_step_time > 0 && (recombination_step_time - M.rating) >= 1)
 			recombination_step_time -= M.rating
@@ -322,8 +322,11 @@
 #undef RECOMBINATION_STEP_TIME
 #undef RECOMBINATION_STEP_AMOUNT
 
+/*
+*	Infection stuff
+*	You didn't think I wouldn't include this did you?
+*/
 
-//////////////////////////////Infection stuff - You didn't think I wouldn't include this did you?
 /datum/reagent/hnz
 	name = "HNZ-1"
 	description = "HNZ-1 is a highly experimental viral bioterror agent \
@@ -340,7 +343,7 @@
 	. = ..()
 	try_to_mutant_infect(exposed_mob, TRUE)
 
-/obj/item/reagent_containers/glass/bottle/hnz
+/obj/item/reagent_containers/cup/bottle/hnz
 	name = "HNZ-1 bottle"
 	desc = "A small bottle of the HNZ-1 pathogen. Nanotrasen Bioweapons inc."
 	icon = 'modular_skyrat/modules/mutants/icons/extractor.dmi'
@@ -348,21 +351,19 @@
 	list_reagents = list(/datum/reagent/hnz = 30)
 	custom_materials = list(/datum/material/glass=500)
 
-/obj/item/reagent_containers/glass/bottle/hnz/one
+/obj/item/reagent_containers/cup/bottle/hnz/one
 	list_reagents = list(/datum/reagent/hnz = 1)
 
 
-/obj/item/storage/briefcase/hnz
-	name = "HNZ-1 Biocontainer"
+/obj/item/storage/briefcase/virology/hnz
+	name = "\improper HNZ-1 biocontainer"
 	desc = "An airtight biosealed box containing the highly reactive substance, HNZ1. Authorised personnel only."
-	icon = 'modular_skyrat/modules/mutants/icons/extractor.dmi'
-	icon_state = "tvirus_box"
 	w_class = WEIGHT_CLASS_SMALL
 	max_integrity = 500
 
-/obj/item/storage/briefcase/hnz/PopulateContents()
-	new /obj/item/reagent_containers/glass/bottle/hnz/one(src)
-	new /obj/item/reagent_containers/glass/bottle/hnz/one(src)
+/obj/item/storage/briefcase/virology/hnz/PopulateContents()
+	new /obj/item/reagent_containers/cup/bottle/hnz/one(src)
+	new /obj/item/reagent_containers/cup/bottle/hnz/one(src)
 	new /obj/item/circuitboard/machine/rna_recombinator(src)
 	new /obj/item/rna_extractor(src)
 	new /obj/item/rna_vial(src)

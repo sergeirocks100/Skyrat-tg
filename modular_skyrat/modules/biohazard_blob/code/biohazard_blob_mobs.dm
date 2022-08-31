@@ -40,17 +40,12 @@
 	maxbodytemp = INFINITY
 	gender = MALE
 
-/mob/living/simple_animal/hostile/biohazard_blob/oil_shambler/Initialize()
+/mob/living/simple_animal/hostile/biohazard_blob/oil_shambler/Initialize(mapload)
 	. = ..()
 	update_overlays()
 
 /mob/living/simple_animal/hostile/biohazard_blob/oil_shambler/Destroy()
-	visible_message("<span class='warning'>The [src] ruptures!</span>")
-	var/datum/reagents/R = new/datum/reagents(300)
-	R.my_atom = src
-	R.add_reagent(/datum/reagent/napalm, 50)
-	chem_splash(loc, 5, list(R))
-	playsound(src, 'sound/effects/splat.ogg', 50, TRUE)
+	visible_message(span_warning("The [src] evaporates!"))
 	return ..()
 
 /mob/living/simple_animal/hostile/biohazard_blob/oil_shambler/update_overlays()
@@ -66,7 +61,7 @@
 		if(prob(20))
 			L.fire_stacks += 2
 		if(L.fire_stacks)
-			L.IgniteMob()
+			L.ignite_mob()
 
 /mob/living/simple_animal/hostile/biohazard_blob/diseased_rat
 	name = "diseased rat"
@@ -96,8 +91,8 @@
 	. = ..()
 	if(iscarbon(target))
 		var/mob/living/carbon/C = target
-		if(prob(40))
-			to_chat(C, "<span class='danger'>[src] manages to penetrate your clothing with it's teeth!</span>")
+		if(src.can_inject(target))
+			to_chat(C, span_danger("[src] manages to penetrate your clothing with it's teeth!"))
 			C.ForceContractDisease(new /datum/disease/cordyceps(), FALSE, TRUE)
 
 /mob/living/simple_animal/hostile/biohazard_blob/electric_mosquito
@@ -162,15 +157,15 @@
 	minbodytemp = 0
 	maxbodytemp = INFINITY
 
-/mob/living/simple_animal/hostile/biohazard_blob/centaur/Initialize()
+/mob/living/simple_animal/hostile/biohazard_blob/centaur/Initialize(mapload)
 	. = ..()
 	update_overlays()
 
 /mob/living/simple_animal/hostile/biohazard_blob/centaur/death(gibbed)
-	visible_message("<span class='warning'>The [src] ruptures!</span>")
+	visible_message(span_warning("The [src] ruptures!"))
 	var/datum/reagents/R = new/datum/reagents(300)
 	R.my_atom = src
-	R.add_reagent(/datum/reagent/toxin/mutagen, 50)
+	R.add_reagent(/datum/reagent/toxin/mutagen, 20)
 	chem_splash(loc, 5, list(R))
 	playsound(src, 'sound/effects/splat.ogg', 50, TRUE)
 	return ..()
@@ -181,4 +176,4 @@
 		var/mob/living/L = target
 		if(prob(20))
 			radiation_pulse(L, 300, 1, FALSE, TRUE)
-			playsound(src, 'modular_skyrat/modules/horrorform/sound/effects/horror_scream.ogg', 60, TRUE)
+			playsound(src, 'modular_skyrat/modules/horrorform/sound/horror_scream.ogg', 60, TRUE)

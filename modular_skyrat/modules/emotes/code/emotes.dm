@@ -52,6 +52,12 @@
 		return 'modular_skyrat/modules/emotes/sound/emotes/female/female_sneeze.ogg'
 	return
 
+/datum/emote/flip/can_run_emote(mob/user, status_check, intentional)
+	if(intentional && !HAS_TRAIT(user, TRAIT_FREERUNNING) && !isobserver(user))
+		user.balloon_alert(user, "not nimble enough!")
+		return FALSE
+	return ..()
+
 /datum/emote/living/peep
 	key = "peep"
 	key_third_person = "peeps"
@@ -240,9 +246,10 @@
 	key = "clap"
 	key_third_person = "claps"
 	message = "claps."
-	emote_type = EMOTE_AUDIBLE
 	muzzle_ignore = TRUE
 	hands_use_check = TRUE
+	emote_type = EMOTE_AUDIBLE
+	audio_cooldown = 5 SECONDS
 	vary = TRUE
 	mob_type_allowed_typecache = list(/mob/living/carbon, /mob/living/silicon/pai)
 
@@ -276,28 +283,6 @@
 		return FALSE
 	return ..()
 
-/datum/emote/living/laugh
-	key = "laugh"
-	key_third_person = "laughs"
-	message = "laughs."
-	message_mime = "laughs silently!"
-	emote_type = EMOTE_AUDIBLE
-	vary = TRUE
-	mob_type_allowed_typecache = list(/mob/living/carbon, /mob/living/silicon/pai)
-
-/datum/emote/living/laugh/get_sound(mob/living/user)
-	if(ismoth(user))
-		return 'modular_skyrat/modules/emotes/sound/emotes/mothlaugh.ogg'
-	if(isinsect(user))
-		return 'modular_skyrat/modules/emotes/sound/emotes/mothlaugh.ogg'
-	if(iscarbon(user))
-		if(user.gender == MALE)
-			return pick('sound/voice/human/manlaugh1.ogg',
-						'sound/voice/human/manlaugh2.ogg')
-		return pick('modular_skyrat/modules/emotes/sound/emotes/female/female_giggle_1.ogg',
-					'modular_skyrat/modules/emotes/sound/emotes/female/female_giggle_2.ogg')
-	return
-
 /datum/emote/living/headtilt
 	key = "tilt"
 	key_third_person = "tilts"
@@ -309,6 +294,49 @@
 	vary = TRUE
 	sound = 'modular_skyrat/modules/emotes/sound/emotes/twobeep.ogg'
 	mob_type_allowed_typecache = list(/mob/living) //Beep already exists on brains and silicons
+
+/datum/emote/living/blink2
+	key = "blink2"
+	key_third_person = "blinks twice"
+	message = "blinks twice."
+	message_AI = "has their display flicker twice."
+
+/datum/emote/living/rblink
+	key = "rblink"
+	key_third_person = "rapidly blinks"
+	message = "rapidly blinks!"
+	message_AI = "has their display port flash rapidly!"
+
+/datum/emote/living/squint
+	key = "squint"
+	key_third_person = "squints"
+	message = "squints."
+	message_AI = "zooms in."
+
+/datum/emote/living/smirk
+	key = "smirk"
+	key_third_person = "smirks"
+	message = "smirks."
+
+/datum/emote/living/eyeroll
+	key = "eyeroll"
+	key_third_person = "rolls their eyes"
+	message = "rolls their eyes."
+
+/datum/emote/living/huff
+	key = "huffs"
+	key_third_person = "huffs"
+	message = "huffs!"
+
+/datum/emote/living/etwitch
+	key = "etwitch"
+	key_third_person = "twitches their ears"
+	message = "twitches their ears!"
+
+/datum/emote/living/clear
+	key = "clear"
+	key_third_person = "clears their throat"
+	message = "clears their throat."
 
 // Avian revolution
 /datum/emote/living/bawk
@@ -363,7 +391,6 @@
 	emote_type = EMOTE_AUDIBLE
 	vary = TRUE
 	sound = 'modular_skyrat/modules/emotes/sound/voice/hoot.ogg'
-	//cooldown = 2 SECONDS -- Removed as the current global cooldown is larger
 
 /datum/emote/living/growl
 	key = "growl"
@@ -405,15 +432,6 @@
 	emote_type = EMOTE_AUDIBLE
 	vary = TRUE
 	sound = 'modular_skyrat/modules/emotes/sound/voice/wurble.ogg'
-
-/datum/emote/living/awoo2
-	key = "awoo2"
-	key_third_person = "awoos"
-	message = "lets out an awoo!"
-	emote_type = EMOTE_AUDIBLE
-	vary = TRUE
-	sound = 'modular_skyrat/modules/emotes/sound/voice/long_awoo.ogg'
-	//cooldown = 3 SECONDS -- Removed as the current global cooldown is larger
 
 /datum/emote/living/rattle
 	key = "rattle"
@@ -476,3 +494,28 @@
 	emote_type = EMOTE_AUDIBLE
 	vary = TRUE
 	sound = 'modular_skyrat/modules/emotes/sound/voice/feline_purr.ogg'
+
+/datum/emote/living/moo
+	key = "moo"
+	key_third_person = "moos!"
+	message = "moos!"
+	emote_type = EMOTE_AUDIBLE
+	vary = TRUE
+	sound = 'modular_skyrat/modules/emotes/sound/voice/moo.ogg'
+
+/datum/emote/living/honk
+	key = "honk1"
+	key_third_person = "honks loudly like a goose!"
+	message = "honks loudly like a goose!"
+	emote_type = EMOTE_AUDIBLE
+	vary = TRUE
+	sound = 'modular_skyrat/modules/emotes/sound/voice/goose_honk.ogg'
+
+/datum/emote/living/gnash
+	key = "gnash"
+	key_third_person = "gnashes"
+	message = "gnashes."
+	emote_type = EMOTE_AUDIBLE
+	vary = TRUE
+	sound = 'sound/weapons/bite.ogg'
+

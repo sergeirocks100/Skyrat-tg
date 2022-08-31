@@ -2,7 +2,7 @@
 	name = "firearms authentication implant"
 	desc = "Lets you shoot your guns."
 	icon_state = "auth"
-	activated = FALSE
+	actions_types = null
 
 /obj/item/implant/weapons_auth/get_data()
 	var/dat = {"<b>Implant Specifications:</b><BR>
@@ -31,28 +31,8 @@
 	special_desc_requirement = EXAMINE_CHECK_SYNDICATE // Skyrat edit
 	special_desc = "A Syndicate implanter used for a EMP implant" // Skyrat edit
 
-
-//Health Tracker Implant
-
-/obj/item/implant/health
-	name = "health implant"
-	activated = FALSE
-	var/healthstring = ""
-
-/obj/item/implant/health/proc/sensehealth()
-	if (!imp_in)
-		return "ERROR"
-	else
-		if(isliving(imp_in))
-			var/mob/living/L = imp_in
-			healthstring = "<small>Oxygen Deprivation Damage => [round(L.getOxyLoss())]<br />Fire Damage => [round(L.getFireLoss())]<br />Toxin Damage => [round(L.getToxLoss())]<br />Brute Force Damage => [round(L.getBruteLoss())]</small>"
-		if (!healthstring)
-			healthstring = "ERROR"
-		return healthstring
-
 /obj/item/implant/radio
 	name = "internal radio implant"
-	activated = TRUE
 	var/obj/item/radio/radio
 	var/radio_key
 	var/subspace_transmission = FALSE
@@ -77,6 +57,10 @@
 		radio.keyslot = new radio_key
 	radio.recalculateChannels()
 
+/obj/item/implant/radio/Destroy()
+	QDEL_NULL(radio)
+	return ..()
+
 /obj/item/implant/radio/mining
 	radio_key = /obj/item/encryptionkey/headset_cargo
 
@@ -87,7 +71,7 @@
 
 /obj/item/implant/radio/slime
 	name = "slime radio"
-	icon = 'icons/obj/surgery.dmi'
+	icon = 'icons/obj/medical/surgery.dmi'
 	icon_state = "adamantine_resonator"
 	radio_key = /obj/item/encryptionkey/headset_sci
 	subspace_transmission = TRUE

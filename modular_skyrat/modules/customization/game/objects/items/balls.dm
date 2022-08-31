@@ -1,12 +1,12 @@
 /obj/item/toy/tennis
 	name = "tennis ball"
 	desc = "A classical tennis ball. It appears to have faint bite marks scattered all over its surface."
-	icon = 'modular_skyrat/modules/customization/icons/obj/balls.dmi'
+	icon = 'modular_skyrat/master_files/icons/obj/balls.dmi'
 	icon_state = "tennis_classic"
-	lefthand_file = 'modular_skyrat/modules/customization/icons/mob/inhands/balls_left.dmi'
-	righthand_file = 'modular_skyrat/modules/customization/icons/mob/inhands/balls_right.dmi'
+	lefthand_file = 'modular_skyrat/master_files/icons/mob/inhands/balls_left.dmi'
+	righthand_file = 'modular_skyrat/master_files/icons/mob/inhands/balls_right.dmi'
 	inhand_icon_state = "tennis_classic"
-	worn_icon = 'modular_skyrat/modules/customization/icons/mob/mouthball.dmi'
+	worn_icon = 'modular_skyrat/master_files/icons/mob/mouthball.dmi'
 	slot_flags = ITEM_SLOT_HEAD | ITEM_SLOT_NECK | ITEM_SLOT_EARS	//Fluff item, put it wherever you want!
 	throw_range = 14
 	w_class = WEIGHT_CLASS_SMALL
@@ -18,12 +18,12 @@
 	inhand_icon_state = "tennis_rainbow"
 	actions_types = list(/datum/action/item_action/squeeze)		//Giving the masses easy access to unilimted honks would be annoying
 
-/obj/item/toy/tennis/rainbow/Initialize()
+/obj/item/toy/tennis/rainbow/Initialize(mapload)
 	. = ..()
 	AddComponent(/datum/component/squeak)
 
 /obj/item/toy/tennis/rainbow/izzy	//izzyinbox's donator item
-	name = "Katlin's Ball"
+	name = "Katlin's ball"
 	desc = "A tennis ball that's seen a good bit of love, being covered in a few black and white hairs and slobber."
 	icon_state = "tennis_izzy"
 	inhand_icon_state = "tennis_izzy"
@@ -47,7 +47,6 @@
 	desc = "A green tennis ball. It seems to have an impermeable coating."
 	icon_state = "tennis_green"
 	inhand_icon_state = "tennis_green"
-	permeability_coefficient = 0.9
 
 /obj/item/toy/tennis/cyan	//electric
 	name = "cyan tennis ball"

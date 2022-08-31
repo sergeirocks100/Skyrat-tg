@@ -1,7 +1,6 @@
 /datum/species/mammal
 	name = "Anthromorph" //Called so because the species is so much more universal than just mammals
-	id = "mammal"
-	default_color = "4B4B4B"
+	id = SPECIES_MAMMAL
 	species_traits = list(
 		MUTCOLORS,
 		EYECOLOR,
@@ -13,7 +12,9 @@
 	)
 	inherent_traits = list(
 		TRAIT_ADVANCEDTOOLUSER,
-		TRAIT_CAN_STRIP
+		TRAIT_CAN_STRIP,
+		TRAIT_CAN_USE_FLIGHT_POTION,
+		TRAIT_LITERATE,
 	)
 	inherent_biotypes = MOB_ORGANIC|MOB_HUMANOID
 	mutant_bodyparts = list()
@@ -30,52 +31,60 @@
 		"neck_acc" = "None"
 	)
 	attack_verb = "slash"
+	attack_effect = ATTACK_EFFECT_CLAW
 	attack_sound = 'sound/weapons/slash.ogg'
 	miss_sound = 'sound/weapons/slashmiss.ogg'
-	liked_food = GROSS | MEAT | FRIED
+	liked_food = GRAIN | MEAT
+	disliked_food = CLOTH | GROSS | GORE
+	toxic_food = TOXIC
 	payday_modifier = 0.75
 	changesource_flags = MIRROR_BADMIN | WABBAJACK | MIRROR_MAGIC | MIRROR_PRIDE | ERT_SPAWN | RACE_SWAP | SLIME_EXTRACT
-	limbs_icon = 'modular_skyrat/modules/customization/icons/mob/species/mammal_parts_greyscale.dmi'
+	bodypart_overrides = list(
+		BODY_ZONE_HEAD = /obj/item/bodypart/head/mutant,
+		BODY_ZONE_CHEST = /obj/item/bodypart/chest/mutant,
+		BODY_ZONE_L_ARM = /obj/item/bodypart/l_arm/mutant,
+		BODY_ZONE_R_ARM = /obj/item/bodypart/r_arm/mutant,
+		BODY_ZONE_L_LEG = /obj/item/bodypart/l_leg/mutant,
+		BODY_ZONE_R_LEG = /obj/item/bodypart/r_leg/mutant,
+	)
 
-/datum/species/mammal/get_random_features()
-	var/list/returned = MANDATORY_FEATURE_LIST
+/datum/species/mammal/randomize_features(mob/living/carbon/human/human_mob)
 	var/main_color
 	var/second_color
 	var/third_color
 	var/random = rand(1,7)
 	switch(random)
 		if(1)
-			main_color = "FFF"
-			second_color = "333"
-			third_color = "333"
+			main_color = "#FFFFFF"
+			second_color = "#333333"
+			third_color = "#333333"
 		if(2)
-			main_color = "FFD"
-			second_color = "D61"
-			third_color = "A52"
+			main_color = "#FFFFDD"
+			second_color = "#DD6611"
+			third_color = "#AA5522"
 		if(3)
-			main_color = "D61"
-			second_color = "FFF"
-			third_color = "D61"
+			main_color = "#DD6611"
+			second_color = "#FFFFFF"
+			third_color = "#DD6611"
 		if(4)
-			main_color = "CCC"
-			second_color = "FFF"
-			third_color = "FFF"
+			main_color = "#CCCCCC"
+			second_color = "#FFFFFF"
+			third_color = "#FFFFFF"
 		if(5)
-			main_color = "A52"
-			second_color = "C83"
-			third_color = "FFF"
+			main_color = "#AA5522"
+			second_color = "#CC8833"
+			third_color = "#FFFFFF"
 		if(6)
-			main_color = "FFD"
-			second_color = "FEC"
-			third_color = "FDB"
+			main_color = "#FFFFDD"
+			second_color = "#FFEECC"
+			third_color = "#FFDDBB"
 		if(7) //Oh no you've rolled the sparkle dog
-			main_color = random_short_color()
-			second_color = random_short_color()
-			third_color = random_short_color()
-	returned["mcolor"] = main_color
-	returned["mcolor2"] = second_color
-	returned["mcolor3"] = third_color
-	return returned
+			main_color = "#[random_color()]"
+			second_color = "#[random_color()]"
+			third_color = "#[random_color()]"
+	human_mob.dna.features["mcolor"] = main_color
+	human_mob.dna.features["mcolor2"] = second_color
+	human_mob.dna.features["mcolor3"] = third_color
 
 /datum/species/mammal/get_random_body_markings(list/passed_features)
 	var/name = "None"
@@ -91,3 +100,10 @@
 	if(BMS)
 		markings = assemble_body_markings_from_set(BMS, passed_features, src)
 	return markings
+
+/datum/species/mammal/get_species_description()
+	return "This is a template species for your own creations!"
+
+
+/datum/species/mammal/get_species_lore()
+	return list("Make sure you fill out your own custom species lore!")

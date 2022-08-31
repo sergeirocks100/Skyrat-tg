@@ -19,7 +19,7 @@ would only be recognisable with someone that had the syndicate trait.
 	//The ROLE requirement setting if EXAMINE_CHECK_ROLE is set. E.g. ROLE_SYNDICATE. As you can see, it's a list. So when setting it, ensure you do = list(shit1, shit2)
 	var/list/special_desc_roles
 
-	//The JOB requirement setting if EXAMINE_CHECK_JOB is set. E.g. "Security Officer". As you can see, it's a list. So when setting it, ensure you do = list(shit1, shit2)
+	//The JOB requirement setting if EXAMINE_CHECK_JOB is set. E.g. JOB_SECURITY_OFFICER. As you can see, it's a list. So when setting it, ensure you do = list(shit1, shit2)
 	var/list/special_desc_jobs
 
 	//The FACTION requirement setting if EXAMINE_CHECK_FACTION is set. E.g. "Syndicate". As you can see, it's a list. So when setting it, ensure you do = list(shit1, shit2)
@@ -27,7 +27,7 @@ would only be recognisable with someone that had the syndicate trait.
 
 
 /obj/item/examine_more(mob/user)
-	. = list()
+	. = ..()
 	if(special_desc)
 		var/composed_message
 		switch(special_desc_requirement)
@@ -94,14 +94,32 @@ would only be recognisable with someone that had the syndicate trait.
 						composed_message = "You note the following because of your loyalty to <b>[faction_i]</b>: <br>"
 						composed_message += special_desc
 						. += composed_message
+			//If they are a syndicate contractor or a syndicate
+			if(EXAMINE_CHECK_CONTRACTOR)
+				var/mob/living/carbon/human/human_user = user
+				if(!user?.mind.opposing_force)
+					return
+				for(var/datum/opposing_force_equipment/loadout/contractor/contractor_kit in user.mind.opposing_force.selected_equipment)
+					composed_message = "You note the following because of your [span_red("<b>Contractor Status</b>")]: <br>"
+					composed_message += special_desc
+					. += composed_message
+					return
+				if(human_user.mind.special_role == ROLE_DRIFTING_CONTRACTOR)
+					composed_message = "You note the following because of your [span_red("<b>Contractor Status</b>")]: <br>"
+					composed_message += special_desc
+					. += composed_message
+				else if(HAS_TRAIT(human_user, TRAIT_DETECTIVE))  //Useful detective!
+					composed_message = "You note the following because of your brilliant <span class='blue'><b>Detective skills</b></span>: <br>"
+					composed_message += special_desc
+					. += composed_message
+				else if((human_user.mind.special_role == ROLE_TRAITOR) || (ROLE_SYNDICATE in human_user.faction))
+					composed_message = "You note the following because of your [span_red("<b>[special_desc_affiliation ? special_desc_affiliation : "Syndicate Affiliation"]</b>")]: <br>"
+					composed_message += special_desc
+					. += composed_message
 
-	SEND_SIGNAL(src, COMSIG_PARENT_EXAMINE_MORE, user, .)
-	if(!LAZYLEN(.)) // lol ..length
-		return list("<span class='notice'><i>You examine [src] closer, but find nothing of interest...</i></span>")
-
-//////////
-//Examples:
-//////////
+/*
+*	EXAMPLES
+*/
 
 /obj/item/storage/backpack/duffelbag/syndie
 	name = "duffel bag"

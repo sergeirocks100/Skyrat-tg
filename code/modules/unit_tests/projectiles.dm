@@ -2,7 +2,7 @@
 	for(var/path in typesof(/obj/projectile))
 		var/obj/projectile/projectile = path
 		if(initial(projectile.movement_type) & PHASING)
-			Fail("[path] has default movement type PHASING. Piercing projectiles should be done using the projectile piercing system, not movement_types!")
+			TEST_FAIL("[path] has default movement type PHASING. Piercing projectiles should be done using the projectile piercing system, not movement_types!")
 
 /datum/unit_test/gun_go_bang/Run()
 	// test is for a ballistic gun that starts loaded + chambered
@@ -20,6 +20,7 @@
 	//SKYRAT EDIT ADDITION BEGIN
 	if(test_gun.has_gun_safety)
 		test_gun.toggle_safety(gunner)
+	loaded_bullet.wound_bonus = CANT_WOUND //Baseline wounding makes things weird
 	//SKYRAT EDIT ADDITION END
 	gunner.set_combat_mode(FALSE) // just to make sure we know we're not trying to pistol-whip them
 	var/expected_damage = loaded_bullet.damage

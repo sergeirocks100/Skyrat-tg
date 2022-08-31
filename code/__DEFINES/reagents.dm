@@ -39,11 +39,16 @@
 
 //SKYRAT EDIT ADD
 ///Amount of synthflesh required to unhusk someone
-#define SYNTHFLESH_LING_UNHUSK_AMOUNT 150
+#define SYNTHFLESH_LING_UNHUSK_AMOUNT 200
 
 //used by chem masters and pill presses
 #define PILL_STYLE_COUNT 22 //Update this if you add more pill icons or you die
 #define RANDOM_PILL_STYLE 22 //Dont change this one though
+
+//used by chem masters and pill presses
+//update this if you add more patch icons
+#define PATCH_STYLE_LIST list("bandaid", "bandaid_brute", "bandaid_burn", "bandaid_both") //icon_state list
+#define DEFAULT_PATCH_STYLE "bandaid"
 
 //used by chem master
 #define CONDIMASTER_STYLE_AUTO "auto"
@@ -84,6 +89,10 @@
 #define REAGENT_CAN_BE_SYNTHESIZED (1<<5)
 ///Allows a reagent to work on a mob regardless of stasis
 #define REAGENT_IGNORE_STASIS (1<<6)
+///This reagent won't be used in most randomized recipes. Meant for reagents that could be synthetized but are normally inaccessible or TOO hard to get.
+#define REAGENT_NO_RANDOM_RECIPE (1<<7)
+///Does this reagent clean things?
+#define REAGENT_CLEANS (1<<8)
 
 //Chemical reaction flags, for determining reaction specialties
 ///Convert into impure/pure on reaction completion
@@ -111,11 +120,11 @@
 ///Minimum requirement for addiction buzz to be met. Addiction code only checks this once every two seconds, so this should generally be low
 #define MIN_ADDICTION_REAGENT_AMOUNT 1
 ///Nicotine requires much less in your system to be happy
-#define MIN_NICOTINE_ADDICTION_REAGENT_AMOUNT 0.1
+#define MIN_NICOTINE_ADDICTION_REAGENT_AMOUNT 0.01
 #define MAX_ADDICTION_POINTS 1000
 
 ///Addiction start/ends
-#define WITHDRAWAL_STAGE1_START_CYCLE 60
+#define WITHDRAWAL_STAGE1_START_CYCLE 61
 #define WITHDRAWAL_STAGE1_END_CYCLE 120
 #define WITHDRAWAL_STAGE2_START_CYCLE 121
 #define WITHDRAWAL_STAGE2_END_CYCLE 180
@@ -176,3 +185,17 @@
 #define GOLDSCHLAGER_GOLD (1)
 
 #define GOLDSCHLAGER_GOLD_RATIO (GOLDSCHLAGER_GOLD/(GOLDSCHLAGER_VODKA+GOLDSCHLAGER_GOLD))
+
+#define BLASTOFF_DANCE_MOVE_CHANCE_PER_UNIT 3
+#define BLASTOFF_DANCE_MOVES_PER_SUPER_MOVE 3
+
+///This is the center of a 1 degree deadband in which water will neither freeze to ice nor melt to liquid
+#define WATER_MATTERSTATE_CHANGE_TEMP 274.5
+
+//chem grenades defines
+/// Grenade is empty
+#define GRENADE_EMPTY 1
+/// Grenade has a activation trigger
+#define GRENADE_WIRED 2
+/// Grenade is ready to be finished
+#define GRENADE_READY 3

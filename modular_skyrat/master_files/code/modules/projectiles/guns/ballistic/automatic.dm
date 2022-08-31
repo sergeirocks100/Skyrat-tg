@@ -6,7 +6,6 @@
 	semi_auto = TRUE
 	fire_sound = 'sound/weapons/gun/smg/shot.ogg'
 	fire_sound_volume = 90
-	vary_fire_sound = FALSE
 	rack_sound = 'sound/weapons/gun/smg/smgrack.ogg'
 	suppressed_sound = 'sound/weapons/gun/smg/shot_suppressed.ogg'
 	fire_select_modes = list(SELECT_SEMI_AUTOMATIC, SELECT_BURST_SHOT, SELECT_FULLY_AUTOMATIC)
@@ -22,13 +21,14 @@
 	pin = null
 	bolt_type = BOLT_TYPE_LOCKING
 	show_bolt_icon = FALSE
+	company_flag = COMPANY_NANOTRASEN
 
 /obj/item/gun/ballistic/automatic/proto/unrestricted
 	pin = /obj/item/firing_pin
 
 /obj/item/gun/ballistic/automatic/c20r
 	name = "\improper C-20r SMG"
-	desc = "A bullpup three-round burst .45 SMG, designated 'C-20r'. Has a 'Scarborough Arms - Per falcis, per pravitas' buttstamp."
+	desc = "A bullpup three-round burst .45 SMG, designated 'C-20r'."
 	icon_state = "c20r"
 	inhand_icon_state = "c20r"
 	selector_switch_icon = TRUE
@@ -42,6 +42,7 @@
 	mag_display = TRUE
 	mag_display_ammo = TRUE
 	empty_indicator = TRUE
+	company_flag = COMPANY_SCARBOROUGH
 
 /obj/item/gun/ballistic/automatic/c20r/update_overlays()
 	. = ..()
@@ -51,7 +52,7 @@
 /obj/item/gun/ballistic/automatic/c20r/unrestricted
 	pin = /obj/item/firing_pin
 
-/obj/item/gun/ballistic/automatic/c20r/Initialize()
+/obj/item/gun/ballistic/automatic/c20r/Initialize(mapload)
 	. = ..()
 	update_appearance()
 
@@ -72,6 +73,7 @@
 	mag_display = TRUE
 	mag_display_ammo = TRUE
 	empty_indicator = TRUE
+	company_flag = COMPANY_NANOTRASEN
 
 /obj/item/gun/ballistic/automatic/plastikov
 	name = "\improper PP-95 SMG"
@@ -80,15 +82,17 @@
 	inhand_icon_state = "plastikov"
 	mag_type = /obj/item/ammo_box/magazine/plastikov9mm
 	burst_size = 5
-	spread = 25
+	spread = 15
 	can_suppress = FALSE
-	projectile_damage_multiplier = 0.35 //It's like 10.5 damage per bullet, it's close enough to 10 shots
+	projectile_damage_multiplier = 0.35 // It's like 10.5 damage per bullet, it's close enough to 10 shots
 	mag_display = TRUE
 	empty_indicator = TRUE
 	fire_sound = 'sound/weapons/gun/smg/shot_alt.ogg'
+	company_flag = COMPANY_IZHEVSK
+	dirt_modifier = 0.75
 
 /obj/item/gun/ballistic/automatic/mini_uzi
-	name = "\improper Type U3 Uzi"
+	name = "\improper type U3 uzi"
 	desc = "A lightweight, burst-fire submachine gun, for when you really want someone dead. Uses 9mm rounds."
 	icon_state = "miniuzi"
 	mag_type = /obj/item/ammo_box/magazine/uzim9mm
@@ -97,9 +101,10 @@
 	show_bolt_icon = FALSE
 	mag_display = TRUE
 	rack_sound = 'sound/weapons/gun/pistol/slide_lock.ogg'
+	company_flag = COMPANY_OLDARMS
 
 /obj/item/gun/ballistic/automatic/m90
-	name = "\improper M-90gl Carbine"
+	name = "\improper M-90gl carbine"
 	desc = "A three-round burst 5.56 toploading carbine, designated 'M-90gl'. Has an attached underbarrel grenade launcher which can be fired using right click."
 	icon_state = "m90"
 	w_class = WEIGHT_CLASS_BULKY
@@ -115,8 +120,9 @@
 	mag_display = TRUE
 	empty_indicator = TRUE
 	fire_sound = 'sound/weapons/gun/smg/shot_alt.ogg'
+	company_flag = COMPANY_SCARBOROUGH
 
-/obj/item/gun/ballistic/automatic/m90/Initialize()
+/obj/item/gun/ballistic/automatic/m90/Initialize(mapload)
 	. = ..()
 	underbarrel = new /obj/item/gun/ballistic/revolver/grenadelauncher(src)
 	update_appearance()
@@ -124,7 +130,7 @@
 /obj/item/gun/ballistic/automatic/m90/unrestricted
 	pin = /obj/item/firing_pin
 
-/obj/item/gun/ballistic/automatic/m90/unrestricted/Initialize()
+/obj/item/gun/ballistic/automatic/m90/unrestricted/Initialize(mapload)
 	. = ..()
 	underbarrel = new /obj/item/gun/ballistic/revolver/grenadelauncher/unrestricted(src)
 	update_appearance()
@@ -133,11 +139,11 @@
 	underbarrel.afterattack(target, user, flag, params)
 	return SECONDARY_ATTACK_CONTINUE_CHAIN
 
-/obj/item/gun/ballistic/automatic/m90/attackby(obj/item/A, mob/user, params)
-	if(istype(A, /obj/item/ammo_casing))
-		if(istype(A, underbarrel.magazine.ammo_type))
+/obj/item/gun/ballistic/automatic/m90/attackby(obj/item/attacking_item, mob/user, params)
+	if(istype(attacking_item, /obj/item/ammo_casing))
+		if(istype(attacking_item, underbarrel.magazine.ammo_type))
 			underbarrel.attack_self(user)
-			underbarrel.attackby(A, user, params)
+			underbarrel.attackby(attacking_item, user, params)
 	else
 		..()
 
@@ -157,6 +163,12 @@
 	bolt_type = BOLT_TYPE_OPEN
 	empty_indicator = TRUE
 	show_bolt_icon = FALSE
+	company_flag = COMPANY_OLDARMS
+
+/obj/item/gun/ballistic/automatic/tommygun/therealtommy
+	name = "Tommy gun"
+	desc = "The classic 'Chicago Typewriter'."
+	company_flag = null // This is the real deal, you hear?
 
 /obj/item/gun/ballistic/automatic/ar
 	name = "\improper NT-ARG 'Boarder'"
@@ -168,13 +180,14 @@
 	can_suppress = FALSE
 	burst_size = 3
 	fire_delay = 1
+	company_flag = COMPANY_NANOTRASEN
 
 
 // L6 SAW //
 
 /obj/item/gun/ballistic/automatic/l6_saw
 	name = "\improper L6 SAW"
-	desc = "A heavily modified 7.12x82mm light machine gun, designated 'L6 SAW'. Has 'Aussec Armoury - 2531' engraved on the receiver below the designation."
+	desc = "A large light machine gun chambered for the 7.12x82mm cartridge."
 	icon_state = "l6"
 	inhand_icon_state = "l6"
 	base_icon_state = "l6"
@@ -196,11 +209,12 @@
 	rack_sound = 'sound/weapons/gun/l6/l6_rack.ogg'
 	suppressed_sound = 'sound/weapons/gun/general/heavy_shot_suppressed.ogg'
 	var/cover_open = FALSE
+	company_flag = COMPANY_SCARBOROUGH
 
 /obj/item/gun/ballistic/automatic/l6_saw/unrestricted
 	pin = /obj/item/firing_pin
 
-/obj/item/gun/ballistic/automatic/l6_saw/ComponentInitialize()
+/obj/item/gun/ballistic/automatic/l6_saw/Initialize(mapload)
 	. = ..()
 	AddElement(/datum/element/update_icon_updates_onmob)
 
@@ -208,15 +222,14 @@
 	. = ..()
 	. += "<b>alt + click</b> to [cover_open ? "close" : "open"] the dust cover."
 	if(cover_open && magazine)
-		. += "<span class='notice'>It seems like you could use an <b>empty hand</b> to remove the magazine.</span>"
+		. += span_notice("It seems like you could use an <b>empty hand</b> to remove the magazine.")
 
 
 /obj/item/gun/ballistic/automatic/l6_saw/AltClick(mob/user)
-	. = ..()
 	if(!user.canUseTopic(src))
 		return
 	cover_open = !cover_open
-	to_chat(user, "<span class='notice'>You [cover_open ? "open" : "close"] [src]'s cover.</span>")
+	balloon_alert(user, "cover [cover_open ? "open" : "closed"]")
 	playsound(src, 'sound/weapons/gun/l6/l6_door.ogg', 60, TRUE)
 	update_appearance()
 
@@ -231,25 +244,25 @@
 
 /obj/item/gun/ballistic/automatic/l6_saw/afterattack(atom/target as mob|obj|turf, mob/living/user as mob|obj, flag, params)
 	if(cover_open)
-		to_chat(user, "<span class='warning'>[src]'s cover is open! Close it before firing!</span>")
+		balloon_alert(user, "cover open!")
 		return
 	else
 		. = ..()
 		update_appearance()
 
-//ATTACK HAND IGNORING PARENT RETURN VALUE
+// ATTACK HAND IGNORING PARENT RETURN VALUE
 /obj/item/gun/ballistic/automatic/l6_saw/attack_hand(mob/user, list/modifiers)
 	if (loc != user)
 		..()
 		return
 	if (!cover_open)
-		to_chat(user, "<span class='warning'>[src]'s cover is closed! Open it before trying to remove the magazine!</span>")
+		balloon_alert(user, "cover closed!")
 		return
 	..()
 
-/obj/item/gun/ballistic/automatic/l6_saw/attackby(obj/item/A, mob/user, params)
-	if(!cover_open && istype(A, mag_type))
-		to_chat(user, "<span class='warning'>[src]'s dust cover prevents a magazine from being fit.</span>")
+/obj/item/gun/ballistic/automatic/l6_saw/attackby(obj/item/attacking_item, mob/user, params)
+	if(!cover_open && istype(attacking_item, mag_type))
+		balloon_alert(user, "dust closed!")
 		return
 	..()
 
@@ -274,14 +287,15 @@
 	fire_delay = 40
 	burst_size = 1
 	w_class = WEIGHT_CLASS_NORMAL
-	zoomable = TRUE
-	zoom_amt = 10 //Long range, enough to see in front of you, but no tiles behind you.
-	zoom_out_amt = 5
 	slot_flags = ITEM_SLOT_BACK
 	fire_select_modes = list(SELECT_SEMI_AUTOMATIC)
 	mag_display = TRUE
 	suppressor_x_offset = 3
 	suppressor_y_offset = 3
+
+/obj/item/gun/ballistic/automatic/sniper_rifle/Initialize(mapload)
+	. = ..()
+	AddComponent(/datum/component/scope, range_modifier = 2)
 
 /obj/item/gun/ballistic/automatic/sniper_rifle/syndicate
 	name = "syndicate sniper rifle"
@@ -289,11 +303,12 @@
 	can_suppress = TRUE
 	can_unsuppress = TRUE
 	pin = /obj/item/firing_pin/implant/pindicate
+	company_flag = COMPANY_SCARBOROUGH
 
 // Old Semi-Auto Rifle //
 
 /obj/item/gun/ballistic/automatic/surplus
-	name = "Surplus Rifle"
+	name = "surplus rifle"
 	desc = "One of countless obsolete ballistic rifles that still sees use as a cheap deterrent. Uses 10mm Magnum ammo and its bulky frame prevents one-hand firing."
 	icon_state = "surplus"
 	inhand_icon_state = "moistnugget"
@@ -306,9 +321,10 @@
 	can_suppress = TRUE
 	w_class = WEIGHT_CLASS_HUGE
 	slot_flags = ITEM_SLOT_BACK
-	//actions_types = list() SKYRAT EDIT REMOVAL
 	fire_select_modes = list(SELECT_SEMI_AUTOMATIC)
 	mag_display = TRUE
+	company_flag = COMPANY_IZHEVSK
+	dirt_modifier = 0.75
 
 // Laser rifle (rechargeable magazine) //
 
@@ -323,7 +339,8 @@
 	fire_delay = 2
 	can_suppress = FALSE
 	burst_size = 0
-	//actions_types = list() SKYRAT EDIT REMOVAL
+	// actions_types = list() SKYRAT EDIT REMOVAL
 	fire_select_modes = list(SELECT_SEMI_AUTOMATIC)
 	fire_sound = 'sound/weapons/laser.ogg'
 	casing_ejector = FALSE
+	company_flag = COMPANY_NANOTRASEN

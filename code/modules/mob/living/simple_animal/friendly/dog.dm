@@ -11,14 +11,12 @@
 	speak = list("YAP", "Woof!", "Bark!", "AUUUUUU")
 	speak_emote = list("barks", "woofs")
 	emote_hear = list("barks!", "woofs!", "yaps.","pants.")
-	emote_see = list("shakes its head.", "chases its tail.","shivers.")
+	emote_see = list("shakes their head.", "chases their tail.","shivers.")
 	faction = list("neutral")
 	see_in_dark = 5
 	speak_chance = 1
 	turns_per_move = 10
 	can_be_held = TRUE
-	pet_bonus = TRUE
-	pet_bonus_emote = "woofs happily!"
 	ai_controller = /datum/ai_controller/dog
 	stop_automated_movement = TRUE
 	///In the case 'melee_damage_upper' is somehow raised above 0
@@ -29,8 +27,9 @@
 
 	footstep_type = FOOTSTEP_MOB_CLAW
 
-/mob/living/simple_animal/pet/dog/Initialize()
+/mob/living/simple_animal/pet/dog/Initialize(mapload)
 	. = ..()
+	AddElement(/datum/element/pet_bonus, "woofs happily!")
 	add_cell_sample()
 
 //Corgis and pugs are now under one dog subtype
@@ -38,7 +37,7 @@
 /mob/living/simple_animal/pet/dog/corgi
 	name = "\improper corgi"
 	real_name = "corgi"
-	desc = "It's a corgi."
+	desc = "They're a corgi."
 	icon_state = "corgi"
 	icon_living = "corgi"
 	icon_dead = "corgi_dead"
@@ -70,6 +69,48 @@
 		inventory_back = null
 	return ..()
 
+/mob/living/simple_animal/pet/dog/corgi/deadchat_plays(mode = ANARCHY_MODE, cooldown = 12 SECONDS)
+	. = AddComponent(/datum/component/deadchat_control/cardinal_movement, mode, list(
+		"speak" = CALLBACK(src, .proc/handle_automated_speech, TRUE),
+		"wear_hat" = CALLBACK(src, .proc/find_new_hat),
+		"drop_hat" = CALLBACK(src, .proc/drop_hat),
+		"spin" = CALLBACK(src, /mob.proc/emote, "spin")), cooldown, CALLBACK(src, .proc/stop_deadchat_plays))
+
+	if(. == COMPONENT_INCOMPATIBLE)
+		return
+
+	stop_automated_movement = TRUE
+
+///Deadchat plays command that picks a new hat for Ian.
+/mob/living/simple_animal/pet/dog/corgi/proc/find_new_hat()
+	if(!isturf(loc))
+		return
+	var/list/possible_headwear = list()
+	for(var/obj/item/item in loc)
+		if(ispath(item.dog_fashion, /datum/dog_fashion/head))
+			possible_headwear += item
+	if(!length(possible_headwear))
+		for(var/obj/item/item in orange(1))
+			if(ispath(item.dog_fashion, /datum/dog_fashion/head) && CanReach(item))
+				possible_headwear += item
+	if(!length(possible_headwear))
+		return
+	if(inventory_head)
+		inventory_head.forceMove(drop_location())
+		inventory_head = null
+	place_on_head(pick(possible_headwear))
+	visible_message(span_notice("[src] puts [inventory_head] on [p_their()] own head, somehow."))
+
+///Deadchat plays command that drops the current hat off Ian.
+/mob/living/simple_animal/pet/dog/corgi/proc/drop_hat()
+	if(!inventory_head)
+		return
+	visible_message(span_notice("[src] vigorously shakes [p_their()] head, dropping [inventory_head] to the ground."))
+	inventory_head.forceMove(drop_location())
+	inventory_head = null
+	update_corgi_fluff()
+	regenerate_icons()
+
 /mob/living/simple_animal/pet/dog/corgi/handle_atom_del(atom/A)
 	if(A == inventory_head)
 		inventory_head = null
@@ -81,11 +122,10 @@
 		regenerate_icons()
 	return ..()
 
-
 /mob/living/simple_animal/pet/dog/pug
 	name = "\improper pug"
 	real_name = "pug"
-	desc = "It's a pug."
+	desc = "They're a pug."
 	icon = 'icons/mob/pets.dmi'
 	icon_state = "pug"
 	icon_living = "pug"
@@ -101,11 +141,13 @@
 /mob/living/simple_animal/pet/dog/pug/mcgriff
 	name = "McGriff"
 	desc = "This dog can tell something smells around here, and that something is CRIME!"
+	gold_core_spawnable = NO_SPAWN
+	unique_pet = TRUE
 
 /mob/living/simple_animal/pet/dog/bullterrier
 	name = "\improper bull terrier"
 	real_name = "bull terrier"
-	desc = "It's a bull terrier."
+	desc = "They're a bull terrier."
 	icon = 'icons/mob/pets.dmi'
 	icon_state = "bullterrier"
 	icon_living = "bullterrier"
@@ -117,7 +159,7 @@
 
 /mob/living/simple_animal/pet/dog/corgi/exoticcorgi
 	name = "Exotic Corgi"
-	desc = "As cute as it is colorful!"
+	desc = "As cute as they are colorful!"
 	icon = 'icons/mob/pets.dmi'
 	icon_state = "corgigrey"
 	icon_living = "corgigrey"
@@ -125,19 +167,19 @@
 	animal_species = /mob/living/simple_animal/pet/dog/corgi/exoticcorgi
 	nofur = TRUE
 
-/mob/living/simple_animal/pet/dog/Initialize()
+/mob/living/simple_animal/pet/dog/Initialize(mapload)
 	. = ..()
 	var/dog_area = get_area(src)
 	for(var/obj/structure/bed/dogbed/D in dog_area)
 		if(D.update_owner(src)) //No muscling in on my turf you fucking parrot
 			break
 
-/mob/living/simple_animal/pet/dog/corgi/Initialize()
+/mob/living/simple_animal/pet/dog/corgi/Initialize(mapload)
 	. = ..()
 	regenerate_icons()
 	AddElement(/datum/element/strippable, GLOB.strippable_corgi_items)
 
-/mob/living/simple_animal/pet/dog/corgi/exoticcorgi/Initialize()
+/mob/living/simple_animal/pet/dog/corgi/exoticcorgi/Initialize(mapload)
 		. = ..()
 		var/newcolor = rgb(rand(0, 255), rand(0, 255), rand(0, 255))
 		add_atom_colour(newcolor, FIXED_COLOUR_PRIORITY)
@@ -170,7 +212,7 @@ GLOBAL_LIST_INIT(strippable_corgi_items, create_strippable_list(list(
 
 	corgi_source.place_on_head(equipping, user)
 
-/datum/strippable_item/corgi_head/finish_unequip(atom/source, obj/item/equipping, mob/user)
+/datum/strippable_item/corgi_head/finish_unequip(atom/source, mob/user)
 	var/mob/living/simple_animal/pet/dog/corgi/corgi_source = source
 	if (!istype(corgi_source))
 		return
@@ -196,7 +238,7 @@ GLOBAL_LIST_INIT(strippable_corgi_items, create_strippable_list(list(
 		return FALSE
 
 	if (!ispath(equipping.dog_fashion, /datum/dog_fashion/back))
-		to_chat(user, "<span class='warning'>You set [equipping] on [source]'s back, but it falls off!</span>")
+		to_chat(user, span_warning("You set [equipping] on [source]'s back, but it falls off!"))
 		equipping.forceMove(source.drop_location())
 		if (prob(25))
 			step_rand(equipping)
@@ -242,7 +284,7 @@ GLOBAL_LIST_INIT(strippable_corgi_items, create_strippable_list(list(
 		return FALSE
 
 	if (!istype(equipping, /obj/item/clothing/neck/petcollar))
-		to_chat(user, "<span class='warning'>That's not a collar.</span>")
+		to_chat(user, span_warning("That's not a collar."))
 		return FALSE
 
 	return TRUE
@@ -280,8 +322,8 @@ GLOBAL_LIST_INIT(strippable_corgi_items, create_strippable_list(list(
 	if (!.)
 		return FALSE
 
-	if (!istype(equipping, /obj/item/card/id))
-		to_chat(user, "<span class='warning'>You can't pin [equipping] to [source]!</span>")
+	if (!isidcard(equipping))
+		to_chat(user, span_warning("You can't pin [equipping] to [source]!"))
 		return FALSE
 
 	return TRUE
@@ -325,14 +367,14 @@ GLOBAL_LIST_INIT(strippable_corgi_items, create_strippable_list(list(
 /mob/living/simple_animal/pet/dog/corgi/attackby(obj/item/O, mob/user, params)
 	if (istype(O, /obj/item/razor))
 		if (shaved)
-			to_chat(user, "<span class='warning'>You can't shave this corgi, it's already been shaved!</span>")
+			to_chat(user, span_warning("You can't shave this corgi, [p_they()] has already been shaved!"))
 			return
 		if (nofur)
-			to_chat(user, "<span class='warning'>You can't shave this corgi, it doesn't have a fur coat!</span>")
+			to_chat(user, span_warning("You can't shave this corgi, [p_they()] [p_do()]n't have a fur coat!"))
 			return
-		user.visible_message("<span class='notice'>[user] starts to shave [src] using \the [O].</span>", "<span class='notice'>You start to shave [src] using \the [O]...</span>")
+		user.visible_message(span_notice("[user] starts to shave [src] using \the [O]."), span_notice("You start to shave [src] using \the [O]..."))
 		if(do_after(user, 50, target = src))
-			user.visible_message("<span class='notice'>[user] shaves [src]'s hair using \the [O].</span>")
+			user.visible_message(span_notice("[user] shaves [src]'s hair using \the [O]."))
 			playsound(loc, 'sound/items/welder2.ogg', 20, TRUE)
 			shaved = TRUE
 			icon_living = "[initial(icon_living)]_shaved"
@@ -350,20 +392,20 @@ GLOBAL_LIST_INIT(strippable_corgi_items, create_strippable_list(list(
 //Many  hats added, Some will probably be removed, just want to see which ones are popular.
 // > some will probably be removed
 
-/mob/living/simple_animal/pet/dog/corgi/proc/place_on_head(obj/item/item_to_add, mob/user)
+/mob/living/simple_animal/pet/dog/corgi/proc/place_on_head(obj/item/item_to_add, mob/living/user)
 	if(inventory_head)
 		if(user)
-			to_chat(user, "<span class='warning'>You can't put more than one hat on [src]!</span>")
+			to_chat(user, span_warning("You can't put more than one hat on [src]!"))
 		return
 	if(!item_to_add)
-		user.visible_message("<span class='notice'>[user] pets [src].</span>", "<span class='notice'>You rest your hand on [src]'s head for a moment.</span>")
+		user.visible_message(span_notice("[user] pets [src]."), span_notice("You rest your hand on [src]'s head for a moment."))
 		if(flags_1 & HOLOGRAM_1)
 			return
-		SEND_SIGNAL(user, COMSIG_ADD_MOOD_EVENT, src, /datum/mood_event/pet_animal, src)
+		user.add_mood_event(REF(src), /datum/mood_event/pet_animal, src)
 		return
 
 	if(user && !user.temporarilyRemoveItemFromInventory(item_to_add))
-		to_chat(user, "<span class='warning'>\The [item_to_add] is stuck to your hand, you cannot put it on [src]'s head!</span>")
+		to_chat(user, span_warning("\The [item_to_add] is stuck to your hand, you cannot put it on [src]'s head!"))
 		return
 
 	var/valid = FALSE
@@ -374,17 +416,17 @@ GLOBAL_LIST_INIT(strippable_corgi_items, create_strippable_list(list(
 
 	if(valid)
 		if(health <= 0)
-			to_chat(user, "<span class='notice'>There is merely a dull, lifeless look in [real_name]'s eyes as you put the [item_to_add] on [p_them()].</span>")
+			to_chat(user, span_notice("There is merely a dull, lifeless look in [real_name]'s eyes as you put the [item_to_add] on [p_them()]."))
 		else if(user)
-			user.visible_message("<span class='notice'>[user] puts [item_to_add] on [real_name]'s head. [src] looks at [user] and barks once.</span>",
-				"<span class='notice'>You put [item_to_add] on [real_name]'s head. [src] gives you a peculiar look, then wags [p_their()] tail once and barks.</span>",
-				"<span class='hear'>You hear a friendly-sounding bark.</span>")
+			user.visible_message(span_notice("[user] puts [item_to_add] on [real_name]'s head. [src] looks at [user] and barks once."),
+				span_notice("You put [item_to_add] on [real_name]'s head. [src] gives you a peculiar look, then wags [p_their()] tail once and barks."),
+				span_hear("You hear a friendly-sounding bark."))
 		item_to_add.forceMove(src)
 		src.inventory_head = item_to_add
 		update_corgi_fluff()
 		regenerate_icons()
 	else
-		to_chat(user, "<span class='warning'>You set [item_to_add] on [src]'s head, but it falls off!</span>")
+		to_chat(user, span_warning("You set [item_to_add] on [src]'s head, but it falls off!"))
 		item_to_add.forceMove(drop_location())
 		if(prob(25))
 			step_rand(item_to_add)
@@ -400,7 +442,7 @@ GLOBAL_LIST_INIT(strippable_corgi_items, create_strippable_list(list(
 	speak = list("YAP", "Woof!", "Bark!", "AUUUUUU")
 	speak_emote = list("barks", "woofs")
 	emote_hear = list("barks!", "woofs!", "yaps.","pants.")
-	emote_see = list("shakes its head.", "chases its tail.","shivers.")
+	emote_see = list("shakes [p_their()] head.", "chases [p_their()] tail.","shivers.")
 	desc = initial(desc)
 	set_light(0)
 
@@ -417,7 +459,8 @@ GLOBAL_LIST_INIT(strippable_corgi_items, create_strippable_list(list(
 	name = "Ian"
 	real_name = "Ian" //Intended to hold the name without altering it.
 	gender = MALE
-	desc = "It's the HoP's beloved corgi."
+	desc = "He's the HoP's beloved corgi."
+	icon = 'modular_skyrat/modules/chadian/icons/ian.dmi' //SKYRAT EDIT CHANGE
 	response_help_continuous = "pets"
 	response_help_simple = "pet"
 	response_disarm_continuous = "bops"
@@ -431,7 +474,7 @@ GLOBAL_LIST_INIT(strippable_corgi_items, create_strippable_list(list(
 	var/memory_saved = FALSE
 	var/saved_head //path
 
-/mob/living/simple_animal/pet/dog/corgi/ian/Initialize()
+/mob/living/simple_animal/pet/dog/corgi/ian/Initialize(mapload)
 	. = ..()
 	//parent call must happen first to ensure IAN
 	//is not in nullspace when child puppies spawn
@@ -450,11 +493,15 @@ GLOBAL_LIST_INIT(strippable_corgi_items, create_strippable_list(list(
 		desc = "At a ripe old age of [record_age], Ian's not as spry as he used to be, but he'll always be the HoP's beloved corgi." //RIP
 		turns_per_move = 20
 
+		old = TRUE //SKYRAT EDIT ADDITION
+
+/* SKYRAT EDIT REMOVAL
 /mob/living/simple_animal/pet/dog/corgi/ian/Life(delta_time = SSMOBS_DT, times_fired)
 	if(!stat && SSticker.current_state == GAME_STATE_FINISHED && !memory_saved)
 		Write_Memory(FALSE)
 		memory_saved = TRUE
 	..()
+*/
 
 /mob/living/simple_animal/pet/dog/corgi/ian/death()
 	if(!memory_saved)
@@ -483,7 +530,10 @@ GLOBAL_LIST_INIT(strippable_corgi_items, create_strippable_list(list(
 	if(saved_head)
 		place_on_head(new saved_head)
 
-/mob/living/simple_animal/pet/dog/corgi/ian/proc/Write_Memory(dead)
+/mob/living/simple_animal/pet/dog/corgi/ian/Write_Memory(dead, gibbed)
+	. = ..()
+	if(!.)
+		return
 	var/json_file = file("data/npc_saves/Ian.json")
 	var/list/file_data = list()
 	if(!dead)
@@ -525,7 +575,7 @@ GLOBAL_LIST_INIT(strippable_corgi_items, create_strippable_list(list(
 	..()
 	for(var/mob/living/simple_animal/pet/P in range(1, src))
 		if(P != src && !istype(P,/mob/living/simple_animal/pet/dog/corgi/narsie))
-			visible_message("<span class='warning'>[src] devours [P]!</span>", \
+			visible_message(span_warning("[src] devours [P]!"), \
 			"<span class='cult big bold'>DELICIOUS SOULS</span>")
 			playsound(src, 'sound/magic/demon_attack1.ogg', 75, TRUE)
 			narsie_act()
@@ -590,7 +640,7 @@ GLOBAL_LIST_INIT(strippable_corgi_items, create_strippable_list(list(
 /mob/living/simple_animal/pet/dog/corgi/puppy
 	name = "\improper corgi puppy"
 	real_name = "corgi"
-	desc = "It's a corgi puppy!"
+	desc = "They're a corgi puppy!"
 	icon_state = "puppy"
 	icon_living = "puppy"
 	icon_dead = "puppy_dead"
@@ -602,7 +652,7 @@ GLOBAL_LIST_INIT(strippable_corgi_items, create_strippable_list(list(
 //puppies cannot wear anything.
 /mob/living/simple_animal/pet/dog/corgi/puppy/Topic(href, href_list)
 	if(href_list["remove_inv"] || href_list["add_inv"])
-		to_chat(usr, "<span class='warning'>You can't fit this on [src], [p_they()] [p_are()] too small!</span>")
+		to_chat(usr, span_warning("You can't fit this on [src], [p_they()] [p_are()] too small!"))
 		return
 	..()
 
@@ -611,13 +661,14 @@ GLOBAL_LIST_INIT(strippable_corgi_items, create_strippable_list(list(
 	name = "Ian"
 	real_name = "Ian"
 	gender = MALE
-	desc = "It's the HoP's beloved corgi puppy."
+	desc = "He's the HoP's beloved corgi puppy."
 
 
 /mob/living/simple_animal/pet/dog/corgi/puppy/void //Tribute to the corgis born in nullspace
 	name = "\improper void puppy"
 	real_name = "voidy"
 	desc = "A corgi puppy that has been infused with deep space energy. It's staring back..."
+	gender = NEUTER
 	icon_state = "void_puppy"
 	icon_living = "void_puppy"
 	icon_dead = "void_puppy_dead"
@@ -627,13 +678,12 @@ GLOBAL_LIST_INIT(strippable_corgi_items, create_strippable_list(list(
 	maxbodytemp = T0C + 40
 	held_state = "void_puppy"
 
-/mob/living/simple_animal/pet/dog/corgi/puppy/void/Initialize()
+/mob/living/simple_animal/pet/dog/corgi/puppy/void/Initialize(mapload)
 	. = ..()
 	ADD_TRAIT(src, TRAIT_AI_BAGATTACK, INNATE_TRAIT)
 
-/mob/living/simple_animal/pet/dog/corgi/puppy/void/Process_Spacemove(movement_dir = 0)
+/mob/living/simple_animal/pet/dog/corgi/puppy/void/Process_Spacemove(movement_dir = 0, continuous_move = FALSE)
 	return 1 //Void puppies can navigate space.
-
 
 //LISA! SQUEEEEEEEEE~
 /mob/living/simple_animal/pet/dog/corgi/lisa
@@ -658,10 +708,64 @@ GLOBAL_LIST_INIT(strippable_corgi_items, create_strippable_list(list(
 //Lisa already has a cute bow!
 /mob/living/simple_animal/pet/dog/corgi/lisa/Topic(href, href_list)
 	if(href_list["remove_inv"] || href_list["add_inv"])
-		to_chat(usr, "<span class='warning'>[src] already has a cute bow!</span>")
+		to_chat(usr, span_warning("[src] already has a cute bow!"))
 		return
 	..()
 
 /mob/living/simple_animal/pet/dog/corgi/lisa/Life(delta_time = SSMOBS_DT, times_fired)
 	. = ..()
 	make_babies()
+
+/mob/living/simple_animal/pet/dog/breaddog //Most of the code originates from Cak
+	name = "Kobun"
+	desc = "It is a dog made out of bread. 'The universe is definitely half full'."
+	icon_state = "breaddog"
+	icon_living = "breaddog"
+	icon_dead = "breaddog_dead"
+	head_icon = 'icons/mob/pets_held_head.dmi'
+	health = 50
+	maxHealth = 50
+	gender = NEUTER
+	harm_intent_damage = 10
+	butcher_results = list(/obj/item/organ/internal/brain = 1, /obj/item/organ/internal/heart = 1, /obj/item/food/breadslice = 3,  \
+	/obj/item/food/meat/slab = 2)
+	response_harm_continuous = "takes a bite out of"
+	response_harm_simple = "take a bite out of"
+	attacked_sound = 'sound/items/eatfood.ogg'
+	held_state = "breaddog"
+	worn_slot_flags = ITEM_SLOT_HEAD
+
+/mob/living/simple_animal/pet/dog/breaddog/add_cell_sample()
+	return
+
+/mob/living/simple_animal/pet/dog/breaddog/CheckParts(list/parts)
+	..()
+	var/obj/item/organ/internal/brain/candidate = locate(/obj/item/organ/internal/brain) in contents
+	if(!candidate || !candidate.brainmob || !candidate.brainmob.mind)
+		return
+	candidate.brainmob.mind.transfer_to(src)
+	to_chat(src, "[span_boldbig("You are a bread dog!")]<b> You're a harmless dog/bread hybrid that everyone loves. People can take bites out of you if they're hungry, but you regenerate health \
+	so quickly that it generally doesn't matter. You're remarkably resilient to any damage besides this and it's hard for you to really die at all. You should go around and bring happiness and \
+	free bread to the station!	'I’m not alone, and you aren’t either'</b>")
+	var/default_name = "Kobun"
+	var/new_name = sanitize_name(reject_bad_text(tgui_input_text(src, "You are the [name]. Would you like to change your name to something else?", "Name change", default_name, MAX_NAME_LEN)), cap_after_symbols = FALSE)
+	if(new_name)
+		to_chat(src, span_notice("Your name is now <b>[new_name]</b>!"))
+		name = new_name
+
+/mob/living/simple_animal/pet/dog/breaddog/Life(delta_time = SSMOBS_DT, times_fired)
+	..()
+	if(stat)
+		return
+
+	if(health < maxHealth)
+		adjustBruteLoss(-4 * delta_time) //Fast life regen
+
+	for(var/mob/living/carbon/humanoid_entities in view(3, src)) //Mood aura which stay as long you do not wear Sanallite as hat or carry(I will try to make it work with hat someday(obviously weaker than normal one))
+		humanoid_entities.add_mood_event("kobun", /datum/mood_event/kobun)
+
+/mob/living/simple_animal/pet/dog/breaddog/attack_hand(mob/living/user, list/modifiers)
+	..()
+	if(user.combat_mode && user.reagents && !stat)
+		user.reagents.add_reagent(/datum/reagent/consumable/nutriment, 0.4)
+		user.reagents.add_reagent(/datum/reagent/consumable/nutriment/vitamin, 0.4)

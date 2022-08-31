@@ -14,7 +14,7 @@
 	pixel_y = 1
 	},
 /obj/item/paper/crumpled{
-	info = "Remember to properly calibrate the mass-driver next time you need to use it. Nearly tore Harold's leg off last time we tried to use it.";
+	default_raw_text = "Remember to properly calibrate the mass-driver next time you need to use it. Nearly tore Harold's leg off last time we tried to use it.";
 	name = "old, crumpled note"
 	},
 /obj/item/pen{
@@ -44,9 +44,9 @@
 /area/ruin/space/has_grav/whiteship/box)
 "fK" = (
 /obj/structure/closet/crate,
-/obj/item/reagent_containers/food/drinks/waterbottle/large,
-/obj/item/reagent_containers/food/drinks/waterbottle/large,
-/obj/item/reagent_containers/food/drinks/waterbottle/large,
+/obj/item/reagent_containers/cup/glass/waterbottle/large,
+/obj/item/reagent_containers/cup/glass/waterbottle/large,
+/obj/item/reagent_containers/cup/glass/waterbottle/large,
 /turf/open/floor/mineral/titanium/white,
 /area/ruin/space/has_grav/whiteship/box)
 "gK" = (
@@ -54,7 +54,7 @@
 /turf/open/floor/plating,
 /area/ruin/space/has_grav/whiteship/box)
 "gO" = (
-/obj/effect/spawner/structure/window/shuttle,
+/obj/effect/spawner/structure/window/reinforced/shuttle,
 /turf/open/floor/plating,
 /area/ruin/space/has_grav/whiteship/box)
 "gS" = (
@@ -73,13 +73,13 @@
 "hT" = (
 /obj/machinery/light,
 /obj/structure/closet/crate,
-/obj/item/storage/firstaid/fire,
-/obj/item/storage/firstaid/brute,
+/obj/item/storage/medkit/fire,
+/obj/item/storage/medkit/brute,
 /turf/open/floor/mineral/titanium/white,
 /area/ruin/space/has_grav/whiteship/box)
 "in" = (
 /obj/structure/table/reinforced,
-/obj/effect/spawner/lootdrop/space/cashmoney,
+/obj/effect/spawner/random/entertainment/money_large,
 /turf/open/floor/mineral/titanium/white,
 /area/ruin/space/has_grav/whiteship/box)
 "iK" = (
@@ -128,7 +128,7 @@
 /turf/open/floor/mineral/titanium/purple,
 /area/ruin/space/has_grav/whiteship/box)
 "md" = (
-/turf/open/floor/plating/asteroid/airless,
+/turf/open/misc/asteroid/airless,
 /area/ruin/space/has_grav/whiteship/box)
 "mE" = (
 /turf/open/floor/mineral/titanium/purple,
@@ -172,7 +172,7 @@
 /obj/item/shard{
 	icon_state = "small"
 	},
-/turf/open/floor/plating,
+/turf/open/floor/plating/airless,
 /area/ruin/space/has_grav/whiteship/box)
 "pq" = (
 /obj/structure/table/reinforced,
@@ -232,8 +232,8 @@
 /area/ruin/space/has_grav/whiteship/box)
 "wP" = (
 /obj/structure/closet/crate,
-/obj/item/storage/firstaid,
-/obj/item/storage/firstaid{
+/obj/item/storage/medkit,
+/obj/item/storage/medkit{
 	pixel_x = 7;
 	pixel_y = -3
 	},
@@ -243,13 +243,13 @@
 /obj/structure/closet/crate{
 	icon_state = "crateopen"
 	},
-/obj/item/reagent_containers/food/drinks/waterbottle,
-/obj/item/reagent_containers/food/drinks/waterbottle,
+/obj/item/reagent_containers/cup/glass/waterbottle,
+/obj/item/reagent_containers/cup/glass/waterbottle,
 /turf/open/floor/mineral/titanium/white,
 /area/ruin/space/has_grav/whiteship/box)
 "zG" = (
-/obj/effect/spawner/lootdrop/space/material,
-/obj/effect/spawner/lootdrop/space/material,
+/obj/effect/spawner/random/engineering/material_rare,
+/obj/effect/spawner/random/engineering/material_rare,
 /obj/structure/closet/crate,
 /turf/open/floor/mineral/titanium/white,
 /area/ruin/space/has_grav/whiteship/box)
@@ -263,7 +263,7 @@
 "zY" = (
 /obj/machinery/door/poddoor{
 	id = "oldship_ruin_gun";
-	name = "pod bay door"
+	name = "Pod Bay Door"
 	},
 /turf/open/floor/plating,
 /area/ruin/space/has_grav/whiteship/box)
@@ -287,7 +287,7 @@
 	icon_state = "medium"
 	},
 /obj/item/shard,
-/turf/open/floor/plating,
+/turf/open/floor/plating/airless,
 /area/ruin/space/has_grav/whiteship/box)
 "BG" = (
 /obj/structure/table/reinforced,
@@ -310,12 +310,15 @@
 "DU" = (
 /obj/structure/light_construct,
 /obj/item/light/tube/broken,
-/turf/open/floor/plating/asteroid/airless,
+/turf/open/misc/asteroid/airless,
 /area/ruin/space/has_grav/whiteship/box)
 "EA" = (
-/obj/effect/spawner/lootdrop/space/material,
+/obj/effect/spawner/random/engineering/material_rare,
 /obj/structure/closet/crate,
 /turf/open/floor/mineral/titanium/white,
+/area/ruin/space/has_grav/whiteship/box)
+"Gc" = (
+/turf/open/floor/plating/airless,
 /area/ruin/space/has_grav/whiteship/box)
 "Gj" = (
 /obj/item/stack/sheet/mineral/titanium,
@@ -338,7 +341,7 @@
 /area/ruin/space/has_grav/whiteship/box)
 "IA" = (
 /obj/item/trash/can/food/beans,
-/obj/item/reagent_containers/food/drinks/waterbottle/large/empty,
+/obj/item/reagent_containers/cup/glass/waterbottle/large/empty,
 /obj/item/trash/candy,
 /obj/structure/closet/crate/trashcart,
 /turf/open/floor/mineral/titanium/white,
@@ -350,7 +353,7 @@
 "Jv" = (
 /obj/effect/decal/cleanable/dirt/dust,
 /obj/structure/closet/mini_fridge,
-/obj/item/reagent_containers/food/drinks/soda_cans/grey_bull,
+/obj/item/reagent_containers/cup/soda_cans/grey_bull,
 /turf/open/floor/mineral/titanium/white,
 /area/ruin/space/has_grav/whiteship/box)
 "Jy" = (
@@ -359,7 +362,7 @@
 "JF" = (
 /obj/item/shard,
 /obj/effect/decal/cleanable/glass,
-/turf/open/floor/plating,
+/turf/open/floor/plating/airless,
 /area/ruin/space/has_grav/whiteship/box)
 "Kg" = (
 /obj/machinery/door/airlock/public/glass,
@@ -435,7 +438,7 @@
 	},
 /obj/structure/grille/broken,
 /obj/effect/decal/cleanable/glass,
-/turf/open/floor/plating,
+/turf/open/floor/plating/airless,
 /area/ruin/space/has_grav/whiteship/box)
 "Tr" = (
 /obj/item/shard{
@@ -471,7 +474,7 @@
 /obj/structure/grille/broken,
 /obj/item/shard,
 /obj/effect/decal/cleanable/glass,
-/turf/open/floor/plating,
+/turf/open/floor/plating/airless,
 /area/ruin/space/has_grav/whiteship/box)
 "Xp" = (
 /obj/structure/shuttle/engine/propulsion/left{
@@ -1261,7 +1264,7 @@ nH
 nH
 nH
 nH
-Vt
+Gc
 oN
 kK
 kK

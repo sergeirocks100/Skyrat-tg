@@ -1,5 +1,5 @@
 /obj/machinery/particle_accelerator/control_box
-	name = "Particle Accelerator Control Console"
+	name = "particle accelerator control console"
 	desc = "This controls the density of the particles."
 	icon = 'modular_skyrat/modules/singularity_engine/icons/particle_accelerator_controlbox.dmi'
 	icon_state = "control_box"
@@ -19,7 +19,7 @@
 	var/strength = 0
 	var/powered = FALSE
 
-/obj/machinery/particle_accelerator/control_box/Initialize()
+/obj/machinery/particle_accelerator/control_box/Initialize(mapload)
 	. = ..()
 	wires = new /datum/wires/particle_accelerator/control_box(src)
 	connected_parts = list()
@@ -89,7 +89,7 @@
 		strength_change()
 
 		log_game("PA Control Computer increased to [strength] by [key_name(usr)] in [AREACOORD(src)]")
-		investigate_log("increased to <font color='red'>[strength]</font> by [key_name(usr)] at [AREACOORD(src)]", INVESTIGATE_SINGULO)
+		investigate_log("increased to <font color='red'>[strength]</font> by [key_name(usr)] at [AREACOORD(src)]", INVESTIGATE_ENGINE)
 
 /obj/machinery/particle_accelerator/control_box/proc/remove_strength(s)
 	if(assembled && (strength > 0))
@@ -97,7 +97,7 @@
 		strength_change()
 
 		log_game("PA Control Computer decreased to [strength] by [key_name(usr)] in [AREACOORD(src)]")
-		investigate_log("decreased to <font color='green'>[strength]</font> by [key_name(usr)] at [AREACOORD(src)]", INVESTIGATE_SINGULO)
+		investigate_log("decreased to <font color='green'>[strength]</font> by [key_name(usr)] at [AREACOORD(src)]", INVESTIGATE_ENGINE)
 
 /obj/machinery/particle_accelerator/control_box/power_change()
 	. = ..()
@@ -111,7 +111,7 @@
 	if(active)
 		//a part is missing!
 		if(connected_parts.len < 6)
-			investigate_log("lost a connected part; It <font color='red'>powered down</font>.", INVESTIGATE_SINGULO)
+			investigate_log("lost a connected part; It <font color='red'>powered down</font>.", INVESTIGATE_ENGINE)
 			toggle_power()
 			update_appearance()
 			return
@@ -170,7 +170,7 @@
 
 /obj/machinery/particle_accelerator/control_box/proc/toggle_power()
 	active = !active
-	investigate_log("turned [active?"<font color='green'>ON</font>":"<font color='red'>OFF</font>"] by [usr ? key_name(usr) : "outside forces"] at [AREACOORD(src)]", INVESTIGATE_SINGULO)
+	investigate_log("turned [active?"<font color='green'>ON</font>":"<font color='red'>OFF</font>"] by [usr ? key_name(usr) : "outside forces"] at [AREACOORD(src)]", INVESTIGATE_ENGINE)
 	message_admins("PA Control Computer turned [active ?"ON":"OFF"] by [usr ? ADMIN_LOOKUPFLW(usr) : "outside forces"] in [ADMIN_VERBOSEJMP(src)]")
 	log_game("PA Control Computer turned [active ?"ON":"OFF"] by [usr ? "[key_name(usr)]" : "outside forces"] at [AREACOORD(src)]")
 	if(active)
@@ -215,40 +215,40 @@
 			if(W.tool_behaviour == TOOL_WRENCH && !isinspace())
 				W.play_tool_sound(src, 75)
 				set_anchored(TRUE)
-				user.visible_message("<span class='notice'>[user.name] secures the [name] to the floor.</span>", \
-					"<span class='notice'>You secure the external bolts.</span>")
+				user.visible_message(span_notice("[user.name] secures the [name] to the floor."), \
+					span_notice("You secure the external bolts."))
 				user.changeNext_move(CLICK_CD_MELEE)
 				return //set_anchored handles the rest of the stuff we need to do.
 		if(PA_CONSTRUCTION_UNWIRED)
 			if(W.tool_behaviour == TOOL_WRENCH)
 				W.play_tool_sound(src, 75)
 				set_anchored(FALSE)
-				user.visible_message("<span class='notice'>[user.name] detaches the [name] from the floor.</span>", \
-					"<span class='notice'>You remove the external bolts.</span>")
+				user.visible_message(span_notice("[user.name] detaches the [name] from the floor."), \
+					span_notice("You remove the external bolts."))
 				user.changeNext_move(CLICK_CD_MELEE)
 				return //set_anchored handles the rest of the stuff we need to do.
 			else if(istype(W, /obj/item/stack/cable_coil))
 				var/obj/item/stack/cable_coil/CC = W
 				if(CC.use(1))
-					user.visible_message("<span class='notice'>[user.name] adds wires to the [name].</span>", \
-						"<span class='notice'>You add some wires.</span>")
+					user.visible_message(span_notice("[user.name] adds wires to the [name]."), \
+						span_notice("You add some wires."))
 					construction_state = PA_CONSTRUCTION_PANEL_OPEN
 					did_something = TRUE
 		if(PA_CONSTRUCTION_PANEL_OPEN)
 			if(W.tool_behaviour == TOOL_WIRECUTTER)//TODO:Shock user if its on?
-				user.visible_message("<span class='notice'>[user.name] removes some wires from the [name].</span>", \
-					"<span class='notice'>You remove some wires.</span>")
+				user.visible_message(span_notice("[user.name] removes some wires from the [name]."), \
+					span_notice("You remove some wires."))
 				construction_state = PA_CONSTRUCTION_UNWIRED
 				did_something = TRUE
 			else if(W.tool_behaviour == TOOL_SCREWDRIVER)
-				user.visible_message("<span class='notice'>[user.name] closes the [name]'s access panel.</span>", \
-					"<span class='notice'>You close the access panel.</span>")
+				user.visible_message(span_notice("[user.name] closes the [name]'s access panel."), \
+					span_notice("You close the access panel."))
 				construction_state = PA_CONSTRUCTION_COMPLETE
 				did_something = TRUE
 		if(PA_CONSTRUCTION_COMPLETE)
 			if(W.tool_behaviour == TOOL_SCREWDRIVER)
-				user.visible_message("<span class='notice'>[user.name] opens the [name]'s access panel.</span>", \
-					"<span class='notice'>You open the access panel.</span>")
+				user.visible_message(span_notice("[user.name] opens the [name]'s access panel."), \
+					span_notice("You open the access panel."))
 				construction_state = PA_CONSTRUCTION_PANEL_OPEN
 				did_something = TRUE
 
@@ -272,7 +272,7 @@
 
 /obj/machinery/particle_accelerator/control_box/proc/is_interactive(mob/user)
 	if(!interface_control)
-		to_chat(user, "<span class='alert'>ERROR: Request timed out. Check wire contacts.</span>")
+		to_chat(user, span_alert("ERROR: Request timed out. Check wire contacts."))
 		return FALSE
 	if(construction_state != PA_CONSTRUCTION_COMPLETE)
 		return FALSE

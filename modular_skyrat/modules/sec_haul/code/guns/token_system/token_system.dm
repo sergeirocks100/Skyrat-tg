@@ -1,16 +1,30 @@
-
-//////////////////
-//TOKEN SYSTEM
-/////////////////
+/*
+*	GUN VENDOR
+*/
 
 /obj/machinery/gun_vendor
-	name = "Armadyne Weapons Dispensary"
+	name = "Armadyne weapons dispensary"
 	desc = "This accepts armament tokens in exchange for weapons, please present your token for redemption."
 	icon = 'modular_skyrat/modules/sec_haul/icons/guns/gunsets.dmi'
 	icon_state = "gunvend"
 	use_power = NO_POWER_USE
+	circuit = /obj/item/circuitboard/machine/gun_vendor
 	max_integrity = 2000
 	density = TRUE
+	/// If FALSE, does not require an alert level to redeem the token.
+	var/requires_alert = TRUE
+
+/obj/item/circuitboard/machine/gun_vendor
+	name = "Weapons Dispenser (Machine Board)"
+	icon_state = "circuit_map"
+	build_path = /obj/machinery/gun_vendor
+	req_components = list(
+		/obj/item/stock_parts/manipulator = 2,
+		/obj/item/stock_parts/capacitor = 2)
+
+/obj/structure/gun_vendor/wrench_act(mob/living/user, obj/item/item)
+	default_unfasten_wrench(user, item, 120)
+	return TRUE
 
 /obj/machinery/gun_vendor/attacked_by(obj/item/I, mob/living/user)
 	if(istype(I, /obj/item/armament_token))
@@ -18,12 +32,11 @@
 		return
 
 /obj/machinery/gun_vendor/proc/RedeemToken(obj/item/armament_token/token, mob/redeemer)
-	if(seclevel2num(get_security_level()) < token.minimum_sec_level)
-		to_chat(redeemer, "<span class='redtext'>Warning, this holochip is locked to [num2seclevel(token.minimum_sec_level)]!</span>")
+	if((SSsecurity_level.get_current_level_as_number() < token.minimum_sec_level) && requires_alert)
+		to_chat(redeemer, span_redtext("Warning, this holochip is locked to [SSsecurity_level.get_current_level_as_text()]!"))
 		message_admins("ARMAMENT LOG: [redeemer] attempted to redeem a [token.name] on the incorrect security level!")
 		return
 	var/list/radial_build = token.get_available_gunsets()
-	seclevel2num()
 	var/obj/item/storage/box/gunset/chosen_gunset = show_radial_menu(redeemer, src, radial_build, radius = 40)
 	if(!chosen_gunset)
 		return
@@ -34,17 +47,20 @@
 	var/obj/item/storage/box/gunset/dispensed = new chosen_gunset(src.loc)
 
 	if(redeemer.CanReach(src) && redeemer.put_in_hands(dispensed))
-		to_chat(redeemer, "<span class='notice'>You take [dispensed] out of the slot.</span>")
+		to_chat(redeemer, span_notice("You take [dispensed] out of the slot."))
 	else
-		to_chat(redeemer, "<span class='warning'>[dispensed] falls onto the floor!</span>")
+		to_chat(redeemer, span_warning("[dispensed] falls onto the floor!"))
 	playsound(src, 'sound/machines/machine_vend.ogg', 50, TRUE, extrarange = -3)
 	to_chat(redeemer, "Thank you for redeeming your token. Remember. Do NOT take lethal ammo without permission or good reasoning.")
 	SSblackbox.record_feedback("tally", "armament_token_redeemed", 1, dispensed)
 	qdel(token)
 
-////////////////////
-//TOKENS
-////////////////////
+/obj/machinery/gun_vendor/no_alert
+	requires_alert = FALSE
+
+/*
+*	TOKENS
+*/
 
 /obj/item/armament_token
 	icon = 'modular_skyrat/modules/sec_haul/icons/guns/gunsets.dmi'
@@ -55,7 +71,10 @@
 /obj/item/armament_token/proc/get_available_gunsets()
 	return FALSE
 
-//Sidearm
+/*
+*	SIDEARMS
+*/
+
 /obj/item/armament_token/sidearm
 	name = "sidearm armament holochip"
 	desc = "A holochip used in any armament vendor, this is for sidearms. Do not bend."
@@ -75,26 +94,27 @@
 		icon = 'modular_skyrat/modules/sec_haul/icons/guns/gunsets.dmi',
 		icon_state = "ladon"
 		),
-	/obj/item/storage/box/gunset/dozer = image(
-		icon = 'modular_skyrat/modules/sec_haul/icons/guns/gunsets.dmi',
-		icon_state = "dozer"
-		),
 	/obj/item/storage/box/gunset/zeta = image(
 		icon = 'modular_skyrat/modules/sec_haul/icons/guns/gunsets.dmi',
 		icon_state = "zeta"
 		),
+	/obj/item/storage/box/gunset/dozer = image(
+		icon = 'modular_skyrat/modules/sec_haul/icons/guns/gunsets.dmi',
+		icon_state = "dozer"
+		),
 	/obj/item/storage/box/gunset/revolution = image(
 		icon = 'modular_skyrat/modules/sec_haul/icons/guns/gunsets.dmi',
 		icon_state = "revolution"
-	)
+		),
 	)
 
-//BAD BOY!
+// BAD BOY!
 /obj/item/armament_token/sidearm_blackmarket
 	name = "blackmarket armament holochip"
 	desc = "A holochip used in any armament vendor, this is for |bad people|. Do not bend."
 	icon_state = "token_blackmarket"
-	custom_premium_price = PAYCHECK_HARD * 3
+	custom_price = PAYCHECK_COMMAND * 10
+	custom_premium_price = PAYCHECK_COMMAND * 10
 
 /obj/item/armament_token/sidearm_blackmarket/get_available_gunsets()
 	return list(
@@ -113,7 +133,10 @@
 	)
 
 
-//Primary
+/*
+*	PRIMARIES
+*/
+
 /obj/item/armament_token/primary
 	name = "primary armament holochip"
 	desc = "A holochip used in any armament vendor, this is for main arms. Do not bend."
@@ -126,17 +149,36 @@
 		icon = 'modular_skyrat/modules/sec_haul/icons/guns/gunsets.dmi',
 		icon_state = "pcr"
 		),
+	/obj/item/storage/box/gunset/norwind = image(
+		icon = 'modular_skyrat/modules/sec_haul/icons/guns/gunsets.dmi',
+		icon_state = "norwind"
+		),
 	/obj/item/storage/box/gunset/ostwind = image(
 		icon = 'modular_skyrat/modules/sec_haul/icons/guns/gunsets.dmi',
 		icon_state = "ostwind"
 		),
-	/obj/item/storage/box/gunset/vintorez = image(
-		icon = 'modular_skyrat/modules/sec_haul/icons/guns/gunsets.dmi',
-		icon_state = "vintorez"
-		),
-		/obj/item/storage/box/gunset/pitbull = image(
+	/obj/item/storage/box/gunset/pitbull = image(
 		icon = 'modular_skyrat/modules/sec_haul/icons/guns/gunsets.dmi',
 		icon_state = "pitbull"
+		)
+	)
+
+
+//Primary
+/obj/item/armament_token/shotgun
+	name = "shotgun armament holochip"
+	desc = "A holochip used in any armament vendor, this is for shotguns. Do not bend."
+	icon_state = "token_shotgun"
+
+/obj/item/armament_token/shotgun/get_available_gunsets()
+	return list(
+	/obj/item/storage/box/gunset/m23 = image(
+		icon = 'modular_skyrat/modules/sec_haul/icons/guns/gunsets.dmi',
+		icon_state = "m23"
+		),
+	/obj/item/storage/box/gunset/as2 = image(
+		icon = 'modular_skyrat/modules/sec_haul/icons/guns/gunsets.dmi',
+		icon_state = "as2"
 		)
 	)
 
@@ -145,14 +187,18 @@
 	name = "energy armament holochip"
 	desc = "A holochip used in any armament vendor, this is for energy weapons. Do not bend."
 	icon_state = "token_energy"
-	custom_premium_price = PAYCHECK_HARD * 3
-	minimum_sec_level = SEC_LEVEL_RED
+	custom_premium_price = PAYCHECK_CREW * 3
+	minimum_sec_level = SEC_LEVEL_AMBER
 
 /obj/item/armament_token/energy/get_available_gunsets()
 	return list(
 	/obj/item/storage/box/gunset/laser = image(
 		icon = 'modular_skyrat/modules/sec_haul/icons/guns/gunsets.dmi',
 		icon_state = "laser"
+		),
+	/obj/item/storage/box/gunset/e_gun = image(
+		icon = 'modular_skyrat/modules/sec_haul/icons/guns/gunsets.dmi',
+		icon_state = "blaster"
 		)
 	)
 

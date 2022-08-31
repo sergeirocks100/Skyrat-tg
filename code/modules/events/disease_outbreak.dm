@@ -4,6 +4,8 @@
 	max_occurrences = 1
 	min_players = 10
 	weight = 5
+	category = EVENT_CATEGORY_HEALTH
+	description = "A classic or advanced disease will infect some crewmembers."
 
 /datum/round_event/disease_outbreak
 	announceWhen = 15
@@ -56,7 +58,7 @@
 				D = new virus_type()
 				var/datum/disease/dnaspread/DS = D
 				DS.strain_data["name"] = H.real_name
-				DS.strain_data["UI"] = H.dna.uni_identity
+				DS.strain_data["UI"] = H.dna.unique_identity
 				DS.strain_data["SE"] = H.dna.mutation_index
 			else
 				D = new virus_type()
@@ -71,5 +73,5 @@
 			for(var/datum/symptom/S in A.symptoms)
 				name_symptoms += S.name
 			message_admins("An event has triggered a random advanced virus outbreak on [ADMIN_LOOKUPFLW(H)]! It has these symptoms: [english_list(name_symptoms)]")
-			log_game("An event has triggered a random advanced virus outbreak on [key_name(H)]! It has these symptoms: [english_list(name_symptoms)]")
+			log_game("An event has triggered a random advanced virus outbreak on [key_name(H)]! It has these symptoms: [english_list(name_symptoms)].")
 		break

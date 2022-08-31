@@ -10,7 +10,7 @@
 	bite_consumption = 3
 	food_reagents = list(/datum/reagent/consumable/nutriment = 2, /datum/reagent/consumable/nutriment/protein = 6,  /datum/reagent/consumable/capsaicin = 1, /datum/reagent/consumable/nutriment/vitamin = 4)
 	tastes = list("fish" = 4, "batter" = 1, "hot peppers" = 1)
-	foodtypes = MEAT
+	foodtypes = SEAFOOD | FRIED
 	w_class = WEIGHT_CLASS_SMALL
 
 
@@ -21,8 +21,8 @@
 	food_reagents = list(/datum/reagent/consumable/nutriment/protein = 4, /datum/reagent/consumable/nutriment/vitamin = 2)
 	bite_consumption = 6
 	tastes = list("fish" = 1)
-	foodtypes = MEAT
-	eatverbs = list("bite","chew","gnaw","swallow","chomp")
+	foodtypes = SEAFOOD
+	eatverbs = list("bite", "chew", "gnaw", "swallow", "chomp")
 	w_class = WEIGHT_CLASS_SMALL
 
 /obj/item/food/fishmeat/carp
@@ -32,7 +32,7 @@
 	/// Cytology category you can swab the meat for.
 	var/cell_line = CELL_LINE_TABLE_CARP
 
-/obj/item/food/fishmeat/carp/Initialize()
+/obj/item/food/fishmeat/carp/Initialize(mapload)
 	. = ..()
 	if(cell_line)
 		AddElement(/datum/element/swabable, cell_line, CELL_VIRUS_TABLE_GENERIC_MOB)
@@ -42,6 +42,35 @@
 	desc = "Almost just like the real thing, kinda."
 	cell_line = null
 
+/obj/item/food/fishmeat/moonfish
+	name = "moonfish fillet"
+	desc = "A fillet of moonfish."
+	icon = 'icons/obj/food/lizard.dmi'
+	icon_state = "moonfish_fillet"
+
+/obj/item/food/fishmeat/moonfish/MakeGrillable()
+	AddComponent(/datum/component/grillable, /obj/item/food/grilled_moonfish, rand(40 SECONDS, 50 SECONDS), TRUE, TRUE, /datum/pollutant/food/fried_fish) //SKYRAT EDIT CHANGE
+
+/obj/item/food/fishmeat/gunner_jellyfish
+	name = "filleted gunner jellyfish"
+	desc = "A gunner jellyfish with the stingers removed. Mildly hallucinogenic."
+	icon = 'icons/obj/food/lizard.dmi'
+	icon_state = "jellyfish_fillet"
+	food_reagents = list(/datum/reagent/consumable/nutriment/protein = 4, /datum/reagent/toxin/mindbreaker = 2)
+
+/obj/item/food/fishmeat/armorfish
+	name = "cleaned armorfish"
+	desc = "An armorfish with its guts and shell removed, ready for use in cooking."
+	icon = 'icons/obj/food/lizard.dmi'
+	icon_state = "armorfish_fillet"
+	food_reagents = list(/datum/reagent/consumable/nutriment/protein = 3)
+
+/obj/item/food/fishmeat/donkfish
+	name = "donkfillet"
+	desc = "The dreaded donkfish fillet. No sane spaceman would eat this, and it does not get better when cooked."
+	icon_state = "donkfillet"
+	food_reagents = list(/datum/reagent/yuck = 3)
+
 /obj/item/food/fishfingers
 	name = "fish fingers"
 	desc = "A finger of fish."
@@ -49,7 +78,7 @@
 	food_reagents = list(/datum/reagent/consumable/nutriment = 2, /datum/reagent/consumable/nutriment/protein = 5, /datum/reagent/consumable/nutriment/vitamin = 2)
 	bite_consumption = 1
 	tastes = list("fish" = 1, "breadcrumbs" = 1)
-	foodtypes = MEAT
+	foodtypes = SEAFOOD | FRIED
 	w_class = WEIGHT_CLASS_SMALL
 	venue_value = FOOD_PRICE_EXOTIC
 
@@ -59,7 +88,7 @@
 	icon_state = "fishandchips"
 	food_reagents = list(/datum/reagent/consumable/nutriment = 3, /datum/reagent/consumable/nutriment/protein = 5, /datum/reagent/consumable/nutriment/vitamin = 2)
 	tastes = list("fish" = 1, "chips" = 1)
-	foodtypes = MEAT | VEGETABLES | FRIED
+	foodtypes = SEAFOOD | VEGETABLES | FRIED
 	venue_value = FOOD_PRICE_NORMAL
 
 /obj/item/food/fishfry
@@ -68,10 +97,159 @@
 	icon_state = "fishfry"
 	food_reagents = list (/datum/reagent/consumable/nutriment = 6, /datum/reagent/consumable/nutriment/vitamin = 3)
 	tastes = list("fish" = 1, "pan seared vegtables" = 1)
-	foodtypes = MEAT | VEGETABLES | FRIED
+	foodtypes = SEAFOOD | VEGETABLES | FRIED
+	w_class = WEIGHT_CLASS_SMALL
+
+/obj/item/food/fishtaco
+	name = "fish taco"
+	desc = "A taco with fish, cheese, and cabbage."
+	icon_state = "fishtaco"
+	food_reagents = list(/datum/reagent/consumable/nutriment = 2, /datum/reagent/consumable/nutriment/protein = 3, /datum/reagent/consumable/nutriment/vitamin = 2)
+	tastes = list("taco" = 4, "fish" = 2, "cheese" = 2, "cabbage" = 1)
+	foodtypes = SEAFOOD | DAIRY | GRAIN | VEGETABLES
+	w_class = WEIGHT_CLASS_SMALL
+
+/obj/item/food/vegetariansushiroll
+	name = "vegetarian sushi roll"
+	desc = "A roll of simple vegetarian sushi with rice, carrots, and potatoes. Sliceable into pieces!"
+	icon_state = "vegetariansushiroll"
+	food_reagents = list(/datum/reagent/consumable/nutriment = 12, /datum/reagent/consumable/nutriment/vitamin = 4)
+	tastes = list("boiled rice" = 4, "carrots" = 2, "potato" = 2)
+	foodtypes = VEGETABLES
+	w_class = WEIGHT_CLASS_SMALL
+
+/obj/item/food/vegetariansushiroll/MakeProcessable()
+	AddElement(/datum/element/processable, TOOL_KNIFE, /obj/item/food/vegetariansushislice, 4)
+
+/obj/item/food/vegetariansushislice
+	name = "vegetarian sushi slice"
+	desc = "A slice of simple vegetarian sushi with rice, carrots, and potatoes."
+	icon_state = "vegetariansushislice"
+	food_reagents = list(/datum/reagent/consumable/nutriment = 3, /datum/reagent/consumable/nutriment/vitamin = 1)
+	tastes = list("boiled rice" = 4, "carrots" = 2, "potato" = 2)
+	foodtypes = VEGETABLES
+	w_class = WEIGHT_CLASS_SMALL
+
+/obj/item/food/spicyfiletsushiroll
+	name = "spicy filet sushi roll"
+	desc = "A roll of tasty, spicy sushi made with fish and vegetables. Sliceable into pieces!"
+	icon_state = "spicyfiletroll"
+	food_reagents = list(/datum/reagent/consumable/nutriment = 12, /datum/reagent/consumable/nutriment/protein = 4, /datum/reagent/consumable/capsaicin = 4, /datum/reagent/consumable/nutriment/vitamin = 4)
+	tastes = list("boiled rice" = 4, "fish" = 2, "spicyness" = 2)
+	foodtypes = VEGETABLES | SEAFOOD
+	w_class = WEIGHT_CLASS_SMALL
+
+/obj/item/food/spicyfiletsushiroll/MakeProcessable()
+	AddElement(/datum/element/processable, TOOL_KNIFE, /obj/item/food/spicyfiletsushislice, 4)
+
+/obj/item/food/spicyfiletsushislice
+	name = "spicy filet sushi slice"
+	desc = "A slice of tasty, spicy sushi made with fish and vegetables. Don't eat it too fast!."
+	icon_state = "spicyfiletslice"
+	food_reagents = list(/datum/reagent/consumable/nutriment = 3, /datum/reagent/consumable/nutriment/protein = 1, /datum/reagent/consumable/capsaicin = 1, /datum/reagent/consumable/nutriment/vitamin = 1)
+	tastes = list("boiled rice" = 4, "fish" = 2, "spicyness" = 2)
+	foodtypes = VEGETABLES | SEAFOOD
+	w_class = WEIGHT_CLASS_SMALL
+
+// empty sushi for custom sushi
+/obj/item/food/sushi/empty
+	name = "sushi"
+	foodtypes = NONE
+	tastes = list()
+	icon_state = "vegetariansushiroll"
+	desc = "A roll of customized sushi."
+
+/obj/item/food/sushi/empty/MakeProcessable()
+	AddElement(/datum/element/processable, TOOL_KNIFE, /obj/item/food/sushislice/empty, 4)
+
+/obj/item/food/sushislice/empty
+	name = "sushi slice"
+	foodtypes = NONE
+	tastes = list()
+	icon_state = "vegetariansushislice"
+	desc = "A slice of customized sushi."
+
+/obj/item/food/nigiri_sushi
+	name = "nigiri sushi"
+	desc = "A simple nigiri of fish atop a packed rice ball with a seaweed wrapping and a side of soy sauce."
+	icon = 'icons/obj/food/food.dmi'
+	icon_state = "nigiri_sushi"
+	food_reagents = list(/datum/reagent/consumable/nutriment = 4, /datum/reagent/consumable/nutriment/vitamin = 2, /datum/reagent/consumable/nutriment/protein = 2)
+	tastes = list("boiled rice" = 4, "fish filet" = 2, "soy sauce" = 2)
+	foodtypes = SEAFOOD | VEGETABLES
+	w_class = WEIGHT_CLASS_SMALL
+
+/obj/item/food/meat_poke
+	name = "meat poke"
+	desc = "Simple poke, rice on the bottom, vegetables and meat on top. Should be mixed before eating."
+	icon = 'icons/obj/food/soupsalad.dmi'
+	icon_state = "pokemeat"
+	food_reagents = list(/datum/reagent/consumable/nutriment = 5, /datum/reagent/consumable/nutriment/vitamin = 4, /datum/reagent/consumable/nutriment/protein = 2)
+	tastes = list("rice and meat" = 4, "lettuce" = 2, "soy sauce" = 2)
+	foodtypes = SEAFOOD | MEAT | VEGETABLES
+	w_class = WEIGHT_CLASS_SMALL
+
+/obj/item/food/fish_poke
+	name = "fish poke"
+	desc = "Simple poke, rice on the bottom, vegetables and fish on top. Should be mixed before eating."
+	icon = 'icons/obj/food/soupsalad.dmi'
+	icon_state = "pokefish"
+	food_reagents = list(/datum/reagent/consumable/nutriment = 5, /datum/reagent/consumable/nutriment/vitamin = 4, /datum/reagent/consumable/nutriment/protein = 2)
+	tastes = list("rice and fish" = 4, "lettuce" = 2, "soy sauce" = 2)
+	foodtypes = SEAFOOD | VEGETABLES
 	w_class = WEIGHT_CLASS_SMALL
 
 ////////////////////////////////////////////MEATS AND ALIKE////////////////////////////////////////////
+
+/obj/item/food/meat/slab/pig
+	name = "raw pork"
+	icon_state = "pig_meat"
+	tastes = list("pig" = 1)
+	foodtypes = MEAT | RAW | GROSS
+
+/obj/item/food/meat/slab/pig/MakeGrillable()
+	AddComponent(/datum/component/grillable, /obj/item/food/meat/steak/plain/pig, rand(30 SECONDS, 90 SECONDS), TRUE, TRUE)
+
+/obj/item/food/meat/steak/plain/pig
+	name = "pork chops"
+	icon_state = "pigsteak"
+	tastes = list("pig" = 1)
+	foodtypes = MEAT | GROSS
+
+/obj/item/food/tempeh
+	name = "raw tempeh block"
+	desc = "Fungus fermented soybean cake, warm to the touch."
+	icon = 'icons/obj/food/food.dmi'
+	icon_state = "tempeh"
+	food_reagents = list(/datum/reagent/consumable/nutriment/protein = 8)
+	tastes = list("earthy" = 3, "nutty" = 2, "bland" = 1 )
+	foodtypes = VEGETABLES
+	w_class = WEIGHT_CLASS_SMALL
+	venue_value = FOOD_PRICE_CHEAP
+
+// sliceable into 4xtempehslices
+/obj/item/food/tempeh/MakeProcessable()
+	AddElement(/datum/element/processable, TOOL_KNIFE, /obj/item/food/tempehslice, 4, 5 SECONDS, table_required = TRUE)
+
+//add an icon for slices
+/obj/item/food/tempehslice
+	name = "tempeh slice"
+	desc = "A slice of tempeh, a slice of wkwkwk."
+	icon = 'icons/obj/food/food.dmi'
+	icon_state = "tempehslice"
+	food_reagents = list(/datum/reagent/consumable/nutriment/protein = 2)
+	tastes = list("earthy" = 3, "nutty" = 2, "bland" = 1)
+	foodtypes = VEGETABLES
+
+//add an icon for blends
+/obj/item/food/tempehstarter
+	name = "tempeh starter"
+	desc = "A mix of soy and joy. It's warm... and moving?"
+	icon = 'icons/obj/food/food.dmi'
+	icon_state = "tempehstarter"
+	food_reagents = list(/datum/reagent/consumable/nutriment/protein = 2)
+	tastes = list("nutty" = 2, "bland" = 2)
+	foodtypes = VEGETABLES | GROSS
 
 /obj/item/food/tofu
 	name = "tofu"
@@ -99,7 +277,7 @@
 	w_class = WEIGHT_CLASS_SMALL
 
 /obj/item/food/spiderleg/MakeGrillable()
-	AddComponent(/datum/component/grillable, /obj/item/food/boiledspiderleg, rand(50 SECONDS, 60 SECONDS), TRUE, TRUE)
+	AddComponent(/datum/component/grillable, /obj/item/food/boiledspiderleg, rand(50 SECONDS, 60 SECONDS), TRUE, TRUE, /datum/pollutant/food/fried_meat) //SKYRAT EDIT CHANGE
 
 /obj/item/food/cornedbeef
 	name = "corned beef and cabbage"
@@ -132,10 +310,11 @@
 	var/patty_type = /obj/item/food/raw_patty
 
 /obj/item/food/raw_meatball/MakeGrillable()
-	AddComponent(/datum/component/grillable, meatball_type, rand(30 SECONDS, 40 SECONDS), TRUE)
+	AddComponent(/datum/component/grillable, meatball_type, rand(30 SECONDS, 40 SECONDS), TRUE, /datum/pollutant/food/fried_meat) //SKYRAT EDIT CHANGE
 
 /obj/item/food/raw_meatball/MakeProcessable()
-	AddElement(/datum/element/processable, TOOL_ROLLINGPIN, patty_type, 1, 20)
+	AddElement(/datum/element/processable, TOOL_ROLLINGPIN, patty_type, 1, table_required = TRUE)
+
 /obj/item/food/raw_meatball/human
 	name = "strange raw meatball"
 	meatball_type = /obj/item/food/meatball/human
@@ -203,7 +382,7 @@
 	var/patty_type = /obj/item/food/patty/plain
 
 /obj/item/food/raw_patty/MakeGrillable()
-	AddComponent(/datum/component/grillable, patty_type, rand(30 SECONDS, 40 SECONDS), TRUE)
+	AddComponent(/datum/component/grillable, patty_type, rand(30 SECONDS, 40 SECONDS), TRUE, /datum/pollutant/food/fried_meat) //SKYRAT EDIT CHANGE
 
 /obj/item/food/raw_patty/human
 	name = "strange raw patty"
@@ -267,11 +446,11 @@
 	food_reagents = list(/datum/reagent/consumable/nutriment/protein = 5, /datum/reagent/consumable/nutriment/vitamin = 2)
 	tastes = list("meat" = 1)
 	foodtypes = MEAT | RAW
-	eatverbs = list("bite","chew","nibble","deep throat","gobble","chomp")
+	eatverbs = list("bite", "chew", "nibble", "deep throat", "gobble", "chomp")
 	w_class = WEIGHT_CLASS_SMALL
 
 /obj/item/food/raw_sausage/MakeGrillable()
-	AddComponent(/datum/component/grillable, /obj/item/food/sausage, rand(60 SECONDS, 75 SECONDS), TRUE)
+	AddComponent(/datum/component/grillable, /obj/item/food/sausage, rand(60 SECONDS, 75 SECONDS), TRUE, /datum/pollutant/food/fried_meat) //SKYRAT EDIT CHANGE
 
 /obj/item/food/sausage
 	name = "sausage"
@@ -281,20 +460,22 @@
 	tastes = list("meat" = 1)
 	foodtypes = MEAT | BREAKFAST
 	food_flags = FOOD_FINGER_FOOD
-	eatverbs = list("bite","chew","nibble","deep throat","gobble","chomp")
-	var/roasted = FALSE
+	eatverbs = list("bite", "chew", "nibble", "deep throat", "gobble", "chomp")
 	w_class = WEIGHT_CLASS_SMALL
 	burns_on_grill = TRUE
 	venue_value = FOOD_PRICE_CHEAP
 
 /obj/item/food/sausage/MakeProcessable()
-	AddElement(/datum/element/processable, TOOL_KNIFE, /obj/item/food/salami, 6, 30)
-	AddElement(/datum/element/processable, TOOL_KNIFE, /obj/item/food/american_sausage, 1, 30)
+	AddElement(/datum/element/processable, TOOL_KNIFE, /obj/item/food/salami, 6, 3 SECONDS, table_required = TRUE)
+	AddElement(/datum/element/processable, TOOL_KNIFE, /obj/item/food/sausage/american, 1, 3 SECONDS, table_required = TRUE)
 
-/obj/item/food/american_sausage
+/obj/item/food/sausage/american
 	name = "american sausage"
 	desc = "Snip."
 	icon_state = "american_sausage"
+
+/obj/item/food/sausage/american/MakeProcessable()
+	return
 
 /obj/item/food/salami
 	name = "salami"
@@ -358,38 +539,39 @@
 	if(faction)
 		bananas.faction = faction
 	if (!QDELETED(bananas))
-		visible_message("<span class='notice'>[src] expands!</span>")
-		bananas.log_message("Spawned via [src] at [AREACOORD(src)], Last attached mob: [key_name(spammer)].", LOG_ATTACK)
+		visible_message(span_notice("[src] expands!"))
+		bananas.log_message("spawned via [src], Last attached mob: [key_name(spammer)].", LOG_ATTACK)
 	else if (!spammer) // Visible message in case there are no fingerprints
-		visible_message("<span class='notice'>[src] fails to expand!</span>")
+		visible_message(span_notice("[src] fails to expand!"))
 	qdel(src)
 
-/obj/item/food/monkeycube/suicide_act(mob/living/M)
-	M.visible_message("<span class='suicide'>[M] is putting [src] in [M.p_their()] mouth! It looks like [M.p_theyre()] trying to commit suicide!</span>")
-	var/eating_success = do_after(M, 1 SECONDS, src)
-	if(QDELETED(M)) //qdeletion: the nuclear option of self-harm
+/obj/item/food/monkeycube/suicide_act(mob/living/user)
+	user.visible_message(span_suicide("[user] is putting [src] in [user.p_their()] mouth! It looks like [user.p_theyre()] trying to commit suicide!"))
+	var/eating_success = do_after(user, 1 SECONDS, src)
+	if(QDELETED(user)) //qdeletion: the nuclear option of self-harm
 		return SHAME
 	if(!eating_success || QDELETED(src)) //checks if src is gone or if they failed to wait for a second
-		M.visible_message("<span class='suicide'>[M] chickens out!</span>")
+		user.visible_message(span_suicide("[user] chickens out!"))
 		return SHAME
-	if(HAS_TRAIT(M, TRAIT_NOHUNGER)) //plasmamen don't have saliva/stomach acid
-		M.visible_message("<span class='suicide'>[M] realizes [M.p_their()] body won't activate [src]!</span>"
-		,"<span class='warning'>Your body won't activate [src]...</span>")
+	if(HAS_TRAIT(user, TRAIT_NOHUNGER)) //plasmamen don't have saliva/stomach acid
+		user.visible_message(span_suicide("[user] realizes [user.p_their()] body won't activate [src]!")
+		,span_warning("Your body won't activate [src]..."))
 		return SHAME
-	playsound(M, 'sound/items/eatfood.ogg', rand(10,50), TRUE)
-	M.temporarilyRemoveItemFromInventory(src) //removes from hands, keeps in M
-	addtimer(CALLBACK(src, .proc/finish_suicide, M), 15) //you've eaten it, you can run now
+	playsound(user, 'sound/items/eatfood.ogg', rand(10, 50), TRUE)
+	user.temporarilyRemoveItemFromInventory(src) //removes from hands, keeps in M
+	addtimer(CALLBACK(src, .proc/finish_suicide, user), 15) //you've eaten it, you can run now
+
 	return MANUAL_SUICIDE
 
-/obj/item/food/monkeycube/proc/finish_suicide(mob/living/M) ///internal proc called by a monkeycube's suicide_act using a timer and callback. takes as argument the mob/living who activated the suicide
-	if(QDELETED(M) || QDELETED(src))
+/obj/item/food/monkeycube/proc/finish_suicide(mob/living/user) ///internal proc called by a monkeycube's suicide_act using a timer and callback. takes as argument the mob/living who activated the suicide
+	if(QDELETED(user) || QDELETED(src))
 		return
-	if((src.loc != M)) //how the hell did you manage this
-		to_chat(M, "<span class='warning'>Something happened to [src]...</span>")
+	if(src.loc != user) //how the hell did you manage this
+		to_chat(user, span_warning("Something happened to [src]..."))
 		return
 	Expand()
-	M.visible_message("<span class='danger'>[M]'s torso bursts open as a primate emerges!</span>")
-	M.gib(null, TRUE, null, TRUE)
+	user.visible_message(span_danger("[user]'s torso bursts open as a primate emerges!"))
+	user.gib(null, TRUE, null, TRUE)
 
 /obj/item/food/monkeycube/syndicate
 	faction = list("neutral", ROLE_SYNDICATE)
@@ -416,7 +598,7 @@
 	bite_consumption = 20
 	food_reagents = list(/datum/reagent/consumable/honey = 10, /datum/reagent/toxin = 5, /datum/reagent/medicine/strange_reagent = 1)
 	tastes = list("buzzing" = 1, "honey" = 1, "regret" = 1)
-	spawned_mob = /mob/living/simple_animal/hostile/poison/bees
+	spawned_mob = /mob/living/simple_animal/hostile/bee
 
 /obj/item/food/stewedsoymeat
 	name = "stewed soy meat"
@@ -424,12 +606,9 @@
 	icon_state = "stewedsoymeat"
 	food_reagents = list(/datum/reagent/consumable/nutriment = 5, /datum/reagent/consumable/nutriment/protein = 6, /datum/reagent/consumable/nutriment/vitamin = 2)
 	tastes = list("soy" = 1, "vegetables" = 1)
-	eatverbs = list("slurp","sip","inhale","drink")
+	eatverbs = list("slurp", "sip", "inhale", "drink")
 	foodtypes = VEGETABLES
 	w_class = WEIGHT_CLASS_SMALL
-
-/obj/item/food/stewedsoymeat/Initialize()
-	. = ..()
 
 /obj/item/food/boiledspiderleg
 	name = "boiled spider leg"
@@ -453,16 +632,16 @@
 
 /obj/item/food/sashimi
 	name = "carp sashimi"
-	desc = "Celebrate surviving attack from hostile alien lifeforms by hospitalising yourself."
+	desc = "Celebrate surviving attack from hostile alien lifeforms by hospitalising yourself. You sure hope whoever made this is skilled."
 	icon_state = "sashimi"
 	food_reagents = list(/datum/reagent/consumable/nutriment/protein = 10, /datum/reagent/consumable/capsaicin = 9, /datum/reagent/consumable/nutriment/vitamin = 4)
 	tastes = list("fish" = 1, "hot peppers" = 1)
-	foodtypes = MEAT | TOXIC
+	foodtypes = SEAFOOD
 	w_class = WEIGHT_CLASS_TINY
 	//total price of this dish is 20 and a small amount more for soy sauce, all of which are available at the orders console
 	venue_value = FOOD_PRICE_CHEAP
 
-/obj/item/food/sashimi/Initialize()
+/obj/item/food/sashimi/Initialize(mapload)
 	. = ..()
 	AddElement(/datum/element/swabable, CELL_LINE_TABLE_CARP, CELL_VIRUS_TABLE_GENERIC_MOB)
 
@@ -475,7 +654,7 @@
 	w_class = WEIGHT_CLASS_TINY
 	venue_value = FOOD_PRICE_CHEAP
 
-/obj/item/food/nugget/Initialize()
+/obj/item/food/nugget/Initialize(mapload)
 	. = ..()
 	var/shape = pick("lump", "star", "lizard", "corgi")
 	desc = "A 'chicken' nugget vaguely shaped like a [shape]."
@@ -487,7 +666,7 @@
 	icon_state = "pigblanket"
 	food_reagents = list(/datum/reagent/consumable/nutriment = 5, /datum/reagent/consumable/nutriment/protein = 5, /datum/reagent/consumable/nutriment/vitamin = 2)
 	tastes = list("meat" = 1, "butter" = 1)
-	foodtypes = MEAT | DAIRY
+	foodtypes = MEAT | DAIRY | GRAIN
 	w_class = WEIGHT_CLASS_TINY
 
 /obj/item/food/bbqribs
@@ -497,7 +676,7 @@
 	w_class = WEIGHT_CLASS_NORMAL
 	food_reagents = list(/datum/reagent/consumable/nutriment/protein = 10, /datum/reagent/consumable/nutriment/vitamin = 3, /datum/reagent/consumable/bbqsauce = 10)
 	tastes = list("meat" = 3, "smokey sauce" = 1)
-	foodtypes = MEAT
+	foodtypes = MEAT | SUGAR
 
 /obj/item/food/meatclown
 	name = "meat clown"
@@ -507,9 +686,9 @@
 	tastes = list("meat" = 5, "clowns" = 3, "sixteen teslas" = 1)
 	w_class = WEIGHT_CLASS_SMALL
 
-/obj/item/food/meatclown/ComponentInitialize()
+/obj/item/food/meatclown/Initialize(mapload)
 	. = ..()
-	AddComponent(/datum/component/slippery, 30)
+	AddComponent(/datum/component/slippery, 3 SECONDS)
 
 /obj/item/food/lasagna
 	name = "Lasagna"
@@ -535,7 +714,7 @@
 	desc = "A human meat, on a stick."
 	food_reagents = list(/datum/reagent/consumable/nutriment/protein = 16, /datum/reagent/consumable/nutriment/vitamin = 6)
 	tastes = list("tender meat" = 3, "metal" = 1)
-	foodtypes = MEAT | GROSS
+	foodtypes = MEAT | GORE
 	venue_value = FOOD_PRICE_CHEAP
 
 /obj/item/food/kebab/monkey
@@ -559,23 +738,24 @@
 	desc = "Severed lizard tail on a stick."
 	food_reagents = list(/datum/reagent/consumable/nutriment/protein = 30, /datum/reagent/consumable/nutriment/vitamin = 4)
 	tastes = list("meat" = 8, "metal" = 4, "scales" = 1)
-	foodtypes = MEAT
+	foodtypes = MEAT | GORE
 
 /obj/item/food/kebab/rat
 	name = "rat-kebab"
 	desc = "Not so delicious rat meat, on a stick."
 	icon_state = "ratkebab"
 	w_class = WEIGHT_CLASS_NORMAL
+	trash_type = null
 	food_reagents = list(/datum/reagent/consumable/nutriment/protein = 10, /datum/reagent/consumable/nutriment/vitamin = 2)
 	tastes = list("rat meat" = 1, "metal" = 1)
-	foodtypes = MEAT | GROSS
+	foodtypes = MEAT | GORE
 	venue_value = FOOD_PRICE_CHEAP
 
 /obj/item/food/kebab/rat/double
 	name = "double rat-kebab"
 	icon_state = "doubleratkebab"
 	tastes = list("rat meat" = 2, "metal" = 1)
-	food_reagents = list(/datum/reagent/consumable/nutriment/protein = 16, /datum/reagent/consumable/nutriment/vitamin = 6)
+	food_reagents = list(/datum/reagent/consumable/nutriment/protein = 20, /datum/reagent/consumable/nutriment/vitamin = 4, /datum/reagent/iron = 2)
 
 /obj/item/food/kebab/fiesta
 	name = "fiesta skewer"
@@ -584,11 +764,10 @@
 	food_reagents = list(/datum/reagent/consumable/nutriment/protein = 12, /datum/reagent/consumable/nutriment/vitamin = 6, /datum/reagent/consumable/capsaicin = 3)
 
 /obj/item/food/meat
-	//custom_materials = list(/datum/material/meat = MINERAL_MATERIAL_AMOUNT * 4) //SKYRAT EDIT REMOVAL
-	material_flags = MATERIAL_NO_EFFECTS
+	custom_materials = list(/datum/material/meat = MINERAL_MATERIAL_AMOUNT * 4)
+	w_class = WEIGHT_CLASS_SMALL
 	var/subjectname = ""
 	var/subjectjob = null
-	w_class = WEIGHT_CLASS_SMALL
 
 /obj/item/food/meat/slab
 	name = "meat"
@@ -601,28 +780,29 @@
 	///Legacy code, handles the coloring of the overlay of the cutlets made from this.
 	var/slab_color = "#FF0000"
 
-/obj/item/food/meat/slab/Initialize()
+/obj/item/food/meat/slab/Initialize(mapload)
 	. = ..()
 	AddElement(/datum/element/dryable,  /obj/item/food/sosjerky/healthy)
 
 /obj/item/food/meat/slab/MakeGrillable()
-	AddComponent(/datum/component/grillable, /obj/item/food/meat/steak/plain, rand(30 SECONDS, 90 SECONDS), TRUE, TRUE) //Add medium rare later maybe?
+	AddComponent(/datum/component/grillable, /obj/item/food/meat/steak/plain, rand(30 SECONDS, 90 SECONDS), TRUE, TRUE, /datum/pollutant/food/fried_meat) //SKYRAT EDIT CHANGE //Add medium rare later maybe?
 
 /obj/item/food/meat/slab/MakeProcessable()
-	AddElement(/datum/element/processable, TOOL_KNIFE,  /obj/item/food/meat/rawcutlet/plain, 3, 30)
+	AddElement(/datum/element/processable, TOOL_KNIFE,  /obj/item/food/meat/rawcutlet/plain, 3, 3 SECONDS, table_required = TRUE)
 
 ///////////////////////////////////// HUMAN MEATS //////////////////////////////////////////////////////
 
 /obj/item/food/meat/slab/human
 	name = "meat"
 	tastes = list("tender meat" = 1)
-	foodtypes = MEAT | RAW | GROSS
+	foodtypes = MEAT | RAW | GORE
+	venue_value = FOOD_MEAT_HUMAN
 
 /obj/item/food/meat/slab/human/MakeGrillable()
-	AddComponent(/datum/component/grillable, /obj/item/food/meat/steak/plain/human, rand(30 SECONDS, 90 SECONDS), TRUE, TRUE) //Add medium rare later maybe?
+	AddComponent(/datum/component/grillable, /obj/item/food/meat/steak/plain/human, rand(30 SECONDS, 90 SECONDS), TRUE, TRUE, /datum/pollutant/food/fried_meat) //SKYRAT EDIT CHANGE //Add medium rare later maybe?
 
 /obj/item/food/meat/slab/human/MakeProcessable()
-	AddElement(/datum/element/processable, TOOL_KNIFE,  /obj/item/food/meat/rawcutlet/plain/human, 3, 30)
+	AddElement(/datum/element/processable, TOOL_KNIFE,  /obj/item/food/meat/rawcutlet/plain/human, 3, 3 SECONDS, table_required = TRUE)
 
 /obj/item/food/meat/slab/human/mutant/slime
 	icon_state = "slimemeat"
@@ -630,6 +810,7 @@
 	food_reagents = list(/datum/reagent/consumable/nutriment/protein = 4, /datum/reagent/toxin/slimejelly = 3)
 	tastes = list("slime" = 1, "jelly" = 1)
 	foodtypes = MEAT | RAW | TOXIC
+	venue_value = FOOD_MEAT_MUTANT_RARE
 
 /obj/item/food/meat/slab/human/mutant/golem
 	icon_state = "golemmeat"
@@ -637,6 +818,7 @@
 	food_reagents = list(/datum/reagent/consumable/nutriment = 3, /datum/reagent/iron = 3)
 	tastes = list("rock" = 1)
 	foodtypes = MEAT | RAW | GROSS
+	venue_value = FOOD_MEAT_MUTANT_RARE
 
 /obj/item/food/meat/slab/human/mutant/golem/adamantine
 	icon_state = "agolemmeat"
@@ -647,59 +829,66 @@
 	icon_state = "lizardmeat"
 	desc = "Delicious dino damage."
 	tastes = list("meat" = 4, "scales" = 1)
-	foodtypes = MEAT | RAW
+	foodtypes = MEAT | RAW | GORE
+	venue_value = FOOD_MEAT_MUTANT
 
 /obj/item/food/meat/slab/human/mutant/lizard/MakeGrillable()
-	AddComponent(/datum/component/grillable, /obj/item/food/meat/steak/plain/human/lizard, rand(30 SECONDS, 90 SECONDS), TRUE, TRUE)
+	AddComponent(/datum/component/grillable, /obj/item/food/meat/steak/plain/human/lizard, rand(30 SECONDS, 90 SECONDS), TRUE, TRUE, /datum/pollutant/food/fried_meat) //SKYRAT EDIT CHANGE
 
 /obj/item/food/meat/slab/human/mutant/plant
 	icon_state = "plantmeat"
 	desc = "All the joys of healthy eating with all the fun of cannibalism."
 	tastes = list("salad" = 1, "wood" = 1)
 	foodtypes = VEGETABLES
+	venue_value = FOOD_MEAT_MUTANT_RARE
 
 /obj/item/food/meat/slab/human/mutant/shadow
 	icon_state = "shadowmeat"
 	desc = "Ow, the edge."
 	tastes = list("darkness" = 1, "meat" = 1)
-	foodtypes = MEAT | RAW
+	foodtypes = MEAT | RAW | GORE
+	venue_value = FOOD_MEAT_MUTANT_RARE
 
 /obj/item/food/meat/slab/human/mutant/fly
 	icon_state = "flymeat"
 	desc = "Nothing says tasty like maggot filled radioactive mutant flesh."
 	food_reagents = list(/datum/reagent/consumable/nutriment/protein = 4, /datum/reagent/uranium = 3)
 	tastes = list("maggots" = 1, "the inside of a reactor" = 1)
-	foodtypes = MEAT | RAW | GROSS
+	foodtypes = MEAT | RAW | GROSS | BUGS | GORE
+	venue_value = FOOD_MEAT_MUTANT
 
 /obj/item/food/meat/slab/human/mutant/moth
 	icon_state = "mothmeat"
 	desc = "Unpleasantly powdery and dry. Kind of pretty, though."
 	tastes = list("dust" = 1, "powder" = 1, "meat" = 2)
-	foodtypes = MEAT | RAW
+	foodtypes = MEAT | RAW | BUGS | GORE
+	venue_value = FOOD_MEAT_MUTANT
 
 /obj/item/food/meat/slab/human/mutant/skeleton
 	name = "bone"
 	icon_state = "skeletonmeat"
 	desc = "There's a point where this needs to stop, and clearly we have passed it."
 	tastes = list("bone" = 1)
-	foodtypes = GROSS
+	foodtypes = GROSS | GORE
+	venue_value = FOOD_MEAT_MUTANT_RARE
 
 /obj/item/food/meat/slab/human/mutant/skeleton/MakeProcessable()
 	return //skeletons dont have cutlets
 
 /obj/item/food/meat/slab/human/mutant/zombie
-	name = " meat (rotten)"
+	name = "meat (rotten)"
 	icon_state = "rottenmeat"
 	desc = "Halfway to becoming fertilizer for your garden."
 	tastes = list("brains" = 1, "meat" = 1)
-	foodtypes = RAW | MEAT | TOXIC
+	foodtypes = RAW | MEAT | TOXIC | GORE | GROSS
 
 /obj/item/food/meat/slab/human/mutant/ethereal
 	icon_state = "etherealmeat"
 	desc = "So shiny you feel like ingesting it might make you shine too"
-	food_reagents = list(/datum/reagent/consumable/liquidelectricity/enriched = 3)
+	food_reagents = list(/datum/reagent/consumable/liquidelectricity/enriched = 10)
 	tastes = list("pure electricity" = 2, "meat" = 1)
-	foodtypes = RAW | MEAT | TOXIC
+	foodtypes = RAW | MEAT | TOXIC | GORE
+	venue_value = FOOD_MEAT_MUTANT
 
 ////////////////////////////////////// OTHER MEATS ////////////////////////////////////////////////////////
 
@@ -709,9 +898,11 @@
 	icon_state = "meat_old"
 	desc = "A synthetic slab of meat."
 	foodtypes = RAW | MEAT //hurr durr chemicals we're harmed in the production of this meat thus its non-vegan.
+	venue_value = FOOD_PRICE_WORTHLESS
 
 /obj/item/food/meat/slab/synthmeat/MakeGrillable()
-	AddComponent(/datum/component/grillable,/obj/item/food/meat/steak/plain/synth, rand(30 SECONDS, 90 SECONDS), TRUE, TRUE)
+	AddComponent(/datum/component/grillable, /obj/item/food/meat/steak/plain/synth, rand(30 SECONDS, 90 SECONDS), TRUE, TRUE)
+
 /obj/item/food/meat/slab/meatproduct
 	name = "meat product"
 	icon_state = "meatproduct"
@@ -720,18 +911,23 @@
 	foodtypes = RAW | MEAT
 
 /obj/item/food/meat/slab/meatproduct/MakeGrillable()
-	AddComponent(/datum/component/grillable, /obj/item/food/meat/steak/meatproduct, rand(30 SECONDS, 90 SECONDS), TRUE, TRUE)
+	AddComponent(/datum/component/grillable, /obj/item/food/meat/steak/meatproduct, rand(30 SECONDS, 90 SECONDS), TRUE, TRUE, /datum/pollutant/food/fried_meat) //SKYRAT EDIT CHANGE
 
 /obj/item/food/meat/slab/monkey
 	name = "monkey meat"
 	foodtypes = RAW | MEAT
 
+/obj/item/food/meat/slab/bugmeat
+	name = "bug meat"
+	icon_state = "spidermeat"
+	foodtypes = RAW | MEAT | BUGS
+
 /obj/item/food/meat/slab/mouse
 	name = "mouse meat"
 	desc = "A slab of mouse meat. Best not eat it raw."
-	foodtypes = RAW | MEAT | GROSS
+	foodtypes = RAW | MEAT | GORE
 
-/obj/item/food/meat/slab/mouse/Initialize()
+/obj/item/food/meat/slab/mouse/Initialize(mapload)
 	. = ..()
 	AddElement(/datum/element/swabable, CELL_LINE_TABLE_MOUSE, CELL_VIRUS_TABLE_GENERIC_MOB)
 
@@ -739,18 +935,27 @@
 	name = "corgi meat"
 	desc = "Tastes like... well you know..."
 	tastes = list("meat" = 4, "a fondness for wearing hats" = 1)
-	foodtypes = RAW | MEAT | GROSS
+	foodtypes = RAW | MEAT | GORE
 
-/obj/item/food/meat/slab/corgi/Initialize()
+/obj/item/food/meat/slab/corgi/Initialize(mapload)
 	. = ..()
 	AddElement(/datum/element/swabable, CELL_LINE_TABLE_CORGI, CELL_VIRUS_TABLE_GENERIC_MOB)
+
+/obj/item/food/meat/slab/mothroach
+	name = "mothroach meat"
+	desc = "A light slab of meat."
+	foodtypes = RAW | MEAT | GROSS
+
+/obj/item/food/meat/slab/mothroach/Initialize(mapload)
+	. = ..()
+	AddElement(/datum/element/swabable, CELL_VIRUS_TABLE_GENERIC_MOB)
 
 /obj/item/food/meat/slab/pug
 	name = "pug meat"
 	desc = "Tastes like... well you know..."
-	foodtypes = RAW | MEAT | GROSS
+	foodtypes = RAW | MEAT | GORE
 
-/obj/item/food/meat/slab/pug/Initialize()
+/obj/item/food/meat/slab/pug/Initialize(mapload)
 	. = ..()
 	AddElement(/datum/element/swabable, CELL_LINE_TABLE_PUG, CELL_VIRUS_TABLE_GENERIC_MOB)
 
@@ -766,7 +971,7 @@
 	AddComponent(/datum/component/grillable, /obj/item/food/meat/steak/killertomato, rand(70 SECONDS, 85 SECONDS), TRUE, TRUE)
 
 /obj/item/food/meat/slab/killertomato/MakeProcessable()
-	AddElement(/datum/element/processable, TOOL_KNIFE, /obj/item/food/meat/rawcutlet/killertomato, 3, 30)
+	AddElement(/datum/element/processable, TOOL_KNIFE, /obj/item/food/meat/rawcutlet/killertomato, 3, 3 SECONDS, table_required = TRUE)
 
 /obj/item/food/meat/slab/bear
 	name = "bear meat"
@@ -777,12 +982,12 @@
 	foodtypes = RAW | MEAT
 
 /obj/item/food/meat/slab/bear/MakeProcessable()
-	AddElement(/datum/element/processable, TOOL_KNIFE, /obj/item/food/meat/rawcutlet/bear, 3, 30)
+	AddElement(/datum/element/processable, TOOL_KNIFE, /obj/item/food/meat/rawcutlet/bear, 3, 3 SECONDS, table_required = TRUE)
 
 /obj/item/food/meat/slab/bear/MakeGrillable()
-	AddComponent(/datum/component/grillable, /obj/item/food/meat/steak/bear, rand(40 SECONDS, 70 SECONDS), TRUE, TRUE)
+	AddComponent(/datum/component/grillable, /obj/item/food/meat/steak/bear, rand(40 SECONDS, 70 SECONDS), TRUE, TRUE, /datum/pollutant/food/fried_meat) //SKYRAT EDIT CHANGE
 
-/obj/item/food/meat/slab/bear/Initialize()
+/obj/item/food/meat/slab/bear/Initialize(mapload)
 	. = ..()
 	AddElement(/datum/element/swabable, CELL_LINE_TABLE_BEAR, CELL_VIRUS_TABLE_GENERIC_MOB)
 
@@ -796,10 +1001,10 @@
 	foodtypes = RAW | MEAT
 
 /obj/item/food/meat/slab/xeno/MakeProcessable()
-	AddElement(/datum/element/processable, TOOL_KNIFE, /obj/item/food/meat/rawcutlet/xeno, 3, 30)
+	AddElement(/datum/element/processable, TOOL_KNIFE, /obj/item/food/meat/rawcutlet/xeno, 3, 3 SECONDS, table_required = TRUE)
 
 /obj/item/food/meat/slab/xeno/MakeGrillable()
-	AddComponent(/datum/component/grillable, /obj/item/food/meat/steak/xeno, rand(40 SECONDS, 70 SECONDS), TRUE, TRUE)
+	AddComponent(/datum/component/grillable, /obj/item/food/meat/steak/xeno, rand(40 SECONDS, 70 SECONDS), TRUE, TRUE, /datum/pollutant/food/fried_meat) //SKYRAT EDIT CHANGE
 
 /obj/item/food/meat/slab/spider
 	name = "spider meat"
@@ -810,10 +1015,10 @@
 	foodtypes = RAW | MEAT | TOXIC
 
 /obj/item/food/meat/slab/spider/MakeProcessable()
-	AddElement(/datum/element/processable, TOOL_KNIFE, /obj/item/food/meat/rawcutlet/spider, 3, 30)
+	AddElement(/datum/element/processable, TOOL_KNIFE, /obj/item/food/meat/rawcutlet/spider, 3, 3 SECONDS, table_required = TRUE)
 
 /obj/item/food/meat/slab/spider/MakeGrillable()
-	AddComponent(/datum/component/grillable, /obj/item/food/meat/steak/spider, rand(40 SECONDS, 70 SECONDS), TRUE, TRUE)
+	AddComponent(/datum/component/grillable, /obj/item/food/meat/steak/spider, rand(40 SECONDS, 70 SECONDS), TRUE, TRUE, /datum/pollutant/food/fried_meat) //SKYRAT EDIT CHANGE
 
 /obj/item/food/meat/slab/goliath
 	name = "goliath meat"
@@ -824,7 +1029,7 @@
 	foodtypes = RAW | MEAT | TOXIC
 
 /obj/item/food/meat/slab/goliath/burn()
-	visible_message("<span class='notice'>[src] finishes cooking!</span>")
+	visible_message(span_notice("[src] finishes cooking!"))
 	new /obj/item/food/meat/steak/goliath(loc)
 	qdel(src)
 
@@ -845,19 +1050,19 @@
 /obj/item/food/meat/rawbacon
 	name = "raw piece of bacon"
 	desc = "A raw piece of bacon."
-	icon_state = "bacon"
+	icon_state = "baconb"
 	bite_consumption = 2
 	food_reagents = list(/datum/reagent/consumable/nutriment/protein = 2, /datum/reagent/consumable/cooking_oil = 3)
 	tastes = list("bacon" = 1)
 	foodtypes = RAW | MEAT
 
 /obj/item/food/meat/rawbacon/MakeGrillable()
-	AddComponent(/datum/component/grillable, /obj/item/food/meat/bacon, rand(25 SECONDS, 45 SECONDS), TRUE, TRUE)
+	AddComponent(/datum/component/grillable, /obj/item/food/meat/bacon, rand(25 SECONDS, 45 SECONDS), TRUE, TRUE, /datum/pollutant/food/fried_meat) //SKYRAT EDIT CHANGE
 
 /obj/item/food/meat/bacon
 	name = "piece of bacon"
 	desc = "A delicious piece of bacon."
-	icon_state = "baconcooked"
+	icon_state = "baconcookedb"
 	food_reagents = list(/datum/reagent/consumable/nutriment/protein = 2, /datum/reagent/consumable/nutriment/vitamin = 1, /datum/reagent/consumable/cooking_oil = 2)
 	tastes = list("bacon" = 1)
 	foodtypes = MEAT | BREAKFAST
@@ -871,10 +1076,10 @@
 	foodtypes = RAW | MEAT
 
 /obj/item/food/meat/slab/gondola/MakeProcessable()
-	AddElement(/datum/element/processable, TOOL_KNIFE, /obj/item/food/meat/rawcutlet/gondola, 3, 30)
+	AddElement(/datum/element/processable, TOOL_KNIFE, /obj/item/food/meat/rawcutlet/gondola, 3, 3 SECONDS, table_required = TRUE)
 
 /obj/item/food/meat/slab/gondola/MakeGrillable()
-	AddComponent(/datum/component/grillable, /obj/item/food/meat/steak/gondola, rand(30 SECONDS, 90 SECONDS), TRUE, TRUE) //Add medium rare later maybe?
+	AddComponent(/datum/component/grillable, /obj/item/food/meat/steak/gondola, rand(30 SECONDS, 90 SECONDS), TRUE, TRUE, /datum/pollutant/food/fried_meat) //SKYRAT EDIT CHANGE //Add medium rare later maybe?
 
 
 /obj/item/food/meat/slab/penguin
@@ -886,23 +1091,22 @@
 
 /obj/item/food/meat/slab/penguin/MakeProcessable()
 	. = ..()
-	AddElement(/datum/element/processable, TOOL_KNIFE, /obj/item/food/meat/rawcutlet/penguin, 3, 30)
+	AddElement(/datum/element/processable, TOOL_KNIFE, /obj/item/food/meat/rawcutlet/penguin, 3, 3 SECONDS, table_required = TRUE)
 
 /obj/item/food/meat/slab/penguin/MakeGrillable()
-	AddComponent(/datum/component/grillable, /obj/item/food/meat/steak/penguin, rand(30 SECONDS, 90 SECONDS), TRUE, TRUE) //Add medium rare later maybe?
+	AddComponent(/datum/component/grillable, /obj/item/food/meat/steak/penguin, rand(30 SECONDS, 90 SECONDS), TRUE, TRUE, /datum/pollutant/food/fried_meat) //SKYRAT EDIT CHANGE //Add medium rare later maybe?
 
-/obj/item/food/meat/rawcrab
+/obj/item/food/meat/slab/rawcrab
 	name = "raw crab meat"
 	desc = "A pile of raw crab meat."
 	icon_state = "crabmeatraw"
-	microwaved_type = /obj/item/food/meat/crab
 	bite_consumption = 3
 	food_reagents = list(/datum/reagent/consumable/nutriment/protein = 3, /datum/reagent/consumable/cooking_oil = 3)
 	tastes = list("raw crab" = 1)
 	foodtypes = RAW | MEAT
 
 /obj/item/food/meat/slab/rawcrab/MakeGrillable()
-	AddComponent(/datum/component/grillable, /obj/item/food/meat/crab, rand(30 SECONDS, 90 SECONDS), TRUE, TRUE) //Add medium rare later maybe?
+	AddComponent(/datum/component/grillable, /obj/item/food/meat/crab, rand(30 SECONDS, 90 SECONDS), TRUE, TRUE, /datum/pollutant/food/fried_meat) //SKYRAT EDIT CHANGE //Add medium rare later maybe?
 
 /obj/item/food/meat/crab
 	name = "crab meat"
@@ -910,7 +1114,7 @@
 	icon_state = "crabmeat"
 	food_reagents = list(/datum/reagent/consumable/nutriment = 2, /datum/reagent/consumable/nutriment/vitamin = 2, /datum/reagent/consumable/cooking_oil = 2)
 	tastes = list("crab" = 1)
-	foodtypes = MEAT
+	foodtypes = SEAFOOD
 	burns_on_grill = TRUE
 
 /obj/item/food/meat/slab/chicken
@@ -921,12 +1125,12 @@
 	tastes = list("chicken" = 1)
 
 /obj/item/food/meat/slab/chicken/MakeProcessable()
-	AddElement(/datum/element/processable, TOOL_KNIFE, /obj/item/food/meat/rawcutlet/chicken, 3, 30)
+	AddElement(/datum/element/processable, TOOL_KNIFE, /obj/item/food/meat/rawcutlet/chicken, 3, 3 SECONDS, table_required = TRUE)
 
 /obj/item/food/meat/slab/chicken/MakeGrillable()
-	AddComponent(/datum/component/grillable, /obj/item/food/meat/steak/chicken, rand(30 SECONDS, 90 SECONDS), TRUE, TRUE) //Add medium rare later maybe? (no this is chicken)
+	AddComponent(/datum/component/grillable, /obj/item/food/meat/steak/chicken, rand(30 SECONDS, 90 SECONDS), TRUE, TRUE, /datum/pollutant/food/fried_meat) //SKYRAT EDIT CHANGE) //Add medium rare later maybe? (no this is chicken)
 
-/obj/item/food/meat/slab/chicken/Initialize()
+/obj/item/food/meat/slab/chicken/Initialize(mapload)
 	. = ..()
 	AddElement(/datum/element/swabable, CELL_LINE_TABLE_CHICKEN, CELL_VIRUS_TABLE_GENERIC_MOB)
 ////////////////////////////////////// MEAT STEAKS ///////////////////////////////////////////////////////////
@@ -936,12 +1140,11 @@
 	desc = "A piece of hot spicy meat."
 	icon_state = "meatsteak"
 	food_reagents = list(/datum/reagent/consumable/nutriment/protein = 8, /datum/reagent/consumable/nutriment/vitamin = 1)
-
 	foodtypes = MEAT
 	tastes = list("meat" = 1)
 	burns_on_grill = TRUE
 
-/obj/item/food/meat/steak/Initialize()
+/obj/item/food/meat/steak/Initialize(mapload)
 	. = ..()
 	RegisterSignal(src, COMSIG_ITEM_MICROWAVE_COOKED, .proc/OnMicrowaveCooked)
 
@@ -955,7 +1158,7 @@
 
 /obj/item/food/meat/steak/plain/human
 	tastes = list("tender meat" = 1)
-	foodtypes = MEAT | GROSS
+	foodtypes = MEAT | GORE
 
 ///Make sure the steak has the correct name
 /obj/item/food/meat/steak/plain/human/OnMicrowaveCooked(datum/source, obj/item/source_item, cooking_efficiency = 1)
@@ -1014,7 +1217,7 @@
 	name = "lizard steak"
 	icon_state = "birdsteak"
 	tastes = list("juicy chicken" = 3, "scales" = 1)
-	foodtypes = MEAT
+	foodtypes = MEAT | GORE
 
 /obj/item/food/meat/steak/meatproduct
 	name = "thermally processed meat product"
@@ -1042,17 +1245,18 @@
 	var/meat_type = "meat"
 
 /obj/item/food/meat/rawcutlet/MakeGrillable()
-	AddComponent(/datum/component/grillable, /obj/item/food/meat/cutlet/plain, rand(35 SECONDS, 50 SECONDS), TRUE, TRUE)
+	AddComponent(/datum/component/grillable, /obj/item/food/meat/cutlet/plain, rand(35 SECONDS, 50 SECONDS), TRUE, TRUE, /datum/pollutant/food/fried_meat) //SKYRAT EDIT CHANGE
 
-/obj/item/food/meat/rawcutlet/OnCreatedFromProcessing(mob/living/user, obj/item/I, list/chosen_option, atom/original_atom)
+/obj/item/food/meat/rawcutlet/OnCreatedFromProcessing(mob/living/user, obj/item/item, list/chosen_option, atom/original_atom)
 	..()
-	if(istype(original_atom, /obj/item/food/meat/slab))
-		var/obj/item/food/meat/slab/original_slab = original_atom
-		var/mutable_appearance/filling = mutable_appearance(icon, "rawcutlet_coloration")
-		filling.color = original_slab.slab_color
-		add_overlay(filling)
-		name = "raw [original_atom.name] cutlet"
-		meat_type = original_atom.name
+	if(!istype(original_atom, /obj/item/food/meat/slab))
+		return
+	var/obj/item/food/meat/slab/original_slab = original_atom
+	var/mutable_appearance/filling = mutable_appearance(icon, "rawcutlet_coloration")
+	filling.color = original_slab.slab_color
+	add_overlay(filling)
+	name = "raw [original_atom.name] cutlet"
+	meat_type = original_atom.name
 
 /obj/item/food/meat/rawcutlet/plain
 	foodtypes = MEAT
@@ -1061,21 +1265,22 @@
 
 /obj/item/food/meat/rawcutlet/plain/human
 	tastes = list("tender meat" = 1)
-	foodtypes = MEAT | RAW | GROSS
+	foodtypes = MEAT | RAW | GORE
 
 /obj/item/food/meat/rawcutlet/plain/human/MakeGrillable()
-	AddComponent(/datum/component/grillable, /obj/item/food/meat/cutlet/plain/human, rand(35 SECONDS, 50 SECONDS), TRUE, TRUE)
+	AddComponent(/datum/component/grillable, /obj/item/food/meat/cutlet/plain/human, rand(35 SECONDS, 50 SECONDS), TRUE, TRUE, /datum/pollutant/food/fried_meat) //SKYRAT EDIT CHANGE
 
-/obj/item/food/meat/rawcutlet/plain/human/OnCreatedFromProcessing(mob/living/user, obj/item/I, list/chosen_option, atom/original_atom)
+/obj/item/food/meat/rawcutlet/plain/human/OnCreatedFromProcessing(mob/living/user, obj/item/item, list/chosen_option, atom/original_atom)
 	. = ..()
-	if(istype(original_atom, /obj/item/food/meat))
-		var/obj/item/food/meat/origin_meat = original_atom
-		subjectname = origin_meat.subjectname
-		subjectjob = origin_meat.subjectjob
-		if(subjectname)
-			name = "raw [origin_meat.subjectname] cutlet"
-		else if(subjectjob)
-			name = "raw [origin_meat.subjectjob] cutlet"
+	if(!istype(original_atom, /obj/item/food/meat))
+		return
+	var/obj/item/food/meat/origin_meat = original_atom
+	subjectname = origin_meat.subjectname
+	subjectjob = origin_meat.subjectjob
+	if(subjectname)
+		name = "raw [origin_meat.subjectname] cutlet"
+	else if(subjectjob)
+		name = "raw [origin_meat.subjectjob] cutlet"
 
 /obj/item/food/meat/rawcutlet/killertomato
 	name = "raw killer tomato cutlet"
@@ -1089,46 +1294,46 @@
 	name = "raw bear cutlet"
 	tastes = list("meat" = 1, "salmon" = 1)
 
-/obj/item/food/meat/rawcutlet/bear/Initialize()
+/obj/item/food/meat/rawcutlet/bear/Initialize(mapload)
 	. = ..()
 	AddElement(/datum/element/swabable, CELL_LINE_TABLE_BEAR, CELL_VIRUS_TABLE_GENERIC_MOB)
 
 /obj/item/food/meat/rawcutlet/bear/MakeGrillable()
-	AddComponent(/datum/component/grillable, /obj/item/food/meat/cutlet/bear, rand(35 SECONDS, 50 SECONDS), TRUE, TRUE)
+	AddComponent(/datum/component/grillable, /obj/item/food/meat/cutlet/bear, rand(35 SECONDS, 50 SECONDS), TRUE, TRUE, /datum/pollutant/food/fried_meat) //SKYRAT EDIT CHANGE
 /obj/item/food/meat/rawcutlet/xeno
 	name = "raw xeno cutlet"
 	tastes = list("meat" = 1, "acid" = 1)
 
 /obj/item/food/meat/rawcutlet/xeno/MakeGrillable()
-	AddComponent(/datum/component/grillable, /obj/item/food/meat/cutlet/xeno, rand(35 SECONDS, 50 SECONDS), TRUE, TRUE)
+	AddComponent(/datum/component/grillable, /obj/item/food/meat/cutlet/xeno, rand(35 SECONDS, 50 SECONDS), TRUE, TRUE, /datum/pollutant/food/fried_meat) //SKYRAT EDIT CHANGE
 
 /obj/item/food/meat/rawcutlet/spider
 	name = "raw spider cutlet"
 	tastes = list("cobwebs" = 1)
 
 /obj/item/food/meat/rawcutlet/spider/MakeGrillable()
-	AddComponent(/datum/component/grillable, /obj/item/food/meat/cutlet/spider, rand(35 SECONDS, 50 SECONDS), TRUE, TRUE)
+	AddComponent(/datum/component/grillable, /obj/item/food/meat/cutlet/spider, rand(35 SECONDS, 50 SECONDS), TRUE, TRUE, /datum/pollutant/food/fried_meat) //SKYRAT EDIT CHANGE
 /obj/item/food/meat/rawcutlet/gondola
 	name = "raw gondola cutlet"
 	tastes = list("meat" = 1, "tranquility" = 1)
 
 /obj/item/food/meat/rawcutlet/gondola/MakeGrillable()
-	AddComponent(/datum/component/grillable, /obj/item/food/meat/cutlet/gondola, rand(35 SECONDS, 50 SECONDS), TRUE, TRUE)
+	AddComponent(/datum/component/grillable, /obj/item/food/meat/cutlet/gondola, rand(35 SECONDS, 50 SECONDS), TRUE, TRUE, /datum/pollutant/food/fried_meat) //SKYRAT EDIT CHANGE
 /obj/item/food/meat/rawcutlet/penguin
 	name = "raw penguin cutlet"
 	tastes = list("beef" = 1, "cod fish" = 1)
 
 /obj/item/food/meat/rawcutlet/penguin/MakeGrillable()
-	AddComponent(/datum/component/grillable, /obj/item/food/meat/cutlet/penguin, rand(35 SECONDS, 50 SECONDS), TRUE, TRUE)
+	AddComponent(/datum/component/grillable, /obj/item/food/meat/cutlet/penguin, rand(35 SECONDS, 50 SECONDS), TRUE, TRUE, /datum/pollutant/food/fried_meat) //SKYRAT EDIT CHANGE
 
 /obj/item/food/meat/rawcutlet/chicken
 	name = "raw chicken cutlet"
 	tastes = list("chicken" = 1)
 
 /obj/item/food/meat/rawcutlet/chicken/MakeGrillable()
-	AddComponent(/datum/component/grillable, /obj/item/food/meat/cutlet/chicken, rand(35 SECONDS, 50 SECONDS), TRUE, TRUE)
+	AddComponent(/datum/component/grillable, /obj/item/food/meat/cutlet/chicken, rand(35 SECONDS, 50 SECONDS), TRUE, TRUE, /datum/pollutant/food/fried_meat) //SKYRAT EDIT CHANGE
 
-/obj/item/food/meat/rawcutlet/chicken/Initialize()
+/obj/item/food/meat/rawcutlet/chicken/Initialize(mapload)
 	. = ..()
 	AddElement(/datum/element/swabable, CELL_LINE_TABLE_CHICKEN, CELL_VIRUS_TABLE_GENERIC_MOB)
 
@@ -1144,7 +1349,7 @@
 	foodtypes = MEAT
 	burns_on_grill = TRUE
 
-/obj/item/food/meat/cutlet/Initialize()
+/obj/item/food/meat/cutlet/Initialize(mapload)
 	. = ..()
 	RegisterSignal(src, COMSIG_ITEM_MICROWAVE_COOKED, .proc/OnMicrowaveCooked)
 
@@ -1159,7 +1364,7 @@
 
 /obj/item/food/meat/cutlet/plain/human
 	tastes = list("tender meat" = 1)
-	foodtypes = MEAT | GROSS
+	foodtypes = MEAT | GORE
 
 /obj/item/food/meat/cutlet/plain/human/OnMicrowaveCooked(datum/source, atom/source_item, cooking_efficiency)
 	. = ..()
@@ -1209,7 +1414,7 @@
 	junkiness = 25
 	w_class = WEIGHT_CLASS_SMALL
 
-/obj/item/food/fried_chicken/Initialize()
+/obj/item/food/fried_chicken/Initialize(mapload)
 	. = ..()
 	if(prob(50))
 		icon_state = "fried_chicken2"
@@ -1237,9 +1442,9 @@
 	venue_value = FOOD_PRICE_EXOTIC
 
 /obj/item/food/beef_wellington/MakeProcessable()
-	AddElement(/datum/element/processable, TOOL_KNIFE,  /obj/item/food/beef_wellington/slice, 3, 30)
+	AddElement(/datum/element/processable, TOOL_KNIFE,  /obj/item/food/beef_wellington_slice, 3, 3 SECONDS, table_required = TRUE)
 
-/obj/item/food/beef_wellington/slice
+/obj/item/food/beef_wellington_slice
 	name = "beef wellington slice"
 	desc = "A slice of beef wellington, topped with a rich gravy. Simply delicious."
 	icon_state = "beef_wellington_slice"

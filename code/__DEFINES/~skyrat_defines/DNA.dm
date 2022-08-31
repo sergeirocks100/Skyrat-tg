@@ -34,29 +34,20 @@
 #define COLOR_SRC_MATRIXED	4
 
 // Defines for mutant bodyparts indexes
-#define MUTANT_INDEX_NAME		"name"
-#define MUTANT_INDEX_COLOR_LIST	"color"
+#define MUTANT_INDEX_NAME			"name"
+#define MUTANT_INDEX_COLOR_LIST		"color"
+#define MUTANT_INDEX_EMISSIVE_LIST	"emissive"
 
 //The color list that is passed to color matrixed things when a person is husked
 #define HUSK_COLOR_LIST list(list(0.64, 0.64, 0.64, 0), list(0.64, 0.64, 0.64, 0), list(0.64, 0.64, 0.64, 0), list(0, 0, 0, 1))
 
+/// Organ slot external
+#define ORGAN_SLOT_EXTERNAL_TAUR "taur"
+
 //Defines for an accessory to be randomed
 #define ACC_RANDOM		"random"
 
-//organ slots
-#define ORGAN_SLOT_PENIS "penis"
-#define ORGAN_SLOT_WOMB "womb"
-#define ORGAN_SLOT_VAGINA "vagina"
-#define ORGAN_SLOT_TESTICLES "testicles"
-#define ORGAN_SLOT_BREASTS "breasts"
-
-#define ORGAN_SLOT_WINGS "wings"
-
 #define MAXIMUM_MARKINGS_PER_LIMB 3
-
-#define PREVIEW_PREF_JOB "Job"
-#define PREVIEW_PREF_LOADOUT "Loadout"
-#define PREVIEW_PREF_NAKED "Naked"
 
 #define BODY_SIZE_NORMAL 1.00
 #define BODY_SIZE_MAX 1.5
@@ -72,13 +63,65 @@
 #define SHEATH_SLIT	"Slit"
 #define SHEATH_MODES list(SHEATH_NONE, SHEATH_NORMAL, SHEATH_SLIT)
 
-#define MANDATORY_FEATURE_LIST list("mcolor" = "FFB","mcolor2" = "FFB","mcolor3" = "FFB","ethcolor" = "FCC","skin_color" = "FED","flavor_text" = "","breasts_size" = 1,"breasts_lactation" = FALSE,"penis_size" = 13,"penis_girth" = 9,"penis_taur_mode" = TRUE,"penis_sheath" = SHEATH_NONE ,"balls_size" = 1, "body_size" = BODY_SIZE_NORMAL, "custom_species" = null, "uses_skintones" = FALSE)
-
-#define UNDERWEAR_HIDE_SOCKS (1<<0)
-#define UNDERWEAR_HIDE_SHIRT (1<<1)
-#define UNDERWEAR_HIDE_UNDIES (1<<2)
+#define MANDATORY_FEATURE_LIST list(\
+	"mcolor" = "#FFFFBB",\
+	"mcolor2" = "#FFFFBB",\
+	"mcolor3" = "#FFFFBB",\
+	"ethcolor" = "#FFCCCC",\
+	"skin_color" = "#FFEEDD",\
+	"flavor_text" = "",\
+	"breasts_size" = 1,\
+	"breasts_lactation" = FALSE,\
+	"penis_size" = 13,\
+	"penis_girth" = 9,\
+	"penis_taur_mode" = TRUE,\
+	"penis_sheath" = SHEATH_NONE,\
+	"balls_size" = 1,\
+	"body_size" = BODY_SIZE_NORMAL,\
+	"custom_species" = null,\
+	"penis_uses_skintones" = TRUE,\
+	"penis_uses_skincolor" = TRUE,\
+	"testicles_uses_skintones" = TRUE,\
+	"testicles_uses_skincolor" = TRUE,\
+	"vagina_uses_skintones" = TRUE,\
+	"vagina_uses_skincolor" = TRUE,\
+	"breasts_uses_skintones" = TRUE,\
+	"breasts_uses_skincolor" = TRUE,\
+)
 
 #define AROUSAL_CANT 0
 #define AROUSAL_NONE 1
 #define AROUSAL_PARTIAL 2
 #define AROUSAL_FULL 3
+
+//Species IDs. If you wanna look at tg's species ID defines, go look in the *other* DNA.dm file
+#define SPECIES_AKULA "akula"
+#define SPECIES_AQUATIC "aquatic"
+#define SPECIES_DWARF "dwarf"
+#define SPECIES_HUMANOID "humanoid"
+#define SPECIES_INSECT "insect"
+#define SPECIES_MAMMAL "mammal"
+#define SPECIES_IPC "ipc"
+#define SPECIES_PODPERSON_WEAK "podweak"
+#define SPECIES_SYNTHLIZ "synthliz"
+#define SPECIES_SYNTHMAMMAL "synthmammal"
+#define SPECIES_SYNTHHUMAN "synthhuman"
+#define SPECIES_SLIMESTART "slimeperson"	//There's already SPECIES_SLIMEPERSON in tg
+#define SPECIES_SKRELL "skrell"
+#define SPECIES_TAJARAN "tajaran"
+#define SPECIES_UNATHI "unathi"
+#define SPECIES_VOX "vox"
+#define SPECIES_VOX_PRIMALIS "vox_primalis"
+#define SPECIES_VULP "vulpkanin"
+#define SPECIES_XENO "xeno"
+#define SPECIES_GHOUL "ghoul"
+#define SPECIES_TESHARI "teshari"
+#define SPECIES_HEMOPHAGE "hemophage"
+
+#define SPECIES_MUTANT "mutant"
+#define SPECIES_MUTANT_INFECTIOUS "infectious_mutant"
+#define SPECIES_MUTANT_SLOW "slow_mutant"
+#define SPECIES_MUTANT_FAST "fast_mutant"
+
+// Leaving this here because it's used for bodyparts, like SPECIES_X are, but since taurs aren't a species... Named it LIMBS instead.
+#define LIMBS_TAUR "taur"

@@ -17,6 +17,10 @@ Don't dump on them the work that you could have done yourself.
 
 This document is meant to be updated and changed, whenever any new exceptions are added onto it. It might be worth it to check, from time to time, whether we didn't define a more unique standardized way of handling some common change.
 
+## Important note - TEST YOUR PULL REQUESTS
+
+You are responsible for the testing of your content. You should not mark a pull request ready for review until you have actually tested it. If you require a separate client for testing, you can use a guest account by logging out of BYOND and connecting to your test server. Test merges are not for bug finding, they are for stress tests where local testing simply doesn't allow for this.
+
 ### The nature of conflicts
 
 For example, let's have an original
@@ -42,11 +46,7 @@ but then our upstream introduces a change in their codebase, changing it from 1 
 As easy of an example as it is, it results in a relatively simple conflict, in the form of
 
 ```byond
-<<<<<<< HEAD
 var/something = 2 //SKYRAT EDIT
-=======
-var/something = 4
->>>>>>> upstream-mirror-123132
 ```
 
 where we pick the preferable option manually.
@@ -72,11 +72,17 @@ And then you'll want to establish your core folder that you'll be working out of
 
 ### Maps
 
-The major station maps have their equivalents in the same folder as the originals, but with their filename having a `_skyrat` suffix.
+IMPORTANT: MAP CONTRIBUTION GUIDELINES HAVE BEEN UPDATED
+When you are adding a new item to the map you MUST follow this procedure:
+Start by deciding how big of a change it is going to be, if it is a small 1 item change, you should use the simple area automapper. If it is an entire room, you should use the template automapper.
 
-If you wanted to add some location to the CentCom z-level, a'la whatever off-station location that isn't meant to be reachable or escapable through normal means, we have our own separate z-level, in `_maps/map_files/generic/Offstation_skyrat.dmm`. That z-level, by design, has the same traits as the CentCom z-level, meaning that teleporters and a lot of other things will simply refuse to work there.
+We will no longer have _skyrat map versions.
 
-If you plan to edit space ruins and so on, currently, it should be discussed with a maintainer and likely should be PRed upstream, to tgstation repository.
+DO NOT CHANGE TG MAPS, THEY ARE HELD TO THE SAME STANDARD AS ICONS. USE THE ABOVE TO MAKE MAP EDITS.
+
+The automapper uses prebaked templates to override sections of a map using coordinates to plot the starting location. See entries in automapper_config.toml for examples.
+
+The simple area automapper uses datum entries to place down a single item in an area of a map that makes vauge sense.
 
 ### Assets: images, sounds, icons and binaries
 
@@ -101,6 +107,8 @@ All assets added by us should be placed into the same modular folder as your cod
   This ensures your code is fully modular and will make it easier for future edits.
 
 - Other assets, binaries and tools, should usually be handled likewise, depending on the case-by-case context. When in doubt, ask a maintainer or other contributors for tips and suggestions.
+
+- Any additional clothing icon files you add MUST go into the existing files in master_files clothing section.
 
 ### Fully modular portions of your code
 
@@ -244,7 +252,7 @@ In those cases, we've decided to apply the following convention, with examples:
   SSshuttle.emergency.request()
   SSblackbox.record_feedback("tally", "admin_verb", 1, "Call Shuttle") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
   log_admin("[key_name(usr)] admin-called the emergency shuttle.")
-  message_admins("<span class='adminnotice'>[key_name_admin(usr)] admin-called the emergency shuttle.</span>")
+  message_admins(span_adminnotice("[key_name_admin(usr)] admin-called the emergency shuttle."))
   return
   */
   //SKYRAT EDIT REMOVAL END
@@ -268,6 +276,43 @@ From every rule, there's exceptions, due to many circumstances. Don't think abou
 
 Due to the way byond loads files, it has become necessary to make a different folder for handling our modular defines.
 That folder is **`code/__DEFINES/~skyrat_defines`**, in which you can add them to the existing files, or create those files as necessary.
+
+### Module folder layout
+
+To keep form and ensure most modules are easy to navigate and to keep control of the amount of files and folders being made in the repository, you are required to follow this layout.
+
+Ensure the folder names are exactly as stated.
+
+Top most folder: module_id
+
+**code**: Any .DM files must go in here, DO NOT COPY THE DIRECTORY OF THE ORIGINAL FILE YOU ARE ADDING.
+
+- Good: /modular_skyrat/modules/example_module/code/disease_mob.dm
+- Bad: /modular_skyrat/modules/example_module/code/modules/antagonists/disease/disease_mob.dm
+
+**icons**: Any .DMI files must go in here, DO NOT COPY THE DIRECTORY OF THE ORIGINAL FILE YOU ARE ADDING.
+
+- Good: /modular_skyrat/modules/example_module/icons/mining_righthand.dmi
+- Bad: /modular_skyrat/modules/example_module/icons/mob/inhands/equipment/mining_righthand.dmi
+
+**sound**: Any SOUND files must go in here, DO NOT COPY THE DIRECTORY OF THE ORIGINAL FILE YOU ARE ADDING.
+
+- Good: See above.
+- Bad: See above.
+
+The readme should go into the parent folder, module_id.
+
+**DO NOT MIX AND MATCH FILE TYPES IN FOLDERS!**
+
+### Commenting out code - DON'T DO IT
+
+If you are commenting out redundant code, do not comment it out, instead, delete it.
+
+Even if you think someone is going to redo whatever it is you're commenting out, don't, gitblame exists for a reason.
+
+This also applies to files, do not comment out entire files, just delete them instead. This helps us keep down on filebloat and pointless comments.
+
+**This does not apply to non-modular changes.**
 
 ## Exemplary PR's
 

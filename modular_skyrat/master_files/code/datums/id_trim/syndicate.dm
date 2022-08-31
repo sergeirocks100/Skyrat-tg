@@ -1,4 +1,4 @@
-///SYNDICATE ID TRIMS
+/// SYNDICATE ID TRIMS
 /datum/id_trim/syndicom/skyrat
 	trim_icon = 'modular_skyrat/master_files/icons/obj/card.dmi'
 
@@ -12,10 +12,10 @@
 	trim_state = "trim_syndicateshipcaptain"
 	access = list(ACCESS_SYNDICATE, ACCESS_ROBOTICS)
 
-///DS-1
+/// DS-2
 
 /datum/id_trim/syndicom/skyrat/assault
-	assignment = "DS-1 Operative"
+	assignment = "DS-2 Operative"
 	trim_state = "trim_syndicateoperative"
 
 /datum/id_trim/syndicom/skyrat/assault/assistant
@@ -37,29 +37,34 @@
 /datum/id_trim/syndicom/skyrat/assault/masteratarms
 	assignment = "Master At Arms"
 	trim_state = "trim_masteratarms"
+	access = list(ACCESS_SYNDICATE, ACCESS_ROBOTICS, ACCESS_SYNDICATE_LEADER)
 
 /datum/id_trim/syndicom/skyrat/assault/brigofficer
 	assignment = "Brig Officer"
 	trim_state = "trim_brigofficer"
+	access = list(ACCESS_SYNDICATE, ACCESS_ROBOTICS, ACCESS_SYNDICATE_LEADER)
 
 /datum/id_trim/syndicom/skyrat/assault/chiefmasteratarms
 	assignment = "Chief Master At Arms"
 	trim_state = "trim_chiefmasteratarms"
+	access = list(ACCESS_SYNDICATE, ACCESS_ROBOTICS, ACCESS_SYNDICATE_LEADER)
 
 /datum/id_trim/syndicom/skyrat/assault/chiefresearchofficer
 	assignment = "Chief Research Officer"
 	trim_state = "trim_chiefresearchofficer"
+	access = list(ACCESS_SYNDICATE, ACCESS_ROBOTICS, ACCESS_SYNDICATE_LEADER)
 
 /datum/id_trim/syndicom/skyrat/assault/chiefengineeringofficer
 	assignment = "Chief Engineering Officer"
 	trim_state = "trim_chiefengineeringofficer"
-	access = list(ACCESS_ENGINE_EQUIP,ACCESS_SYNDICATE)
+	access = list(ACCESS_ENGINE_EQUIP, ACCESS_SYNDICATE, ACCESS_ROBOTICS, ACCESS_SYNDICATE_LEADER)
 
 /datum/id_trim/syndicom/skyrat/assault/stationadmiral
 	assignment = "Station Admiral"
 	trim_state = "trim_stationadmiral"
+	access = list(ACCESS_ENGINE_EQUIP, ACCESS_SYNDICATE, ACCESS_ROBOTICS, ACCESS_SYNDICATE_LEADER)
 
-///Interdyne
+/// Interdyne
 
 /datum/id_trim/syndicom/skyrat/interdyne
 	assignment = "Interdyne Operative"
@@ -72,13 +77,14 @@
 /datum/id_trim/syndicom/skyrat/interdyne/deckofficer
 	assignment = "Deck Officer"
 	trim_state = "trim_deckofficer"
+	access = list(ACCESS_SYNDICATE, ACCESS_ROBOTICS, ACCESS_SYNDICATE_LEADER)
 
-///Misc
+/// Misc
 
 /datum/id_trim/syndicom/skyrat/misc
-	assignment = "Nuclear Tech Support" //Hello? Yes? Nanotrasen? This is Gorlex, uhh. There seems to be an issue.. is your self-destruct running?
+	assignment = "Nuclear Tech Support" // Hello? Yes? Nanotrasen? This is Gorlex, uhh. There seems to be an issue.. is your self-destruct running?
 
-/datum/id_trim/syndicom/skyrat/misc/corporateliasion //Syndicate HoP
+/datum/id_trim/syndicom/skyrat/misc/corporateliasion // Syndicate HoP
 	assignment = "Corporate Liaison"
 	trim_state = "trim_corporateliaison"
 
@@ -106,14 +112,11 @@
 	assignment = "Sanitation Technician"
 	trim_state = "trim_sanitationtechnician"
 
-/datum/id_trim/syndicom/skyrat/misc/deckcrewman //Finally, an excuse to emag the supply console.
+/datum/id_trim/syndicom/skyrat/misc/deckcrewman // Finally, an excuse to emag the supply console.
 	assignment = "Deck Crewman"
 	trim_state = "trim_deckcrewman"
 
-///No Custom Icon
-/datum/id_trim/syndicom/skyratnoicon
-	assignment = "Mr. S"
-
+/// No Custom Icon
 /datum/id_trim/syndicom/skyratnoicon/roboticstechnician
 	assignment = "Robotics Technician"
 	trim_state = "trim_roboticist"

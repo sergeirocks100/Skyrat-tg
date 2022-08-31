@@ -15,7 +15,7 @@
 	/// Countdown timer for the mass driver's delayed launch functionality.
 	COOLDOWN_DECLARE(massdriver_countdown)
 
-/obj/machinery/computer/pod/Initialize()
+/obj/machinery/computer/pod/Initialize(mapload)
 	. = ..()
 	for(var/obj/machinery/mass_driver/M in range(range, src))
 		if(M.id == id)
@@ -56,11 +56,7 @@
 			M.close()
 
 /obj/machinery/computer/pod/ui_interact(mob/user, datum/tgui/ui)
-	//SKYRAT EDIT ADDITON BEGIN - AESTHETICS
-	if(clicksound && world.time > next_clicksound && isliving(user))
-		next_clicksound = world.time + rand(50, 100)
-		playsound(src, get_sfx_skyrat(clicksound), clickvol)
-	//SKYRAT EDIT END
+	. = ..()
 	ui = SStgui.try_update_ui(user, src, ui)
 	if(!ui)
 		ui = new(user, src, "MassDriverControl", name)
@@ -87,7 +83,7 @@
 	if(.)
 		return
 	if(!allowed(usr))
-		to_chat(usr, "<span class='warning'>Access denied.</span>")
+		to_chat(usr, span_warning("Access denied."))
 		return
 
 	switch(action)
@@ -148,11 +144,11 @@
 	icon_keyboard = null
 	density = FALSE
 
-/obj/machinery/computer/pod/old/mass_driver_controller/toxinsdriver
-	id = MASSDRIVER_TOXINS
+/obj/machinery/computer/pod/old/mass_driver_controller/ordnancedriver
+	id = MASSDRIVER_ORDNANCE
 
 //for maps where pod doors are outside of the standard 4 tile controller detection range (ie Pubbystation)
-/obj/machinery/computer/pod/old/mass_driver_controller/toxinsdriver/longrange
+/obj/machinery/computer/pod/old/mass_driver_controller/ordnancedriver/longrange
 	range = 6
 
 /obj/machinery/computer/pod/old/mass_driver_controller/chapelgun

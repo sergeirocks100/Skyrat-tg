@@ -32,19 +32,15 @@
 
 /obj/machinery/computer/apc_control/attack_ai(mob/user)
 	if(!isAdminGhostAI(user))
-		to_chat(user,"<span class='warning'>[src] does not support AI control.</span>") //You already have APC access, cheater!
+		to_chat(user,span_warning("[src] does not support AI control.")) //You already have APC access, cheater!
 		return
 	..()
 
 /obj/machinery/computer/apc_control/proc/check_apc(obj/machinery/power/apc/APC)
-	return APC.z == z && !APC.malfhack && !APC.aidisabled && !(APC.obj_flags & EMAGGED) && !APC.machine_stat && !istype(APC.area, /area/ai_monitored) && !(APC.area.area_flags & NO_ALERTS)
+	return APC.z == z && !APC.malfhack && !APC.aidisabled && !(APC.obj_flags & EMAGGED) && !APC.machine_stat && !istype(APC.area, /area/station/ai_monitored) && !(APC.area.area_flags & NO_ALERTS)
 
 /obj/machinery/computer/apc_control/ui_interact(mob/user, datum/tgui/ui)
-	//SKYRAT EDIT ADDITON BEGIN - AESTHETICS
-	if(clicksound && world.time > next_clicksound && isliving(user))
-		next_clicksound = world.time + rand(50, 100)
-		playsound(src, get_sfx_skyrat(clicksound), clickvol)
-	//SKYRAT EDIT END
+	. = ..()
 	operator = user
 	ui = SStgui.try_update_ui(user, src, ui)
 	if(!ui)
@@ -72,7 +68,7 @@
 					"name" = A.area.name,
 					"operating" = A.operating,
 					"charge" = (has_cell) ? A.cell.percent() : "NOCELL",
-					"load" = DisplayPower(A.lastused_total),
+					"load" = display_power(A.lastused_total),
 					"charging" = A.charging,
 					"chargeMode" = A.chargemode,
 					"eqp" = A.equipment,
@@ -106,6 +102,8 @@
 				else
 					auth_id = "[ID.registered_name] ([ID.assignment]):"
 					log_activity("[auth_id] attempted to log into the terminal")
+					playsound(src, 'sound/machines/terminal_error.ogg', 50, FALSE)
+					to_chat(usr, span_warning("ID REJECTED - Access Denied."))
 				return
 			auth_id = "Unknown (Unknown):"
 			log_activity("[auth_id] attempted to log into the terminal")
@@ -116,13 +114,13 @@
 			auth_id = "\[NULL\]"
 		if("toggle-logs")
 			should_log = !should_log
-			log_game("[key_name(operator)] set the logs of [src] in [AREACOORD(src)] [should_log ? "On" : "Off"]")
+			operator.log_message("set the logs of [src] [should_log ? "On" : "Off"].", LOG_GAME)
 		if("restore-console")
 			restoring = TRUE
 			addtimer(CALLBACK(src, .proc/restore_comp), rand(3,5) * 9)
 		if("access-apc")
 			var/ref = params["ref"]
-			playsound(src, "terminal_type", 50, FALSE)
+			playsound(src, SFX_TERMINAL_TYPE, 50, FALSE)
 			var/obj/machinery/power/apc/APC = locate(ref) in GLOB.apcs_list
 			if(!APC)
 				return
@@ -138,7 +136,7 @@
 			APC.remote_control = src
 			APC.ui_interact(operator)
 			playsound(src, 'sound/machines/terminal_prompt_confirm.ogg', 50, FALSE)
-			log_game("[key_name(operator)] remotely accessed [APC] from [src] at [AREACOORD(src)].")
+			operator.log_message("remotely accessed [APC] from [src].", LOG_GAME)
 			log_activity("[auth_id] remotely accessed APC in [get_area_name(APC.area, TRUE)]")
 			if(APC.locked)
 				APC.say("Remote access detected. Interface unlocked.")
@@ -164,8 +162,8 @@
 				if("equipment", "lighting", "environ")
 					target.vars[type] = value
 				else
-					message_admins("Warning: possible href exploit by [key_name(usr)] - attempted to set [type] on [target] to [value]")
-					log_game("Warning: possible href exploit by [key_name(usr)] - attempted to set [type] on [target] to [value]")
+					message_admins("Warning: possible href exploit by [key_name(usr)] - attempted to set [html_encode(type)] on [target] to [html_encode(value)]")
+					usr.log_message("possibly trying to href exploit - attempted to set [html_encode(type)] on [target] to [html_encode(value)]", LOG_ADMIN)
 					return
 
 			target.update_appearance()
@@ -181,11 +179,11 @@
 				if(3)
 					setTo = "Auto On"
 			log_activity("Set APC [target.area.name] [type] to [setTo]")
-			log_game("[key_name(operator)] Set APC [target.area.name] [type] to [setTo]]")
+			operator.log_message("set APC [target.area.name] [type] to [setTo]]", LOG_GAME)
 		if("breaker")
 			var/ref = params["ref"]
 			var/obj/machinery/power/apc/target = locate(ref) in GLOB.apcs_list
-			target.toggle_breaker()
+			target.toggle_breaker(usr)
 			var/setTo = target.operating ? "On" : "Off"
 			log_activity("Turned APC [target.area.name]'s breaker [setTo]")
 
@@ -193,8 +191,8 @@
 	if(obj_flags & EMAGGED)
 		return
 	obj_flags |= EMAGGED
-	log_game("[key_name(user)] emagged [src] at [AREACOORD(src)]")
-	playsound(src, "sparks", 50, TRUE, SHORT_RANGE_SOUND_EXTRARANGE)
+	usr.log_message("emagged [src].", LOG_ATTACK, color="red")
+	playsound(src, SFX_SPARKS, 50, TRUE, SHORT_RANGE_SOUND_EXTRARANGE)
 
 /obj/machinery/computer/apc_control/proc/log_activity(log_text)
 	if(!should_log)
@@ -204,7 +202,7 @@
 /obj/machinery/computer/apc_control/proc/restore_comp()
 	obj_flags &= ~EMAGGED
 	should_log = TRUE
-	log_game("[key_name(operator)] restored the logs of [src] in [AREACOORD(src)]")
+	operator.log_message("restored the logs of [src].", LOG_GAME)
 	log_activity("-=- Logging restored to full functionality at this point -=-")
 	restoring = FALSE
 

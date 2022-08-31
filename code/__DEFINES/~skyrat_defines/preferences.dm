@@ -1,7 +1,12 @@
-//Skyrat toggles
-#define CHAT_LOOC (1<<0) //UNUSED BIT SLOT, could still be in savefiles. Feel free to replace it when you add a new one
-#define CHAT_LOOC_ADMIN (1<<1)
-#define APHRO_PREF (1<<2)
-#define CUMFACE_PREF (1<<3)
+#define PREVIEW_PREF_JOB "Job"
+#define PREVIEW_PREF_LOADOUT "Loadout"
+#define PREVIEW_PREF_UNDERWEAR "Underwear"
+#define PREVIEW_PREF_NAKED "Naked"
+#define PREVIEW_PREF_NAKED_AROUSED "Naked - Aroused"
 
-#define TOGGLES_DEFAULT_SKYRAT (CHAT_LOOC_ADMIN|APHRO_PREF|CUMFACE_PREF)
+/// for tri color prefs: doesn't check type_to_check pref
+#define TRICOLOR_NO_CHECK 0
+/// checks that the value of type_to_check is not FALSE
+#define TRICOLOR_CHECK_BOOLEAN 1
+/// checks that the value of type_to_check is associated with a factual sprite accessory (tldr not "None")
+#define TRICOLOR_CHECK_ACCESSORY 2

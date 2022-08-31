@@ -4,13 +4,15 @@
 	name = "bluespace artillery control"
 	use_power = NO_POWER_USE
 	circuit = /obj/item/circuitboard/computer/bsa_control
-	icon = 'icons/obj/machines/particle_accelerator.dmi'
+	icon = 'modular_skyrat/modules/fixing_missing_icons/particle_accelerator.dmi'
 	icon_state = "control_boxp"
 	var/obj/machinery/bsa_powercore/core //The moveable power core link
 	var/obj/machinery/bsa/full/cannon
 	var/notice
 	var/target
 	var/area_aim = FALSE //should also show areas for targeting
+
+	connectable = FALSE //connecting_computer change: since icon_state is not a typical console, it cannot be connectable.
 
 /obj/machinery/computer/bsa_control/multitool_act(mob/living/user, obj/item/I)
 	if(!multitool_check_buffer(user, I))
@@ -19,23 +21,24 @@
 	if(M.buffer)
 		if(istype(M.buffer, /obj/machinery/bsa_powercore))
 			if(!cannon)
-				to_chat(user, "<span class='warning'>There is no cannon linked to this control unit!</span>")
+				to_chat(user, span_warning("There is no cannon linked to this control unit!"))
 				return FALSE
 			if(core)
-				to_chat(user, "<span class='warning'>There is already a core linked to this control unit!</span>")
+				to_chat(user, span_warning("There is already a core linked to this control unit!"))
 				return FALSE
 			core = M.buffer
 			core.control_unit = src
 			M.buffer = null
-			to_chat(user, "<span class='notice'>You link [src] with [core].</span>")
+			to_chat(user, span_notice("You link [src] with [core]."))
 	else
-		to_chat(user, "<span class='warning'>[I]'s data buffer is empty!</span>")
+		to_chat(user, span_warning("[I]'s data buffer is empty!"))
 	return TRUE
 
 /obj/machinery/computer/bsa_control/ui_state(mob/user)
 	return GLOB.physical_state
 
 /obj/machinery/computer/bsa_control/ui_interact(mob/user, datum/tgui/ui)
+	. = ..()
 	ui = SStgui.try_update_ui(user, src, ui)
 	if(!ui)
 		ui = new(user, src, "BluespaceArtillery", name)
@@ -79,8 +82,12 @@
 	var/list/options = gps_locators
 	if(area_aim)
 		options += GLOB.teleportlocs
-	var/V = input(user,"Select target", "Select target",null) in options|null
-	target = options[V]
+	var/victim = tgui_input_list(user, "Select target", "Artillery Targeting", options)
+	if(isnull(victim))
+		return
+	if(isnull(options[victim]))
+		return
+	target = options[victim]
 
 /obj/machinery/computer/bsa_control/proc/get_target_name()
 	if(istype(target, /area))
@@ -122,8 +129,8 @@
 	if(notice)
 		return null
 	//Totally nanite construction system not an immersion breaking spawning
-	var/datum/effect_system/smoke_spread/s = new
-	s.set_up(4,get_turf(centerpiece))
+	var/datum/effect_system/fluid_spread/smoke/s = new
+	s.set_up(4, location = get_turf(centerpiece))
 	s.start()
 	var/obj/machinery/bsa/full/cannon = new(get_turf(centerpiece),centerpiece.get_cannon_direction())
 	cannon.control_unit = src
@@ -133,7 +140,8 @@
 	return cannon
 
 /obj/machinery/computer/bsa_control/Destroy()
-	cannon.control_unit = null
-	cannon = null
+	if(cannon)
+		cannon.control_unit = null
+		cannon = null
 	core = null
 	. = ..()

@@ -4,13 +4,12 @@
 	set desc = "Allows you to set a temporary flavor text."
 
 	if(stat != CONSCIOUS)
-		to_chat(usr, "<span class='warning'>You can't set your temporary flavor text now...</span>")
+		to_chat(usr, span_warning("You can't set your temporary flavor text now..."))
 		return
 
-	var/msg = input(usr, "Set the temporary flavor text in your 'examine' verb. This is for describing what people can tell by looking at your character.", "Temporary Flavor Text", temporary_flavor_text) as message|null
-	if(msg)
-		if(msg == "")
-			temporary_flavor_text = null
-		else
-			temporary_flavor_text = strip_html_simple(msg, MAX_FLAVOR_LEN, TRUE)
-	return
+	var/msg = tgui_input_text(usr, "Set the temporary flavor text in your 'examine' verb. This is for describing what people can tell by looking at your character.", "Temporary Flavor Text", temporary_flavor_text, max_length = MAX_FLAVOR_LEN, multiline = TRUE)
+	if(msg == null)
+		return
+
+	// Turn empty input into no flavor text
+	temporary_flavor_text = msg || null

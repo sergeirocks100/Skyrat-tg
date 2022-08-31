@@ -5,7 +5,7 @@
 	desc = "This can be used to check medical records."
 	icon_screen = "medcomp"
 	icon_keyboard = "med_key"
-	req_one_access = list(ACCESS_MEDICAL, ACCESS_FORENSICS_LOCKERS)
+	req_one_access = list(ACCESS_MEDICAL, ACCESS_DETECTIVE, ACCESS_GENETICS)
 	circuit = /obj/item/circuitboard/computer/med_data
 	light_color = LIGHT_COLOR_BLUE
 	var/rank = null
@@ -21,6 +21,7 @@
 
 /obj/machinery/computer/med_data/syndie
 	icon_keyboard = "syndie_key"
+	req_one_access = list(ACCESS_SYNDICATE)
 
 /obj/machinery/computer/med_data/ui_interact(mob/user)
 	. = ..()
@@ -65,7 +66,7 @@
 
 
 					if(!isnull(GLOB.data_core.general))
-						for(var/datum/data/record/R in sortRecord(GLOB.data_core.general, sortBy, order))
+						for(var/datum/data/record/R in sort_record(GLOB.data_core.general, sortBy, order))
 							var/blood_type = ""
 							var/b_dna = ""
 							for(var/datum/data/record/E in GLOB.data_core.medical)
@@ -97,15 +98,17 @@
 
 					dat += "<table><tr><td><b><font size='4'>Medical Record</font></b></td></tr>"
 					if(active1 in GLOB.data_core.general)
-						if(istype(active1.fields["photo_front"], /obj/item/photo))
-							var/obj/item/photo/P1 = active1.fields["photo_front"]
-							user << browse_rsc(P1.picture.picture_image, "photo_front")
-						if(istype(active1.fields["photo_side"], /obj/item/photo))
-							var/obj/item/photo/P2 = active1.fields["photo_side"]
-							user << browse_rsc(P2.picture.picture_image, "photo_side")
+						var/front_photo = active1.get_front_photo()
+						if(istype(front_photo, /obj/item/photo))
+							var/obj/item/photo/photo_front = front_photo
+							user << browse_rsc(photo_front.picture.picture_image, "photo_front")
+						var/side_photo = active1.get_side_photo()
+						if(istype(side_photo, /obj/item/photo))
+							var/obj/item/photo/photo_side = side_photo
+							user << browse_rsc(photo_side.picture.picture_image, "photo_side")
 						dat += "<tr><td>Name:</td><td>[active1.fields["name"]]</td>"
-						dat += "<td><a href='?src=[REF(src)];field=show_photo_front'><img src=photo_front height=80 width=80 border=4></a></td>"
-						dat += "<td><a href='?src=[REF(src)];field=show_photo_side'><img src=photo_side height=80 width=80 border=4></a></td></tr>"
+						dat += "<td><a href='?src=[REF(src)];field=show_photo_front'><img src=photo_front height=96 width=96 border=4 style=\"-ms-interpolation-mode:nearest-neighbor\"></a></td>"
+						dat += "<td><a href='?src=[REF(src)];field=show_photo_side'><img src=photo_side height=96 width=96 border=4 style=\"-ms-interpolation-mode:nearest-neighbor\"></a></td></tr>"
 						dat += "<tr><td>ID:</td><td>[active1.fields["id"]]</td></tr>"
 						dat += "<tr><td>Gender:</td><td><A href='?src=[REF(src)];field=gender'>&nbsp;[active1.fields["gender"]]&nbsp;</A></td></tr>"
 						dat += "<tr><td>Age:</td><td><A href='?src=[REF(src)];field=age'>&nbsp;[active1.fields["age"]]&nbsp;</A></td></tr>"
@@ -113,11 +116,13 @@
 						dat += "<tr><td>Fingerprint:</td><td><A href='?src=[REF(src)];field=fingerprint'>&nbsp;[active1.fields["fingerprint"]]&nbsp;</A></td></tr>"
 						dat += "<tr><td>Physical Status:</td><td><A href='?src=[REF(src)];field=p_stat'>&nbsp;[active1.fields["p_stat"]]&nbsp;</A></td></tr>"
 						dat += "<tr><td>Mental Status:</td><td><A href='?src=[REF(src)];field=m_stat'>&nbsp;[active1.fields["m_stat"]]&nbsp;</A></td></tr>"
+						dat += "<tr><td>General Records:</td><td><A href='?src=[REF(src)];choice=View Past General'>View&nbsp;</A></td></tr>" // SKYRAT EDIT ADD - RP RECORDS
 					else
 						dat += "<tr><td>General Record Lost!</td></tr>"
 
 					dat += "<tr><td><br><b><font size='4'>Medical Data</font></b></td></tr>"
 					if(active2 in GLOB.data_core.medical)
+						dat += "<tr><td>Medical Records:</td><td><A href='?src=[REF(src)];choice=View Past Medical'>View&nbsp;</A></td></tr>" // SKYRAT EDIT ADD - RP RECORDS
 						dat += "<tr><td>Blood Type:</td><td><A href='?src=[REF(src)];field=blood_type'>&nbsp;[active2.fields["blood_type"]]&nbsp;</A></td></tr>"
 						dat += "<tr><td>DNA:</td><td><A href='?src=[REF(src)];field=b_dna'>&nbsp;[active2.fields["b_dna"]]&nbsp;</A></td></tr>"
 						dat += "<tr><td><br>Minor Disabilities:</td><td><br><A href='?src=[REF(src)];field=mi_dis'>&nbsp;[active2.fields["mi_dis"]]&nbsp;</A></td></tr>"
@@ -163,7 +168,7 @@
 							continue //only find medibots on the same z-level as the computer
 						var/turf/bl = get_turf(M)
 						if(bl) //if it can't find a turf for the medibot, then it probably shouldn't be showing up
-							bdat += "[M.name] - <b>\[[bl.x],[bl.y]\]</b> - [M.on ? "Online" : "Offline"]<br>"
+							bdat += "[M.name] - <b>\[[bl.x],[bl.y]\]</b> - [M.bot_mode_flags & BOT_MODE_ON ? "Online" : "Offline"]<br>"
 					if(!bdat)
 						dat += "<br><center>None detected</center>"
 					else
@@ -196,6 +201,21 @@
 			active2 = null
 			playsound(src, 'sound/machines/terminal_off.ogg', 50, FALSE)
 		else if(href_list["choice"])
+			//SKYRAT EDIT ADD - RP RECORDS
+			if(href_list["choice"] == "View Past Medical")
+				if(istype(active2, /datum/data/record))
+					temp = "<h5>Medical Records:</h5>"
+					temp += "<ul>"
+					temp += "<li>[active2.fields["past_records"]]</li>"
+					temp += "</ul>"
+
+			if(href_list["choice"] == "View Past General")
+				if(istype(active1, /datum/data/record))
+					temp = "<h5>General Records:</h5>"
+					temp += "<ul>"
+					temp += "<li>[active1.fields["past_records"]]</li>"
+					temp += "</ul>"
+			//SKYRAT EDIT END
 			// SORTING!
 			if(href_list["choice"] == "Sorting")
 				// Reverse the order if clicked twice
@@ -232,7 +252,7 @@
 				rank = I.assignment
 				screen = 1
 			else
-				to_chat(usr, "<span class='danger'>Unauthorized access.</span>")
+				to_chat(usr, span_danger("Unauthorized access."))
 			playsound(src, 'sound/machines/terminal_on.ogg', 50, FALSE)
 		if(authenticated)
 			if(href_list["screen"])
@@ -244,20 +264,23 @@
 				active2 = null
 
 			else if(href_list["vir"])
-				var/type = href_list["vir"]
-				var/datum/disease/Dis = new type(0)
-				var/AfS = ""
-				for(var/mob/M in Dis.viable_mobtypes)
-					AfS += " [initial(M.name)];"
-				temp = {"<b>Name:</b> [Dis.name]
-<BR><b>Number of stages:</b> [Dis.max_stages]
-<BR><b>Spread:</b> [Dis.spread_text] Transmission
-<BR><b>Possible Cure:</b> [(Dis.cure_text||"none")]
-<BR><b>Affected Lifeforms:</b>[AfS]
+				var/type = text2path(href_list["vir"] || "")
+				if(!ispath(type, /datum/disease))
+					return
+
+				var/datum/disease/disease = new type(0)
+				var/applicable_mob_names = ""
+				for(var/mob/viable_mob as anything in disease.viable_mobtypes)
+					applicable_mob_names += " [initial(viable_mob.name)];"
+				temp = {"<b>Name:</b> [disease.name]
+<BR><b>Number of stages:</b> [disease.max_stages]
+<BR><b>Spread:</b> [disease.spread_text] Transmission
+<BR><b>Possible Cure:</b> [(disease.cure_text||"none")]
+<BR><b>Affected Lifeforms:</b>[applicable_mob_names]
 <BR>
-<BR><b>Notes:</b> [Dis.desc]
+<BR><b>Notes:</b> [disease.desc]
 <BR>
-<BR><b>Severity:</b> [Dis.severity]"}
+<BR><b>Severity:</b> [disease.severity]"}
 
 			else if(href_list["del_all"])
 				temp = "Are you sure you wish to delete all records?<br>\n\t<A href='?src=[REF(src)];temp=1;del_all2=1'>Yes</A><br>\n\t<A href='?src=[REF(src)];temp=1'>No</A><br>"
@@ -368,16 +391,16 @@
 							active2.fields["b_dna"] = t1
 					if("show_photo_front")
 						if(active1)
-							if(active1.fields["photo_front"])
-								if(istype(active1.fields["photo_front"], /obj/item/photo))
-									var/obj/item/photo/P = active1.fields["photo_front"]
-									P.show(usr)
+							var/front_photo = active1.get_front_photo()
+							if(istype(front_photo, /obj/item/photo))
+								var/obj/item/photo/photo = front_photo
+								photo.show(usr)
 					if("show_photo_side")
 						if(active1)
-							if(active1.fields["photo_side"])
-								if(istype(active1.fields["photo_side"], /obj/item/photo))
-									var/obj/item/photo/P = active1.fields["photo_side"]
-									P.show(usr)
+							var/side_photo = active1.get_side_photo()
+							if(istype(side_photo, /obj/item/photo))
+								var/obj/item/photo/photo = side_photo
+								photo.show(usr)
 					else
 
 			else if(href_list["p_stat"])
@@ -446,7 +469,7 @@
 
 			else if(href_list["new"])
 				if((istype(active1, /datum/data/record) && !( istype(active2, /datum/data/record) )))
-					var/datum/data/record/R = new /datum/data/record(  )
+					var/datum/data/record/R = new /datum/data/record()
 					R.fields["name"] = active1.fields["name"]
 					R.fields["id"] = active1.fields["id"]
 					R.name = text("Medical Record #[]", R.fields["id"])
@@ -509,26 +532,54 @@
 					GLOB.data_core.medicalPrintCount++
 					playsound(loc, 'sound/items/poster_being_created.ogg', 100, TRUE)
 					sleep(30)
-					var/obj/item/paper/P = new /obj/item/paper( loc )
-					P.info = "<CENTER><B>Medical Record - (MR-[GLOB.data_core.medicalPrintCount])</B></CENTER><BR>"
+					var/obj/item/paper/printed_paper = new /obj/item/paper(loc)
+					var/final_paper_text = "<CENTER><B>Medical Record - (MR-[GLOB.data_core.medicalPrintCount])</B></CENTER><BR>"
 					if(active1 in GLOB.data_core.general)
-						P.info += text("Name: [] ID: []<BR>\nGender: []<BR>\nAge: []<BR>", active1.fields["name"], active1.fields["id"], active1.fields["gender"], active1.fields["age"])
-						P.info += "\nSpecies: [active1.fields["species"]]<BR>"
-						P.info += text("\nFingerprint: []<BR>\nPhysical Status: []<BR>\nMental Status: []<BR>", active1.fields["fingerprint"], active1.fields["p_stat"], active1.fields["m_stat"])
+						final_paper_text += text("Name: [] ID: []<BR>\nGender: []<BR>\nAge: []<BR>", active1.fields["name"], active1.fields["id"], active1.fields["gender"], active1.fields["age"])
+						final_paper_text += "\nSpecies: [active1.fields["species"]]<BR>"
+						final_paper_text += text("\nFingerprint: []<BR>\nPhysical Status: []<BR>\nMental Status: []<BR>", active1.fields["fingerprint"], active1.fields["p_stat"], active1.fields["m_stat"])
+						//SKYRAT EDIT ADD - RP RECORDS
+						if(!(active1.fields["past_records"] == ""))
+							final_paper_text += "\nGeneral Records:\n[active1.fields["past_records"]]\n"
+						//SKYRAT EDIT ADD END
 					else
-						P.info += "<B>General Record Lost!</B><BR>"
+						final_paper_text += "<B>General Record Lost!</B><BR>"
 					if(active2 in GLOB.data_core.medical)
-						P.info += text("<BR>\n<CENTER><B>Medical Data</B></CENTER><BR>\nBlood Type: []<BR>\nDNA: []<BR>\n<BR>\nMinor Disabilities: []<BR>\nDetails: []<BR>\n<BR>\nMajor Disabilities: []<BR>\nDetails: []<BR>\n<BR>\nAllergies: []<BR>\nDetails: []<BR>\n<BR>\nCurrent Diseases: [] (per disease info placed in log/comment section)<BR>\nDetails: []<BR>\n<BR>\nImportant Notes:<BR>\n\t[]<BR>\n<BR>\n<CENTER><B>Comments/Log</B></CENTER><BR>", active2.fields["blood_type"], active2.fields["b_dna"], active2.fields["mi_dis"], active2.fields["mi_dis_d"], active2.fields["ma_dis"], active2.fields["ma_dis_d"], active2.fields["alg"], active2.fields["alg_d"], active2.fields["cdi"], active2.fields["cdi_d"], active2.fields["notes"])
+						// final_paper_text += text("<BR>\n<CENTER><B>Medical Data</B></CENTER><BR>\nBlood Type: []<BR>\nDNA: []<BR>\n<BR>\nMinor Disabilities: []<BR>\nDetails: []<BR>\n<BR>\nMajor Disabilities: []<BR>\nDetails: []<BR>\n<BR>\nAllergies: []<BR>\nDetails: []<BR>\n<BR>\nCurrent Diseases: [] (per disease info placed in log/comment section)<BR>\nDetails: []<BR>\n<BR>\nImportant Notes:<BR>\n\t[]<BR>\n<BR>\n<CENTER><B>Comments/Log</B></CENTER><BR>", active2.fields["blood_type"], active2.fields["b_dna"], active2.fields["mi_dis"], active2.fields["mi_dis_d"], active2.fields["ma_dis"], active2.fields["ma_dis_d"], active2.fields["alg"], active2.fields["alg_d"], active2.fields["cdi"], active2.fields["cdi_d"], active2.fields["notes"]) // SKYRAT EDIT ORIGINAL - WHAT THE FUCK IS THIS CODE WHY IS THIS SO UNREADABLE KILL ME
+						//SKYRAT EDIT START - THANK YOU TO AZARAK FOR DOING ALL THE WORK HENK
+						final_paper_text += "<BR>\n<CENTER><B>Medical Data</B></CENTER>"
+						if(!(active2.fields["past_records"] == ""))
+							final_paper_text += "\nMedical Records:\n[active2.fields["past_records"]]<BR>\n"
+						final_paper_text += "<BR>\nBlood Type: [active2.fields["blood_type"]]"
+						final_paper_text += "<BR>\nDNA: [active2.fields["b_dna"]]"
+						final_paper_text += "<BR>\n"
+						final_paper_text += "<BR>\nMinor Disabilities: [active2.fields["mi_dis"]]"
+						final_paper_text += "<BR>\nDetails: [active2.fields["mi_dis_d"]]"
+						final_paper_text += "<BR>\n"
+						final_paper_text += "<BR>\nMajor Disabilities: [active2.fields["ma_dis"]]"
+						final_paper_text += "<BR>\nDetails: [active2.fields["ma_dis_d"]]"
+						final_paper_text += "<BR>\n"
+						final_paper_text += "<BR>\nAllergies: [active2.fields["alg"]]"
+						final_paper_text += "<BR>\nDetails: [active2.fields["alg_d"]]"
+						final_paper_text += "<BR>\n"
+						final_paper_text += "<BR>\nCurrent Diseases: [active2.fields["cdi"]] (per disease info placed in log/comment section)"
+						final_paper_text += "<BR>\nDetails: [active2.fields["cdi_d"]]"
+						final_paper_text += "<BR>\n"
+						final_paper_text += "<BR>\nImportant Notes:"
+						final_paper_text += "<BR>\n\t[active2.fields["notes"]]"
+						final_paper_text += "<BR>\n"
+						//SKYRAT EDIT END
 						var/counter = 1
 						while(active2.fields[text("com_[]", counter)])
-							P.info += text("[]<BR>", active2.fields[text("com_[]", counter)])
+							final_paper_text += text("[]<BR>", active2.fields[text("com_[]", counter)])
 							counter++
-						P.name = text("MR-[] '[]'", GLOB.data_core.medicalPrintCount, active1.fields["name"])
+						printed_paper.name = text("MR-[] '[]'", GLOB.data_core.medicalPrintCount, active1.fields["name"])
 					else
-						P.info += "<B>Medical Record Lost!</B><BR>"
-						P.name = text("MR-[] '[]'", GLOB.data_core.medicalPrintCount, "Record Lost")
-					P.info += "</TT>"
-					P.update_appearance()
+						final_paper_text += "<B>Medical Record Lost!</B><BR>"
+						printed_paper.name = text("MR-[] '[]'", GLOB.data_core.medicalPrintCount, "Record Lost")
+					final_paper_text += "</TT>"
+					printed_paper.add_raw_text(final_paper_text)
+					printed_paper.update_appearance()
 					printing = null
 
 	add_fingerprint(usr)

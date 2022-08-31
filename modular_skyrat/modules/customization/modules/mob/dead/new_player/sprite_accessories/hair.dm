@@ -1,7 +1,7 @@
 // Hairstyles
 
 /datum/sprite_accessory/hair/skyrat
-	icon = 'modular_skyrat/modules/customization/icons/mob/sprite_accessory/hair.dmi'
+	icon = 'modular_skyrat/master_files/icons/mob/sprite_accessory/hair.dmi'
 
 /datum/sprite_accessory/hair/skyrat/pigtails4
 	name = "Pigtails 4"
@@ -335,10 +335,70 @@
 	name = "New You"
 	icon_state = "hair_newyou"
 
+/datum/sprite_accessory/hair/skyrat/spicy
+	name = "Spicy"
+	icon_state = "hair_spicy"
+
+/datum/sprite_accessory/hair/skyrat/sabitsuki
+	name = "Sabitsuki"
+	icon_state = "hair_sabitsuki"
+
+/datum/sprite_accessory/hair/skyrat/jessica
+	name = "Jessica"
+	icon_state = "hair_jessica"
+
+/datum/sprite_accessory/hair/skyrat/gentle21
+	name = "Gently Brushed"
+	icon_state = "hair_gentle21"
+
+/datum/sprite_accessory/hair/skyrat/country_s
+	name = "Country Side-Braid"
+	icon_state = "hair_country_s"
+
+/datum/sprite_accessory/hair/skyrat/beachwave
+	name = "Beachwave"
+	icon_state = "hair_beachwave"
+
+/datum/sprite_accessory/hair/skyrat/hyenamane
+	name = "Hyena mane"
+	icon_state = "hair_hyenamane"
+
+/datum/sprite_accessory/hair/skyrat/halfshavedlong
+	name = "Half-shaved long"
+	icon = 'modular_skyrat/master_files/icons/mob/sprite_accessory/more_hair.dmi'
+	icon_state = "halfshave_long"
+
+/datum/sprite_accessory/hair/skyrat/halfshavedmessy
+	name = "Half-shaved messy"
+	icon = 'modular_skyrat/master_files/icons/mob/sprite_accessory/more_hair.dmi'
+	icon_state = "halfshave_messy"
+
+/datum/sprite_accessory/hair/skyrat/halfshavedmessylong
+	name = "Half-shave long messy"
+	icon = 'modular_skyrat/master_files/icons/mob/sprite_accessory/more_hair.dmi'
+	icon_state = "halfshave_messylong"
+
+/datum/sprite_accessory/hair/skyrat/halfshavedglamorous
+	name = "Half-shave glamorous"
+	icon = 'modular_skyrat/master_files/icons/mob/sprite_accessory/more_hair.dmi'
+	icon_state = "halfshave_glamorous"
+
+/datum/sprite_accessory/hair/skyrat/emoshort
+	name = "Emo Short"
+	icon_state = "hair_emoshort"
+
+/datum/sprite_accessory/hair/skyrat/mediumbraid
+	name = "Medium Braid"
+	icon_state = "hair_mediumbraid"
+
+/datum/sprite_accessory/hair/skyrat/long_over_eye_alt
+	name = "Long Over Eye Alt"
+	icon_state = "hair_longovereye_alt"
+
 // Facial hair
 
 /datum/sprite_accessory/facial_hair/skyrat
-	icon = 'modular_skyrat/modules/customization//icons/mob/sprite_accessory/facialhair.dmi'
+	icon = 'modular_skyrat/master_files/icons/mob/sprite_accessory/facialhair.dmi'
 
 /datum/sprite_accessory/facial_hair/skyrat/sideburns
 	name = "Sideburns"
@@ -367,3 +427,7 @@
 /datum/sprite_accessory/facial_hair/skyrat/neckfluff
 	name = "Neckfluff"
 	icon_state = "facial_neckfluff"
+
+/datum/sprite_accessory/facial_hair/skyrat/squid
+	name = "Tentacle Beard"
+	icon_state = "facial_squid"

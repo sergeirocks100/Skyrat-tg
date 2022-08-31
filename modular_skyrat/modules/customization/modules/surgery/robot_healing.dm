@@ -9,7 +9,7 @@
 	target_mobtypes = list(/mob/living/carbon/human)
 	possible_locs = list(BODY_ZONE_CHEST)
 	replaced_by = /datum/surgery
-	requires_bodypart_type = BODYPART_ROBOTIC
+	requires_bodypart_type = BODYTYPE_ROBOTIC
 	ignore_clothes = TRUE
 	var/healing_step_type
 	var/antispam = FALSE
@@ -27,7 +27,7 @@
 	name = "repair body (welder/cable)"
 	implements = list(TOOL_WELDER = 100, /obj/item/stack/cable_coil = 100)
 	repeatable = TRUE
-	time = 15
+	time = 25
 	var/healsbrute = FALSE
 	var/healsburn = FALSE
 	var/brutehealing = 0
@@ -53,9 +53,9 @@
 	if(istype(surgery,/datum/surgery/robot_healing))
 		var/datum/surgery/robot_healing/the_surgery = surgery
 		if(!the_surgery.antispam)
-			display_results(user, target, "<span class='notice'>You attempt to fix some of [target]'s [woundtype].</span>",
-		"<span class='notice'>[user] attempts to fix some of [target]'s [woundtype].</span>",
-		"<span class='notice'>[user] attempts to fix some of [target]'s [woundtype].</span>")
+			display_results(user, target, span_notice("You attempt to fix some of [target]'s [woundtype]."),
+		span_notice("[user] attempts to fix some of [target]'s [woundtype]."),
+		span_notice("[user] attempts to fix some of [target]'s [woundtype]."))
 
 /datum/surgery_step/robot_heal/initiate(mob/user, mob/living/carbon/target, target_zone, obj/item/tool, datum/surgery/surgery, try_to_fail = FALSE)
 	if(..())
@@ -72,9 +72,11 @@
 		tool.use_tool(target, user, 0, volume=50, amount=1)
 	var/urhealedamt_burn = 0
 	if(healsburn)
+		var/obj/item/stack/cable_coil/cable = tool
 		urhealedamt_burn = burnhealing
-		if(tool)
-			tool.use(1)
+		if(!cable.amount)
+			return
+		cable.use(1)
 	if(missinghpbonus)
 		if(target.stat != DEAD)
 			urhealedamt_brute += round((target.getBruteLoss()/ missinghpbonus),0.1)
@@ -87,8 +89,8 @@
 		urhealedamt_burn *= 0.55
 		umsg += " as best as you can while they have clothing on"
 		tmsg += " as best as they can while [target] has clothing on"
-	target.heal_bodypart_damage(urhealedamt_brute,urhealedamt_burn, 0, BODYPART_ROBOTIC)
-	display_results(user, target, "<span class='notice'>[umsg].</span>",
+	target.heal_bodypart_damage(urhealedamt_brute,urhealedamt_burn, 0, BODYTYPE_ROBOTIC)
+	display_results(user, target, span_notice("[umsg]."),
 		"[tmsg].",
 		"[tmsg].")
 	if(istype(surgery, /datum/surgery/robot_healing))
@@ -97,9 +99,9 @@
 	return TRUE
 
 /datum/surgery_step/robot_heal/failure(mob/user, mob/living/carbon/target, target_zone, obj/item/tool, datum/surgery/surgery)
-	display_results(user, target, "<span class='warning'>You screwed up!</span>",
-		"<span class='warning'>[user] screws up!</span>",
-		"<span class='notice'>[user] fixes some of [target]'s damage.</span>", TRUE)
+	display_results(user, target, span_warning("You screwed up!"),
+		span_warning("[user] screws up!"),
+		span_notice("[user] fixes some of [target]'s damage."), TRUE)
 	var/urdamageamt_brute = 0
 	if(healsbrute)
 		urdamageamt_brute = brutehealing * 0.8
@@ -127,3 +129,4 @@
 	brutehealing = 10
 	burnhealing = 10
 	missinghpbonus = 15
+	time = 10

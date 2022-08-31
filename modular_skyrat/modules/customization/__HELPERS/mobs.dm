@@ -52,6 +52,13 @@
 		if(!findname(.))
 			break
 
+/proc/random_unique_teshari_name(attempts_to_find_unique_name=10)
+	for(var/i in 1 to attempts_to_find_unique_name)
+		. = capitalize(teshari_name())
+
+		if(!findname(.))
+			break
+
 /proc/assemble_body_markings_from_set(datum/body_marking_set/BMS, list/features, datum/species/pref_species)
 	var/list/body_markings = list()
 	for(var/set_name in BMS.body_marking_list)
@@ -61,5 +68,5 @@
 			if(set_name in marking_list)
 				if(!body_markings[zone])
 					body_markings[zone] = list()
-				body_markings[zone][set_name] = BM.get_default_color(features, pref_species)
+				body_markings[zone][set_name] = list(BM.get_default_color(features, pref_species), FALSE)
 	return body_markings

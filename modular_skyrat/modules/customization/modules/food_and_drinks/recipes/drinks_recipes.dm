@@ -141,7 +141,7 @@
 
 /datum/chemical_reaction/drink/hollow_bone
 	results = list(/datum/reagent/consumable/ethanol/hollow_bone = 10)
-	required_reagents = list(/datum/reagent/toxin/bonehurtingjuice = 10,  /datum/reagent/consumable/milk = 15)
+	required_reagents = list(/datum/reagent/toxin/bonehurtingjuice = 10,  /datum/reagent/consumable/soymilk = 15)//Skeletons love milk, and will find soymilk disgusting!
 
 /datum/chemical_reaction/drink/jell_wyrm
 	results = list(/datum/reagent/consumable/ethanol/jell_wyrm = 2)
@@ -162,7 +162,7 @@
 
 /datum/chemical_reaction/drink/pinkmilk
 	results = list(/datum/reagent/consumable/pinkmilk = 2)
-	required_reagents = list(/datum/reagent/consumable/berryjuice = 1, /datum/reagent/consumable/milk = 1)
+	required_reagents = list(/datum/reagent/consumable/berryjuice = 1, /datum/reagent/consumable/milk = 1, /datum/reagent/consumable/sugar = 1)
 
 /datum/chemical_reaction/drink/pinktea
 	results = list(/datum/reagent/consumable/pinktea = 5)
@@ -172,14 +172,10 @@
 	results = list(/datum/reagent/consumable/catnip_tea = 10)
 	required_reagents = list(/datum/reagent/consumable/tea = 5, /datum/reagent/pax/catnip = 2)
 
-/datum/chemical_reaction/drink/milkshake
-	results = list(/datum.reagent/consumable/milkshake = 5)
-	required_reagents = list(/datum/reagent/consumable/milk = 1, /datum/reagent/consumable/ice = 2, /datum/reagent/consumable/cream = 2)
+/datum/chemical_reaction/drink/beerbatter
+	results = list(/datum/reagent/consumable/beerbatter = 4)
+	required_reagents = list(/datum/reagent/consumable/cooking_oil = 1, /datum/reagent/consumable/ethanol/beer = 1, /datum/reagent/consumable/flour = 1)
+	mix_message = "Sizzling and cracking is heard as you beat the mixture into submission."
 
-/datum/chemical_reaction/drink/milkshake_chocolate
-	results = list(/datum.reagent/consumable/milkshake_chocolate = 5)
-	required_reagents = list(/datum/reagent/consumable/coco = 1, /datum/reagent/consumable/ice = 2, /datum/reagent/consumable/cream = 2)
 
-/datum/chemical_reaction/drink/milkshake_strawberry
-	results = list(/datum.reagent/consumable/milkshake_strawberry = 5)
-	required_reagents = list(/datum/reagent/consumable/berryjuice = 1, /datum/reagent/consumable/ice = 2, /datum/reagent/consumable/cream = 2)
+

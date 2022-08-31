@@ -19,7 +19,7 @@
 	/// The master AI , assigned when placed down with the ability.
 	var/mob/living/silicon/ai/masterAI
 
-/obj/machinery/transformer_rp/Initialize()
+/obj/machinery/transformer_rp/Initialize(mapload)
 	// On us
 	. = ..()
 	new /obj/machinery/conveyor/auto(loc, WEST)
@@ -60,7 +60,7 @@
 		return
 	if(stored_cyborgs<1)
 		return
-	var/cyborg_ask = alert("Become a cyborg?", "Are you a terminator?", "Yes", "No")
+	var/cyborg_ask = tgui_alert(target_ghost, "Become a cyborg?", "Are you a terminator?", list("Yes", "No"))
 	if(cyborg_ask == "No" || !src || QDELETED(src))
 		return FALSE
 	var/mob/living/silicon/robot/cyborg = new /mob/living/silicon/robot(loc)
