@@ -7,15 +7,15 @@
 	category = EVENT_CATEGORY_FRIENDLY
 	description = "A colourful display can be seen through select windows. And the kitchen."
 
-/datum/round_event_control/aurora_caelus/canSpawnEvent(players)
-	if(!CONFIG_GET(flag/starlight)&&!(SSmapping.empty_space))
+/datum/round_event_control/aurora_caelus/can_spawn_event(players)
+	if(!CONFIG_GET(flag/starlight) && !(SSmapping.empty_space))
 		return FALSE
 	return ..()
 
 /datum/round_event/aurora_caelus
-	announceWhen = 1
-	startWhen = 9
-	endWhen = 50
+	announce_when = 1
+	start_when = 9
+	end_when = 50
 	var/list/aurora_colors = list("#A2FF80", "#A2FF8B", "#A2FF96", "#A2FFA5", "#A2FFB6", "#A2FFC7", "#A2FFDE", "#A2FFEE")
 	var/aurora_progress = 0 //this cycles from 1 to 8, slowly changing colors from gentle green to gentle blue
 
@@ -83,5 +83,5 @@
 	var/new_light = initial(spess.light_range)
 	while(spess.light_range > new_light)
 		spess.set_light(spess.light_range - 0.2)
-		sleep(30)
+		sleep(3 SECONDS)
 	spess.set_light(new_light, initial(spess.light_power), initial(spess.light_color))

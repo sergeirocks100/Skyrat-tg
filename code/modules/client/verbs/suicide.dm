@@ -167,7 +167,10 @@
 		adjustOxyLoss(max(maxHealth * 2 - getToxLoss() - getFireLoss() - getBruteLoss() - getOxyLoss(), 0))
 		death(FALSE)
 		ghostize(FALSE) // Disallows reentering body and disassociates mind
+*/
+//SKYRAT EDIT REMOVAL END
 
+//SKYRAT EDIT PAI START - Returns ability to leave your PAI
 /mob/living/silicon/pai/verb/suicide()
 	set hidden = TRUE
 	var/confirm = tgui_alert(usr,"Are you sure you want to commit suicide?", "Confirm Suicide", list("Yes", "No"))
@@ -182,8 +185,11 @@
 		ghostize(FALSE) // Disallows reentering body and disassociates mind
 	else
 		to_chat(src, "Aborting suicide attempt.")
+//SKYRAT EDIT PAI END
 
-/mob/living/carbon/alien/humanoid/verb/suicide()
+//SKYRAT EDIT REMOVAL START
+/*
+/mob/living/carbon/alien/adult/verb/suicide()
 	set hidden = TRUE
 	if(!canSuicide())
 		return
