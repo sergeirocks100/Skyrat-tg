@@ -6,7 +6,7 @@
 			"blend_mode": "overlay",
 			"color_ids": [ 1 ]
 		}
-	]
+	],
 	"flannel_jacket_t": [
 		{
 			"type": "icon_state",
