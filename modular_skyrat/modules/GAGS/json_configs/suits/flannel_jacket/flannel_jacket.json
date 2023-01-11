@@ -1,0 +1,10 @@
+{
+	"flannel_jacket": [
+		{
+			"type": "icon_state",
+			"icon_state": "flannel",
+			"blend_mode": "overlay",
+			"color_ids": [ 1 ]
+		}
+	]
+}

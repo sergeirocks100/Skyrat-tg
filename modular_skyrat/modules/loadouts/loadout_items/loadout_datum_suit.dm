@@ -304,20 +304,8 @@ GLOBAL_LIST_INIT(loadout_exosuits, generate_loadout_items(/datum/loadout_item/su
 */
 
 /datum/loadout_item/suit/flannel_black
-	name = "Black Flannel"
+	name = "Recolorable Flannel"
 	item_path = /obj/item/clothing/suit/toggle/jacket/flannel
-
-/datum/loadout_item/suit/flannel_red
-	name = "Red Flannel"
-	item_path = /obj/item/clothing/suit/toggle/jacket/flannel/red
-
-/datum/loadout_item/suit/flannel_aqua
-	name = "Aqua Flannel"
-	item_path = /obj/item/clothing/suit/toggle/jacket/flannel/aqua
-
-/datum/loadout_item/suit/flannel_brown
-	name = "Brown Flannel"
-	item_path = /obj/item/clothing/suit/toggle/jacket/flannel/brown
 
 /*
 *	HAWAIIAN
