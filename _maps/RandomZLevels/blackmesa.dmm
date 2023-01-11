@@ -1697,7 +1697,7 @@
 /turf/open/floor/iron/textured,
 /area/awaymission/black_mesa/tram_room)
 "avz" = (
-/obj/item/ammo_box/advanced/b10mm,
+/obj/item/ammo_box/c10mm,
 /turf/open/floor/iron/smooth,
 /area/awaymission/black_mesa/cryo_storage)
 "avB" = (
@@ -2230,7 +2230,7 @@
 /turf/open/floor/iron/textured_large,
 /area/awaymission/black_mesa/to_cryo_room)
 "aBQ" = (
-/obj/structure/janitorialcart,
+/obj/structure/mop_bucket/janitorialcart,
 /turf/open/floor/iron/smooth,
 /area/awaymission/black_mesa/cryo_storage)
 "aBR" = (
@@ -4504,7 +4504,7 @@
 /obj/structure/table,
 /obj/item/paper,
 /obj/item/geiger_counter,
-/obj/item/ammo_box/advanced/b10mm,
+/obj/item/ammo_box/c10mm,
 /turf/open/floor/iron/dark,
 /area/awaymission/black_mesa/science_labs)
 "bJE" = (
@@ -5235,7 +5235,7 @@
 /area/awaymission/black_mesa/black_ops_bus)
 "cXv" = (
 /obj/effect/spawner/liquids_spawner,
-/mob/living/simple_animal/hostile/carp/megacarp,
+/mob/living/basic/carp/mega,
 /turf/open/floor/iron/pool,
 /area/awaymission/black_mesa/deep_sci_feesh)
 "cXw" = (
@@ -6717,7 +6717,7 @@
 	},
 /area/awaymission/black_mesa/xen/lost_camp_hallway)
 "fQk" = (
-/mob/living/simple_animal/hostile/carp/megacarp,
+/mob/living/basic/carp/mega,
 /obj/effect/spawner/liquids_spawner,
 /turf/open/floor/iron/pool,
 /area/awaymission/black_mesa/deep_sci_feesh)
@@ -13623,7 +13623,7 @@
 /obj/structure/table,
 /obj/item/paper,
 /obj/structure/alien/weeds/xen,
-/obj/item/ammo_box/advanced/b10mm,
+/obj/item/ammo_box/c10mm,
 /turf/open/floor/iron/textured,
 /area/awaymission/black_mesa/science_decon_room)
 "tiO" = (

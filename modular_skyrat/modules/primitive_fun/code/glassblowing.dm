@@ -1,4 +1,4 @@
-#define DEFAULT_TIMED 4 SECONDS
+#define DEFAULT_TIMED (4 SECONDS)
 
 /obj/item/glassblowing
 	icon = 'modular_skyrat/modules/primitive_fun/icons/prim_fun.dmi'
@@ -265,7 +265,7 @@
 
 /datum/crafting_recipe/glassblowing_recipe
 	reqs = list(/obj/item/stack/sheet/iron = 5)
-	category = CAT_PRIMAL
+	category = CAT_MISC
 
 /obj/item/glassblowing/blowing_rod
 	name = "blowing rod"

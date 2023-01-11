@@ -19,6 +19,7 @@
 	min_players = 60
 	max_occurrences = 1
 	earliest_start = 30 MINUTES
+	category = EVENT_CATEGORY_SPACE
 
 /datum/round_event/cme
 	start_when = 6
@@ -146,7 +147,7 @@
 		var/turf/spawnpoint = pick(cme_start_locs)
 		spawn_cme(spawnpoint, cme_intensity)
 
-/datum/round_event/cme/proc/spawn_cme(var/turf/spawnpoint, intensity)
+/datum/round_event/cme/proc/spawn_cme(turf/spawnpoint, intensity)
 	if(intensity == CME_UNKNOWN)
 		intensity = pick(CME_MINIMAL, CME_MODERATE, CME_EXTREME)
 	var/area/loc_area_name = get_area(spawnpoint)
