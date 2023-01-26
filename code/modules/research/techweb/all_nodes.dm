@@ -302,7 +302,6 @@
 		"xlarge_beaker",
 
 		//SKYRAT EDIT START - RESEARCH DESIGNS
-		"engi_plumbing",
 		"hospital_gown",
 		//SKYRAT EDIT END - RESEARCH DESIGNS
 	)
@@ -568,6 +567,9 @@
 	design_ids = list(
 		"bounty_pad",
 		"bounty_pad_control",
+		//SKYRAT EDIT ADDITION - START
+		"nifsoft_vendor"
+		//SKYRAT EDIT ADDITION - END
 	)
 	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = 2500)
 
@@ -645,6 +647,7 @@
 		"rcd_loaded",
 		"rcd_ammo",
 		"rpd_loaded",
+		"rtd_loaded",
 		"sheetifier",
 		"weldingmask",
 
@@ -653,9 +656,7 @@
 		"mesons_prescription",
 		"multi_cell_charger",
 		"tray_goggles_prescription",
-		"plumbing_chem",
 		"plumbing_eng",
-		"plumbing_sci"
 		//SKYRAT EDIT END - RESEARCH DESIGNS
 	)
 	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = 15000)
@@ -1264,6 +1265,7 @@
 		"health_hud_prescription",
 		"security_hud_prescription",
 		"diagnostic_hud_prescription",
+		"science_hud_prescription",
 		"health_hud_aviator",
 		"security_hud_aviator",
 		"diagnostic_hud_aviator",
@@ -1275,6 +1277,7 @@
 		"meson_hud_projector",
 		"science_hud_projector",
 		"permit_glasses",
+		"nifsoft_money_sense",
 		//SKYRAT EDIT END - RESEARCH DESIGNS
 	)
 	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = 1500)
@@ -1540,6 +1543,7 @@
 		"seclite",
 		"zipties",
 		"inspector",
+		"nifsoft_remover", //SKYRAT EDIT ADDITION - NIFs
 	)
 	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = 1000)
 
@@ -2380,26 +2384,3 @@
 	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = 2500)
 	hidden = TRUE
 	experimental = TRUE
-
-//Helpers for debugging/balancing the techweb in its entirety!
-/proc/total_techweb_points()
-	var/list/datum/techweb_node/processing = list()
-	for(var/i in subtypesof(/datum/techweb_node))
-		processing += new i
-	var/datum/techweb/TW = new
-	TW.research_points = list()
-	for(var/i in processing)
-		var/datum/techweb_node/TN = i
-		TW.add_point_list(TN.research_costs)
-	return TW.research_points
-
-/proc/total_techweb_points_printout()
-	var/list/datum/techweb_node/processing = list()
-	for(var/i in subtypesof(/datum/techweb_node))
-		processing += new i
-	var/datum/techweb/TW = new
-	TW.research_points = list()
-	for(var/i in processing)
-		var/datum/techweb_node/TN = i
-		TW.add_point_list(TN.research_costs)
-	return TW.printout_points()
