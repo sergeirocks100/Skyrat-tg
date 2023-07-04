@@ -64,7 +64,7 @@
 	displayed_text = new_val
 
 	if(displayed_text)
-		maptext = MAPTEXT("<font size = [text_size]>[displayed_text]</font>")
+		maptext = MAPTEXT("[displayed_text]")
 	else
 		maptext = null
 
@@ -102,7 +102,6 @@
 
 /obj/effect/countdown/supermatter
 	name = "supermatter damage"
-	text_size = 1
 	color = "#00ff80"
 
 /obj/effect/countdown/supermatter/get_value()
@@ -140,6 +139,8 @@
 	var/obj/effect/anomaly/A = attached_to
 	if(!istype(A))
 		return
+	else if(A.immortal) //we can't die, why are we still here? just to suffer?
+		stop()
 	else
 		var/time_left = max(0, (A.death_time - world.time) / 10)
 		return round(time_left)

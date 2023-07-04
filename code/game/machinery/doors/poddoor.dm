@@ -14,9 +14,14 @@
 	resistance_flags = FIRE_PROOF
 	damage_deflection = 70
 	can_open_with_hands = FALSE
+	/// The recipe for this door
 	var/datum/crafting_recipe/recipe_type = /datum/crafting_recipe/blast_doors
-	var/deconstruction = BLASTDOOR_FINISHED // deconstruction step
+	/// The current deconstruction step
+	var/deconstruction = BLASTDOOR_FINISHED
+	/// The door's ID (used for buttons, etc to control the door)
 	var/id = 1
+	/// The sound that plays when the door opens/closes
+	var/animation_sound = 'sound/machines/blastdoor.ogg'
 
 /datum/armor/door_poddoor
 	melee = 50
@@ -45,11 +50,11 @@
 	if (deconstruction != BLASTDOOR_FINISHED)
 		return
 	var/change_id = tgui_input_number(user, "Set the door controllers ID", "Door Controller ID", id, 100)
-	if(!change_id || QDELETED(usr) || QDELETED(src) || !usr.canUseTopic(src, be_close = TRUE, no_dexterity = FALSE, no_tk = TRUE))
+	if(!change_id || QDELETED(usr) || QDELETED(src) || !usr.can_perform_action(src, FORBID_TELEKINESIS_REACH))
 		return
 	id = change_id
 	to_chat(user, span_notice("You change the ID to [id]."))
-	balloon_alert(user, "ID changed")
+	balloon_alert(user, "id changed")
 	return TOOL_ACT_TOOLTYPE_SUCCESS
 
 /obj/machinery/door/poddoor/crowbar_act(mob/living/user, obj/item/tool)
@@ -113,6 +118,7 @@
 	if(panel_open)
 		if(deconstruction == BLASTDOOR_FINISHED)
 			. += span_notice("The maintenance panel is opened and the electronics could be <b>pried</b> out.")
+			. += span_notice("\The [src] could be calibrated to a blast door controller ID with a <b>multitool</b>.")
 		else if(deconstruction == BLASTDOOR_NEEDS_ELECTRONICS)
 			. += span_notice("The <i>electronics</i> are missing and there are some <b>wires</b> sticking out.")
 		else if(deconstruction == BLASTDOOR_NEEDS_WIRES)
@@ -131,12 +137,10 @@
 	switch(animation)
 		if("opening")
 			flick("opening", src)
-			//playsound(src, 'sound/machines/blastdoor.ogg', 30, TRUE) ORIGINAL
-			playsound(src, door_sound, 30, TRUE) //SKYRAT EDIT CHANGE - AESTHETICS
+			playsound(src, animation_sound, 50, TRUE)
 		if("closing")
 			flick("closing", src)
-			//playsound(src, 'sound/machines/blastdoor.ogg', 30, TRUE) ORIGINAL
-			playsound(src, door_sound, 30, TRUE) //SKYRAT EDIT CHANGE - AESTHETICS
+			playsound(src, animation_sound, 50, TRUE)
 
 /obj/machinery/door/poddoor/update_icon_state()
 	. = ..()
@@ -175,15 +179,6 @@
 /obj/machinery/door/poddoor/shuttledock
 	var/checkdir = 4 //door won't open if turf in this dir is `turftype`
 	var/turftype = /turf/open/space
-
-/datum/armor/door_poddoor
-	melee = 50
-	bullet = 100
-	laser = 100
-	energy = 100
-	bomb = 50
-	fire = 100
-	acid = 70
 
 /obj/machinery/door/poddoor/shuttledock/proc/check()
 	var/turf/turf = get_step(src, checkdir)

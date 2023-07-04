@@ -73,7 +73,7 @@
 	audible_message(span_hear("You hear welding."))
 	var/did_the_thing
 	while(atom_integrity < max_integrity)
-		if(W.use_tool(src, user, 2.5 SECONDS, volume=50, amount=1))
+		if(W.use_tool(src, user, 2.5 SECONDS, volume=50))
 			did_the_thing = TRUE
 			atom_integrity += min(VIM_HEAL_AMOUNT, (max_integrity - atom_integrity))
 			audible_message(span_hear("You hear welding."))
@@ -125,14 +125,6 @@
 	var/datum/port/output/buzz
 	/// Whether the mech headlights are currently on.
 	var/datum/port/output/are_headlights_on
-
-/datum/armor/car_vim
-	melee = 70
-	bullet = 40
-	laser = 40
-	bomb = 30
-	fire = 80
-	acid = 80
 
 /obj/item/circuit_component/vim/populate_ports()
 	are_headlights_on = add_output_port("Are Headlights On", PORT_TYPE_NUMBER)

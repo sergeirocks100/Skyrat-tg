@@ -77,16 +77,6 @@
 	resistance_flags = INDESTRUCTIBLE
 	actions_types = list(/datum/action/item_action/berserk_mode)
 
-/datum/armor/berserker_gatsu
-	melee = 40
-	bullet = 40
-	laser = 20
-	energy = 25
-	bomb = 70
-	bio = 100
-	fire = 100
-	acid = 100
-
 /obj/item/clothing/head/hooded/berserker/gatsu/Initialize(mapload)
 	. = ..()
 	ADD_TRAIT(src, TRAIT_NODROP, LOCKED_HELMET_TRAIT)
@@ -95,9 +85,9 @@
 	. = ..()
 	. += span_warning("Berserk mode is usable at 100% charge and requires the helmet to be closed in order to remain active.") //woag!!!
 
-/obj/item/clothing/head/hooded/berserker/gatsu/process(delta_time)
+/obj/item/clothing/head/hooded/berserker/gatsu/process(seconds_per_tick)
 	if(berserk_active)
-		berserk_charge = clamp(berserk_charge - CHARGE_DRAINED_PER_SECOND * delta_time, 0, BERSERK_MAX_CHARGE)
+		berserk_charge = clamp(berserk_charge - CHARGE_DRAINED_PER_SECOND * seconds_per_tick, 0, BERSERK_MAX_CHARGE)
 	if(!berserk_charge)
 		if(ishuman(loc))
 			end_berserk(loc)
@@ -126,8 +116,10 @@
 	icon = 'modular_skyrat/modules/gladiator/icons/dragonslayer.dmi'
 	icon_state = "dragonslayer"
 	inhand_icon_state = "dragonslayer"
-	lefthand_file = 'modular_skyrat/modules/gladiator/icons/dragonslayer_inhand_R.dmi'
-	righthand_file = 'modular_skyrat/modules/gladiator/icons/dragonslayer_inhand_L.dmi' //confusing, right? hahahaha im not fixing those fucken dmis
+	lefthand_file = 'modular_skyrat/master_files/icons/mob/64x64_lefthand.dmi'
+	righthand_file = 'modular_skyrat/master_files/icons/mob/64x64_righthand.dmi'
+	inhand_x_dimension = 64
+	inhand_y_dimension = 64
 	hitsound = 'modular_skyrat/master_files/sound/weapons/bloodyslice.ogg'
 	w_class = WEIGHT_CLASS_HUGE
 	slot_flags = null
@@ -138,20 +130,18 @@
 	armour_penetration = 35 //this boss is really hard and this sword is really big
 	block_chance = 25
 	sharpness = SHARP_EDGED
+	item_flags = NO_BLOOD_ON_ITEM
 	// aughhghghgh this really should be elementized but this works for now
-	var/faction_bonus_force = 100
+	var/faction_bonus_force = 60
 	var/static/list/nemesis_factions = list("mining", "boss")
 	/// how much stamina does it cost to roll
-	var/roll_stamcost = 15
+	var/roll_stamcost = 9
 	/// how far do we roll?
 	var/roll_range = 3
 
 /obj/item/claymore/dragonslayer/examine()
 	. = ..()
 	. += span_warning("Tempered against lavaland foes and bosses through supernatural energies. Right click to dodge at the cost of stamina.")
-
-/obj/item/claymore/dragonslayer/add_blood_DNA(list/blood_dna) //110% stain-proof! or so they tell me
-	return FALSE
 
 /obj/item/claymore/dragonslayer/attack(mob/living/target, mob/living/carbon/human/user)
 	var/is_nemesis_faction = FALSE
@@ -169,7 +159,7 @@
 		return
 	var/turf/where_to = get_turf(target)
 	user.apply_damage(damage = roll_stamcost, damagetype = STAMINA)
-	user.Immobilize(0.8 SECONDS) // you dont get to adjust your roll
+	user.Immobilize(0.1 SECONDS) // you dont get to adjust your roll
 	user.throw_at(where_to, range = roll_range, speed = 1, force = MOVE_FORCE_NORMAL)
 	user.apply_status_effect(/datum/status_effect/dodgeroll_iframes)
 	playsound(user, SFX_BODYFALL, 50, TRUE)
@@ -180,7 +170,7 @@
 	id = "dodgeroll_dodging"
 	alert_type = null
 	status_type = STATUS_EFFECT_REFRESH
-	duration = 0.8 SECONDS // worth tweaking?
+	duration = 1 SECONDS // worth tweaking?
 
 /datum/status_effect/dodgeroll_iframes/on_apply()
 	RegisterSignal(owner, COMSIG_HUMAN_CHECK_SHIELDS, PROC_REF(whiff))

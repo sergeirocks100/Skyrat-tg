@@ -14,8 +14,6 @@
 		TRAIT_LITERATE,
 	)
 	inherent_biotypes = MOB_ORGANIC|MOB_HUMANOID
-	brutemod = 1.70
-	burnmod = 0.60
 	exotic_blood = /datum/reagent/copper
 	bodytemp_normal = (BODYTEMP_NORMAL + 70)
 	bodytemp_heat_damage_limit = FIRE_MINIMUM_TEMPERATURE_TO_SPREAD
@@ -77,8 +75,8 @@
 	skrell.dna.features["mcolor"] = skrell_color
 	skrell.dna.features["mcolor2"] = skrell_color
 	skrell.dna.features["mcolor3"] = skrell_color
-	skrell.dna.species.mutant_bodyparts["skrell_hair"] = list(MUTANT_INDEX_NAME = "Female", MUTANT_INDEX_COLOR_LIST = list(skrell_color, skrell_color, skrell_color))
-	skrell.update_mutant_bodyparts(TRUE)
+	skrell.dna.mutant_bodyparts["skrell_hair"] = list(MUTANT_INDEX_NAME = "Female", MUTANT_INDEX_COLOR_LIST = list(skrell_color, skrell_color, skrell_color))
+	regenerate_organs(skrell, src, visual_only = TRUE)
 	skrell.update_body(TRUE)
 
 
@@ -108,6 +106,9 @@
 		/datum/language/nekomimetic,
 		/datum/language/skrell,
 	))
+
+/obj/item/organ/internal/tongue/skrell/get_possible_languages()
+	return languages_possible_skrell
 
 /obj/item/organ/internal/heart/skrell
 	name = "skrellian heart"

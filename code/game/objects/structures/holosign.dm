@@ -7,6 +7,8 @@
 	anchored = TRUE
 	max_integrity = 1
 	armor_type = /datum/armor/structure_holosign
+	// How can you freeze a trick of the light?
+	resistance_flags = FREEZE_PROOF
 	var/obj/item/holosign_creator/projector
 	var/use_vis_overlay = TRUE
 
@@ -66,13 +68,6 @@
 	max_integrity = 20
 	var/allow_walk = TRUE //can we pass through it on walk intent
 
-/datum/armor/structure_holosign
-	bullet = 50
-	laser = 50
-	energy = 50
-	fire = 20
-	acid = 20
-
 /obj/structure/holosign/barrier/CanAllowThrough(atom/movable/mover, border_dir)
 	. = ..()
 	if(.)
@@ -89,13 +84,7 @@
 	desc = "When it says walk it means walk."
 	icon = 'icons/effects/effects.dmi'
 	icon_state = "holosign"
-
-/datum/armor/structure_holosign
-	bullet = 50
-	laser = 50
-	energy = 50
-	fire = 20
-	acid = 20
+	max_integrity = 1
 
 /obj/structure/holosign/barrier/wetsign/CanAllowThrough(atom/movable/mover, border_dir)
 	. = ..()
@@ -109,6 +98,7 @@
 /obj/structure/holosign/barrier/engineering
 	icon_state = "holosign_engi"
 	rad_insulation = RAD_LIGHT_INSULATION
+	max_integrity = 1
 
 /obj/structure/holosign/barrier/atmos
 	name = "holofirelock"
@@ -119,7 +109,7 @@
 	can_atmos_pass = ATMOS_PASS_NO
 	alpha = 150
 	rad_insulation = RAD_LIGHT_INSULATION
-	resistance_flags = FIRE_PROOF
+	resistance_flags = FIRE_PROOF | FREEZE_PROOF
 
 /obj/structure/holosign/barrier/atmos/sturdy
 	name = "sturdy holofirelock"
@@ -129,13 +119,6 @@
 	name = "tram atmos barrier"
 	max_integrity = 150
 	icon_state = "holo_tram"
-
-/datum/armor/structure_holosign
-	bullet = 50
-	laser = 50
-	energy = 50
-	fire = 20
-	acid = 20
 
 /obj/structure/holosign/barrier/atmos/Initialize(mapload)
 	. = ..()
@@ -156,13 +139,6 @@
 	max_integrity = 10
 	allow_walk = FALSE
 
-/datum/armor/structure_holosign
-	bullet = 50
-	laser = 50
-	energy = 50
-	fire = 20
-	acid = 20
-
 /obj/structure/holosign/barrier/cyborg/bullet_act(obj/projectile/P)
 	take_damage((P.damage / 5) , BRUTE, MELEE, 1) //Doesn't really matter what damage flag it is.
 	if(istype(P, /obj/projectile/energy/electrode))
@@ -176,15 +152,9 @@
 	desc = "A holobarrier that uses biometrics to detect human viruses. Denies passing to personnel with easily-detected, malicious viruses. Good for quarantines."
 	icon_state = "holo_medical"
 	alpha = 125 //lazy :)
+	max_integrity = 1
 	var/force_allaccess = FALSE
 	var/buzzcd = 0
-
-/datum/armor/structure_holosign
-	bullet = 50
-	laser = 50
-	energy = 50
-	fire = 20
-	acid = 20
 
 /obj/structure/holosign/barrier/medical/examine(mob/user)
 	. = ..()
@@ -230,13 +200,6 @@
 	desc = "A powerful energy field that blocks movement. Energy arcs off it."
 	max_integrity = 20
 	var/shockcd = 0
-
-/datum/armor/structure_holosign
-	bullet = 50
-	laser = 50
-	energy = 50
-	fire = 20
-	acid = 20
 
 /obj/structure/holosign/barrier/cyborg/hacked/bullet_act(obj/projectile/P)
 	take_damage(P.damage, BRUTE, MELEE, 1) //Yeah no this doesn't get projectile resistance.
